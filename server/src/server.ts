@@ -220,10 +220,11 @@ connection.onCodeLens((params) => {
 });
 
 connection.onCodeLensResolve((codeLens) => {
-	if(codeLens.data?.type === 'character') {
-		codeLens.command = Command.create(`Character ${codeLens.data.name} (${codeLens.data.lines} lines)`, 'fountain.analyseCharacter', codeLens.data);
-	} else if(codeLens.data?.type === 'location') {
-		codeLens.command = Command.create(`Location ${codeLens.data.name} (${codeLens.data.references} references)`, 'fountain.analyseLocation', codeLens.data);
+	const args = {...codeLens.data, range: codeLens.range};
+	if(args.type === 'character') {
+		codeLens.command = Command.create(`Character ${args.name} (${args.lines} lines)`, 'fountain.analyseCharacter', args);
+	} else if(args.type === 'location') {
+		codeLens.command = Command.create(`Location ${args.name} (${args.references} references)`, 'fountain.analyseLocation', args);
 	}
 	return codeLens;
 });
