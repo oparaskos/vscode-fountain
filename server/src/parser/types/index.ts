@@ -6,13 +6,14 @@ import { SceneElement } from "./SceneElement";
 
 function getElementsByType<T extends FountainElement>(children: FountainElement[], type: string): T[] {
     const base: T[] = children.filter(child => child.type === type) as T[];
-    const elementsWithChildren: FountainElementWithChildren[] = children.filter(child => child instanceof FountainElementWithChildren && child.children.length > 0) as FountainElementWithChildren[]
+    const elementsWithChildren: FountainElementWithChildren[] = children.filter(child => child instanceof FountainElementWithChildren && child.children.length > 0) as FountainElementWithChildren[];
     const nested: T[] = elementsWithChildren.map(child => getElementsByType<T>(child.children, type)).flat();
     return [...base, ...nested];
 }
 
 export class FountainScript {
     private _characterNames: string[] | undefined;
+    private _characterStats: undefined | object[];
     private _dialogueByCharacters: {[k: string]: DialogueElement[]} | undefined;
     private _scenesByLocationName: {[k: string]: SceneElement[]} | undefined;
     constructor(
@@ -23,24 +24,54 @@ export class FountainScript {
         if (!this._characterNames)
             this._characterNames = this.dialogue
                 .map(element => element.character)
-                .filter((element, index, array) => array.findIndex(e => e === element) === index)
+                .filter((element, index, array) => array.findIndex(e => e === element) === index);
         return this._characterNames;
     }
 
+    public get characters() {
+        if (!this._characterStats) {
+            const dialogueByCharacters = this.dialogueByCharacters;
+            const characters = Object.keys(dialogueByCharacters).map(characterName => {
+                const dialogues = dialogueByCharacters[characterName];
+                try {
+                    const dialogueStats = dialogues.reduce((prev, curr) => ({
+                        Duration: prev.Duration + curr.duration,
+                        Lines: prev.Lines + curr.lines.length,
+                        Words: prev.Words + curr.words.length,
+                        ReadingAge: curr.readingGrade!= undefined ? Math.max(prev.ReadingAge, curr.readingGrade) : prev.ReadingAge,
+                        Monologues: prev.Monologues + (curr.duration > 30 ? 1 : 0),
+                    }), {Duration: 0, Lines: 0, Words: 0, ReadingAge: 0, Monologues: 0});
+                    return {
+                        Name: characterName,
+                        References: dialogues.length,
+                        ...dialogueStats
+                    };
+                } catch(e) {
+                    return {
+                        Name: characterName,
+                        References: dialogues.length
+                    };
+                }
+            });
+            this._characterStats = characters;
+        }
+        return this._characterStats;
+    }
+
     public get dialogue(): DialogueElement[]{
-        return getElementsByType<DialogueElement>(this.children, "dialogue")
+        return getElementsByType<DialogueElement>(this.children, "dialogue");
     }
 
     public get dialogueByCharacters() {
         if (!this._dialogueByCharacters) 
             this._dialogueByCharacters = this.characterNames.reduce((acc, curr) => {
-                acc[curr] = this.dialogue.filter(it => it.character == curr)
+                acc[curr] = this.dialogue.filter(it => it.character == curr);
                 return acc;
-            }, {} as {[k: string]: DialogueElement[]})
+            }, {} as {[k: string]: DialogueElement[]});
         return this._dialogueByCharacters;
     }
     public get scenes() {
-        return getElementsByType<SceneElement>(this.children, "scene")
+        return getElementsByType<SceneElement>(this.children, "scene");
     }
 
     public get locations() {
@@ -51,9 +82,9 @@ export class FountainScript {
         if(!this._scenesByLocationName) {
             const locationNames = this.locations.map(it => it?.name).filter((v, i, a) => a.indexOf(v) === i).filter(it => !!it) as string[];
             this._scenesByLocationName = locationNames.reduce((acc, curr) => {
-                acc[curr] = this.scenes.filter(it => it.location?.name === curr)
+                acc[curr] = this.scenes.filter(it => it.location?.name === curr);
                 return acc;
-            }, {} as {[k: string]: SceneElement[]})
+            }, {} as {[k: string]: SceneElement[]});
         }
         return this._scenesByLocationName;
     }

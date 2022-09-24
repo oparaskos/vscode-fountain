@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-extra-non-null-assertion */
+/* eslint-disable no-case-declarations */
 // fountain-js 0.1.10
 // http://www.opensource.org/licenses/mit-license.php
 
@@ -49,9 +51,9 @@ export function tokenize(script: string) {
 
     let characterIndex = 0;
     for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
-        let line = lines[lineNumber].trim();
-        const lastToken = tokens[tokens.length - 1]
-        const lastNonWhitespaceToken = findLastNonWhitespace(tokens)
+        const line = lines[lineNumber].trim();
+        const lastToken = tokens[tokens.length - 1];
+        const lastNonWhitespaceToken = findLastNonWhitespace(tokens);
         const codeLocation: SourceMapElement = {
             file: '',
             start: {
@@ -73,7 +75,7 @@ export function tokenize(script: string) {
         characterIndex += line.length + 1;
     }
     return tokens;
-};
+}
 
 /**
  * Generate a structured representation of the script.
@@ -86,7 +88,7 @@ export function parse(script: string): FountainScript {
     const firstNonTitlePageElementIndex = tokens.findIndex(t => t.type !== 'title_page');
     const titlePageTokens = tokens.slice(0, firstNonTitlePageElementIndex);
     const titlePage: FountainElement = new FountainTitlePage(titlePageTokens);
-    const scriptElements: FountainElement[] = _parse(tokens.slice(firstNonTitlePageElementIndex))
+    const scriptElements: FountainElement[] = _parse(tokens.slice(firstNonTitlePageElementIndex));
     return new FountainScript([titlePage].concat(scriptElements));
 }
 
@@ -144,7 +146,7 @@ function _parse(tokens: FountainToken[], parent: null | FountainToken = null): F
             case 'character':
                 let nextNonDialogue = tokens.findIndex((t, id) => id > i && t.type !== 'dialogue' && t.type !== 'parenthetical');
                 if(nextNonDialogue === -1) nextNonDialogue = tokens.length; // we must be at the end of the script
-                const [nextI, result] = parseDialogue(token, tokens, i, nextNonDialogue)
+                const [nextI, result] = parseDialogue(token, tokens, i, nextNonDialogue);
                 data.push(result);
                 i = nextI;
                 break;
@@ -161,7 +163,8 @@ function _parse(tokens: FountainToken[], parent: null | FountainToken = null): F
 function parseDialogue(token: FountainToken, tokens: FountainToken[], i: number, nextNonDialogue: number): [number, DialogueElement | DualDialogueElement] {
     const hasCharacterExtension = token.text && (/\(.*\)/).test(token.text);
     const extension = hasCharacterExtension ? token.text?.split('(')[1].split(')')[0] : null;
-    const characterName = hasCharacterExtension ? token.text!!.split('(')[0] : token.text!!;
+    let characterName = (hasCharacterExtension ? token.text!!.split('(')[0] : token.text!!).trim();
+    if (characterName.endsWith('^')) characterName = characterName.substring(0, characterName.length - 2).trim();
     const hasParenthetical = tokens[i + 1].type === 'parenthetical';
     const parenthetical = hasParenthetical ? tokens[i + 1] : null;
     const dialogueTokens = tokens.slice(i + 1, nextNonDialogue ?? tokens.length);
@@ -170,9 +173,9 @@ function parseDialogue(token: FountainToken, tokens: FountainToken[], i: number,
 
     if (tokens[nextNonDialogue].type === 'character' && tokens[nextNonDialogue].text?.trim().endsWith('^')) {
         // This is dual dialogue
-        let nextNextNonDialogue = tokens.findIndex((t, id) => id > i && t.type !== 'dialogue' && t.type !== 'parenthetical');
-        const [nextTokenIndex, rightDialogue] = parseDialogue(tokens[nextNonDialogue], tokens, nextNonDialogue, nextNextNonDialogue)
-        let children = [dialogueElement];
+        const nextNextNonDialogue = tokens.findIndex((t, id) => id > i && t.type !== 'dialogue' && t.type !== 'parenthetical');
+        const [nextTokenIndex, rightDialogue] = parseDialogue(tokens[nextNonDialogue], tokens, nextNonDialogue, nextNextNonDialogue);
+        const children = [dialogueElement];
         if (rightDialogue instanceof DualDialogueElement) {
             children.push(...rightDialogue.children);
         } else {
@@ -187,10 +190,10 @@ function parseDialogue(token: FountainToken, tokens: FountainToken[], i: number,
 function tokensBetween(tokens: Array<FountainToken>, index: number, end_type: string, predicate = (t: FountainToken, i: number) => true): [Array<FountainToken>, number] {
     const endIndex = tokens.findIndex((t, idx) => idx > index && t.type === end_type && predicate(t, idx));
     if (endIndex === -1) {
-        let slice = tokens.slice(index + 1, tokens.length);
+        const slice = tokens.slice(index + 1, tokens.length);
         return [slice, tokens.length];
     }
-    let slice = tokens.slice(index + 1, endIndex);
+    const slice = tokens.slice(index + 1, endIndex);
     return [slice, endIndex];
 }
 
@@ -208,6 +211,10 @@ function extractToken(line: string, codeLocation: SourceMapElement, lastToken: F
 
     if(line.startsWith('!')) {
         return [{ type: 'action', text: line, line, codeLocation }];
+    }
+
+    if (line.startsWith('=')) {
+        return [{ type: 'synopsis', line, codeLocation, text: line.substring(1).trim() }];
     }
 
     // title page
@@ -238,31 +245,31 @@ function extractToken(line: string, codeLocation: SourceMapElement, lastToken: F
     }
 
     // boneyard
-    let boneyardTokens: FountainToken[] = extractBoneyardTokens(line, codeLocation, lastToken, lastNonWhitespaceToken, isFollowedByBlankLine);
+    const boneyardTokens: FountainToken[] = extractBoneyardTokens(line, codeLocation, lastToken, lastNonWhitespaceToken, isFollowedByBlankLine);
     if (boneyardTokens.length > 0) {
         return boneyardTokens;
     }
 
     // note
-    let noteTokens: FountainToken[] = extractNoteTokens(line, codeLocation, lastToken, lastNonWhitespaceToken, isFollowedByBlankLine);
+    const noteTokens: FountainToken[] = extractNoteTokens(line, codeLocation, lastToken, lastNonWhitespaceToken, isFollowedByBlankLine);
     if (noteTokens.length > 0) {
         return noteTokens;
     }
 
     // section
-    match = line.match(FountainRegexSection)
+    match = line.match(FountainRegexSection);
     if (match) {
         return [{ type: 'section', line, codeLocation, text: match[2], depth: match[1].length }];
     }
 
     // scene headings
-    match = line.match(FountainRegexSceneHeading)
+    match = line.match(FountainRegexSceneHeading);
     if (match) {
         let text = match[1] || match[2];
 
         if (text.indexOf('  ') !== text.length - 2) {
             let meta;
-            let metaMatch = text.match(FountainRegexSceneNumber)
+            const metaMatch = text.match(FountainRegexSceneNumber);
             if (metaMatch) {
                 meta = metaMatch[2];
                 text = text.replace(FountainRegexSceneNumber, '');
@@ -273,13 +280,13 @@ function extractToken(line: string, codeLocation: SourceMapElement, lastToken: F
     }
 
     // centered
-    match = line.match(FountainRegexCentered)
+    match = line.match(FountainRegexCentered);
     if (match) {
         return [{ type: 'centered', line, codeLocation, text: match[0].replace(/>|</g, '') }];
     }
 
     // transitions
-    match = line.match(FountainRegexTransition)
+    match = line.match(FountainRegexTransition);
     if (match) {
         return [{ type: 'transition', line, codeLocation, text: line }];
     }
@@ -304,7 +311,7 @@ function extractToken(line: string, codeLocation: SourceMapElement, lastToken: F
 
 
     // synopsis
-    match = line.match(FountainRegexSynopsis)
+    match = line.match(FountainRegexSynopsis);
     if (match) {
         return [{ type: 'synopsis', line, codeLocation, text: match[1] }];
     }
@@ -347,7 +354,7 @@ function extractMultilineCommentTokens(
     const isComment = lastToken?.type === comment_type;
     const commentTokens: FountainToken[] = [];
     if (!isComment && line.indexOf(comment_start_str) > -1) {
-        let lineParts = line.split(comment_start_str);
+        const lineParts = line.split(comment_start_str);
         line = lineParts[0];
         commentTokens.push(...extractToken(line, {
             file: codeLocation.file,
@@ -378,7 +385,7 @@ function extractMultilineCommentTokens(
         });
     }
     if (line.indexOf(comment_end_str) > -1) {
-        let lineParts = line.split(comment_end_str);
+        const lineParts = line.split(comment_end_str);
         line = lineParts[1];
         commentTokens.push({
             type: comment_type, line, codeLocation: {
@@ -402,7 +409,7 @@ function extractMultilineCommentTokens(
                 },
             }, text: ''
         };
-        commentTokens.push(commentEndToken)
+        commentTokens.push(commentEndToken);
         commentTokens.push(...extractToken(line, {
             file: codeLocation.file,
             start: commentEndToken.codeLocation.end,

@@ -1,7 +1,7 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
 import {readFile} from 'fs/promises';
-import {join} from 'path';
+import {join, basename} from 'path';
+import { LanguageClient, RequestType } from 'vscode-languageclient/node';
 
 async function loadWebviewHtml(context: vscode.ExtensionContext, relativePath: string) {
 	const absolutePath = vscode.Uri.file(join(context.extensionPath, relativePath));
@@ -9,9 +9,9 @@ async function loadWebviewHtml(context: vscode.ExtensionContext, relativePath: s
 	return (await readFile(absolutePath.fsPath)).toString('utf-8');
 }
 
-const _statsPanels: vscode.WebviewPanel[] = [];
+const _statsPanels: {[key: string]: vscode.WebviewPanel} = {};
 function statsPanel(context: vscode.ExtensionContext, fileName: string) {
-	const baseFileName = path.basename(fileName);
+	const baseFileName = basename(fileName);
 	const fileNameParts = baseFileName.split('.');
 	const panelName = fileNameParts.splice(0, fileNameParts.length - 1).join(".");
 
@@ -22,21 +22,30 @@ function statsPanel(context: vscode.ExtensionContext, fileName: string) {
 			panelName,
 			vscode.ViewColumn.Three,
 			{ enableScripts: true, });
+		_statsPanels[panelName].onDidDispose(() => delete _statsPanels[panelName]);
 
-		const cssDiskPath = vscode.Uri.file(path.join(context.extensionPath, 'node_modules', 'vscode-codicons', 'dist', 'codicon.css'));
-		loadWebviewHtml(context, join("webviews", "stats.html")).then((result) => {
-			_statsPanels[panelName].webview.html = result
-				.replace("$CODICON_CSS$", _statsPanels[panelName].webview.asWebviewUri(cssDiskPath).toString());
+		const relativePath = join("webviews", "stats.html");
+		const baseUri = vscode.Uri.joinPath(context.extensionUri, relativePath);
+		const webview = _statsPanels[panelName].webview;
+
+		loadWebviewHtml(context, relativePath).then((result) => {
+			webview.html = result
+			.replace("${baseUri}", webview.asWebviewUri(baseUri).toString())
+			.replace("${pageTitle}", panelName);
 		});
-	
 	}
 	return _statsPanels[panelName];
 }
 
-export function analyseCharacter(context: vscode.ExtensionContext): (args: { uri: any; name: any; }) => any  {
-	return ({ uri, name }) => {
-		console.log("Analyse: " + name);
-		statsPanel(context, uri).webview.postMessage({ command: "fountain.analyseCharacter", uri, name });
-		return;
-	}
-};
+export async function updateCharacterStats(webview: vscode.Webview, client: LanguageClient, uri: string) {
+	const stats = await client.sendRequest(new RequestType("fountain.characters"), { uri } );
+	webview.postMessage({ command: "fountain.characterStats", uri, stats });
+}
+
+export function analyseCharacter(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
+	return async ({ uri, name }) => {
+		const webview = statsPanel(context, uri).webview;
+		await updateCharacterStats(webview, client, uri);
+		webview.postMessage({ command: "fountain.analyseCharacter", uri, name });
+	};
+}

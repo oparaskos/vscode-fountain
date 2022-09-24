@@ -1,4 +1,3 @@
-import { DocumentSymbol } from "vscode-languageserver";
 import { FountainToken } from "./FountainTokenType";
 
 

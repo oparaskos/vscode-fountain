@@ -1,4 +1,3 @@
-import { parse } from "path";
 import { FountainElement } from "../parser/types/FountainElement";
 import { Position, Range, TextDocumentPositionParams } from "vscode-languageserver";
 import { FountainScript, FountainTitlePage } from "../parser/types";
@@ -15,7 +14,7 @@ export function elementToRange(element: FountainElement): Range {
             line: end.line,
             character: end.column,
         }
-    }
+    };
 }
 
 export function positionInRange(position: Position, range: Range): boolean {

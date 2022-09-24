@@ -10,6 +10,7 @@ import * as vscode from 'vscode';
 import {
 	LanguageClient,
 	LanguageClientOptions,
+	RequestType,
 	ServerOptions,
 	TransportKind
 } from 'vscode-languageclient/node';
@@ -55,8 +56,7 @@ export function activate(context: ExtensionContext) {
 		clientOptions
 	);
 
-	context.subscriptions.push(vscode.commands.registerCommand("fountain.analyseCharacter", analyseCharacter(context)))
-	
+	context.subscriptions.push(vscode.commands.registerCommand("fountain.analyseCharacter", analyseCharacter(context, client)));
 
 	// Start the client. This will also launch the server
 	client.start();

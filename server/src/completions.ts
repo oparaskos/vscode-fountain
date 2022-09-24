@@ -1,5 +1,5 @@
 
-import { CompletionItem, CompletionItemKind, CompletionItemTag } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 import { FountainScript, FountainTitlePage } from "./parser/types";
 
 const revisionDocumentation = `New revisions are generally printed on different-colored paper, and named accordingly. The WGA order for revisions is:
@@ -26,7 +26,7 @@ export function closingCompletions(currentLine: string, parsedDocument: Fountain
         { label: "FADE OUT.", kind: CompletionItemKind.Event },
         { label: "FADE TO BLACK.", kind: CompletionItemKind.Event },
         { label: "> BURN TO WHITE.", kind: CompletionItemKind.Event },
-    ]
+    ];
 }
 
 export function characterCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
@@ -36,19 +36,19 @@ export function characterCompletions(currentLine: string, parsedDocument: Founta
         { label: "(CONT'D)", kind: CompletionItemKind.Snippet },
         { label: "(V.O.)", kind: CompletionItemKind.Snippet },
         { label: "(on TV)", kind: CompletionItemKind.Snippet },
-    ]
+    ];
 }
 
 export function dialogueCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
     return [
         { label: "(beat)", kind: CompletionItemKind.Snippet },
-    ]
+    ];
 }
 
 export function openingCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
     return [
         { label: "FADE IN:", kind: CompletionItemKind.Event },
-    ]
+    ];
 }
 
 export function sceneCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
@@ -57,7 +57,7 @@ export function sceneCompletions(currentLine: string, parsedDocument: FountainSc
         { label: "EST. ", kind: CompletionItemKind.Class },
         { label: "EXT. ", kind: CompletionItemKind.Class },
         { label: "INT/EXT. ", kind: CompletionItemKind.Class },
-    ]
+    ];
 }
 
 export function transitionCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
@@ -73,38 +73,38 @@ export function transitionCompletions(currentLine: string, parsedDocument: Fount
         { label: "COME TO:", kind: CompletionItemKind.Event },
         { label: "FADE TO:", kind: CompletionItemKind.Event },
         { label: "CUT TO:", kind: CompletionItemKind.Event }
-    ]
+    ];
 }
 
 export function titlePageCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
     const completions: CompletionItem[] = [];
     const titlePage = parsedDocument.children[0];
-    if (!(titlePage instanceof FountainTitlePage)) return [];
-    if (currentLine.indexOf(":") == -1) return [];
+    const attributes = (titlePage as FountainTitlePage)?.attributes || {};
+    // if (currentLine.indexOf(":") == -1) return [];
 
-    if (!titlePage.attributes["title"])
+    if (!attributes["title"])
         completions.push({ label: "Title", detail: "The title of the screenplay", kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["credit"])
+    if (!attributes["credit"])
         completions.push({ label: "Credit", detail: "How the author is credited", documentation: 'Inserted between the title and the author. Good practice is to simply use "Written by" (avoid "Created by" etc...).', kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["author"])
+    if (!attributes["author"])
         completions.push({ label: "Author", detail: "The name of the author", documentation: "This is you! If there are several authors, you can optionally use the 'authors' tag instead.", kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["source"])
+    if (!attributes["source"])
         completions.push({ label: "Source", detail: "An additional source for the screenplay", documentation: "This will be inserted below the author, and is useful if the story has an additional source (such as 'Original story by x', 'Based on the novel by x', etc...)", kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["notes"])
+    if (!attributes["notes"])
         completions.push({ label: "Notes", detail: "Additional notes", documentation: 'Any additional notes you wish to include in the title page', kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["draft_date"])
+    if (!attributes["draft_date"])
         completions.push({ label: "Draft Date", detail: "The date of the current draft", documentation: 'Useful if you have several drafts and need to keep track of when they were written', kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["date"])
+    if (!attributes["date"])
         completions.push({ label: "Date", detail: "The date of the screenplay", documentation: 'Only include the date it if necessary for production purposes. Someone reading your screenplay does not generally need to know when it was written.', kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["contact"] || !titlePage.attributes["contact_info"])
+    if (!attributes["contact"] || !attributes["contact_info"])
         completions.push({ label: "Contact", detail: "Contact details", documentation: 'Your contact details (Address, email, etc...)', kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["copyright"])
+    if (!attributes["copyright"])
         completions.push({ label: "Copyright", detail: "Copyright information", documentation: "**Warning:** Including copyright information tends to be unecessary, and may even seem unprofessional in some cases.", kind: CompletionItemKind.Property, deprecated: true });
-    if (!titlePage.attributes["watermark"])
+    if (!attributes["watermark"])
         completions.push({ label: "Watermark", detail: "A watermark displayed on every page", documentation: 'A watermark displayed diagonally on every single page', kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["font"])
+    if (!attributes["font"])
         completions.push({ label: "Font", detail: "The font used in the screenplay", documentation: `Generally a monospace courier-type font. BetterFountain's default is [Courier Prime](https://quoteunquoteapps.com/courierprime/), with added support for cyrillic.`, kind: CompletionItemKind.Property });
-    if (!titlePage.attributes["revision"])
+    if (!attributes["revision"])
         completions.push({ label: "Revision", detail: "The name of the current and past revisions", documentation: revisionDocumentation, kind: CompletionItemKind.Property });
     completions.push({ label: "TL", detail: "Top Left", documentation: "Additional content in the top left of the title page", kind: CompletionItemKind.Property });
     completions.push({ label: "TC", detail: "Top Center", documentation: "Additional content in the top center of the title page", kind: CompletionItemKind.Property });

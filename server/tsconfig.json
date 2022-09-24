@@ -2,6 +2,7 @@
 	"compilerOptions": {
 		"target": "es2020",
 		"lib": ["es2020"],
+		"esModuleInterop": true,
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"sourceMap": true,
@@ -11,4 +12,5 @@
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", ".vscode-test"]
+	
 }

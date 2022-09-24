@@ -6,19 +6,15 @@ import {
 	createConnection,
 	TextDocuments,
 	Diagnostic,
-	DiagnosticSeverity,
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	CompletionItem,
-	CompletionItemKind,
 	TextDocumentPositionParams,
 	TextDocumentSyncKind,
 	InitializeResult,
-	DocumentSymbol,
-	Range,
 	Command,
-	CodeLensResolveRequest
+	SymbolKind,
 } from 'vscode-languageserver/node';
 
 import {
@@ -66,6 +62,7 @@ connection.onInitialize((params: InitializeParams) => {
 			codeLensProvider: {
 				resolveProvider: true
 			},
+			// documentSymbolProvider: true,
 			// Tell the client that this server supports code completion.
 			completionProvider: {
 				resolveProvider: true
@@ -92,6 +89,12 @@ connection.onInitialized(() => {
 			connection.console.log('Workspace folder change event received.');
 		});
 	}
+});
+
+connection.onRequest("fountain.characters", async (params) => {
+	const parsedScript = parsedDocuments[(params as any).uri];
+	const result = parsedScript.characters;
+	return result;
 });
 
 // The example settings
@@ -130,7 +133,7 @@ function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
 	if (!result) {
 		result = connection.workspace.getConfiguration({
 			scopeUri: resource,
-			section: 'languageServerExample'
+			section: 'fountain'
 		});
 		documentSettings.set(resource, result);
 	}
@@ -148,12 +151,11 @@ documents.onDidChangeContent(change => {
 	validateTextDocument(change.document);
 });
 
-export interface CharacterReference {}
-
 const parsedDocuments: { [uri: string]: FountainScript } = {};
 const lines: { [uri: string]: string[] } = {};
 
 function analyse(parsedScript: FountainScript) {
+	return;
 }
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
@@ -169,37 +171,8 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	analyse(parsedScript);
 
 	const diagnostics: Diagnostic[] = [];
-	// while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
-	// 	problems++;
-	// 	const diagnostic: Diagnostic = {
-	// 		severity: DiagnosticSeverity.Warning,
-	// 		range: {
-	// 			start: textDocument.positionAt(m.index),
-	// 			end: textDocument.positionAt(m.index + m[0].length)
-	// 		},
-	// 		message: `${m[0]} is all uppercase.`,
-	// 		source: 'ex'
-	// 	};
-	// 	if (hasDiagnosticRelatedInformationCapability) {
-	// 		diagnostic.relatedInformation = [
-	// 			{
-	// 				location: {
-	// 					uri: textDocument.uri,
-	// 					range: Object.assign({}, diagnostic.range)
-	// 				},
-	// 				message: 'Spelling matters'
-	// 			},
-	// 			{
-	// 				location: {
-	// 					uri: textDocument.uri,
-	// 					range: Object.assign({}, diagnostic.range)
-	// 				},
-	// 				message: 'Particularly for names'
-	// 			}
-	// 		];
-	// 	}
-	// 	diagnostics.push(diagnostic);
-	// }
+
+	
 
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
@@ -218,6 +191,7 @@ connection.onCodeLens((params) => {
 		...locationsLens(lines[uri], parsedScript, uri)
 	];
 });
+
 
 connection.onCodeLensResolve((codeLens) => {
 	const args = {...codeLens.data, range: codeLens.range};
@@ -238,16 +212,13 @@ connection.onCompletion((documentPosition: TextDocumentPositionParams): Completi
 	if (isTitlePage(documentPosition, parsedScript)) {
 		completions.push(...titlePageCompletions(currentLine, parsedScript));
 	} else {
-		completions.push(...openingCompletions(currentLine, parsedScript))
-		completions.push(...sceneCompletions(currentLine, parsedScript))
-		completions.push(...characterCompletions(currentLine, parsedScript))
-		completions.push(...dialogueCompletions(currentLine, parsedScript))
-		completions.push(...transitionCompletions(currentLine, parsedScript))
-		completions.push(...closingCompletions(currentLine, parsedScript))
+		completions.push(...openingCompletions(currentLine, parsedScript));
+		completions.push(...sceneCompletions(currentLine, parsedScript));
+		completions.push(...characterCompletions(currentLine, parsedScript));
+		completions.push(...dialogueCompletions(currentLine, parsedScript));
+		completions.push(...transitionCompletions(currentLine, parsedScript));
+		completions.push(...closingCompletions(currentLine, parsedScript));
 	}
-	// The pass parameter contains the position of the text document in
-	// which code complete got requested. For the example we ignore this
-	// info and always provide the same completion items.
 	return completions;
 }
 );
@@ -256,13 +227,6 @@ connection.onCompletion((documentPosition: TextDocumentPositionParams): Completi
 // the completion list.
 connection.onCompletionResolve(
 	(item: CompletionItem): CompletionItem => {
-		if (item.data === 1) {
-			item.detail = 'TypeScript details';
-			item.documentation = 'TypeScript documentation';
-		} else if (item.data === 2) {
-			item.detail = 'JavaScript details';
-			item.documentation = 'JavaScript documentation';
-		}
 		return item;
 	}
 );

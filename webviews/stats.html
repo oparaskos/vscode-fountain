@@ -1,5 +1,39 @@
-<html>
-    <body>
-        <h1>Hello World!</h1>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<base href="${baseUri}">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+		<meta name="theme-color" content="#000000">
+		
+		<script type="module" src="node_modules/@vscode/webview-ui-toolkit/dist/toolkit.js"></script>
+		<script src="out/test.js"></script>
+
+		<link rel="stylesheet" href="node_modules/@vscode/codicons/dist/codicon.css">
+		<link rel="stylesheet" href="styles/style.css">
+
+		<title>${pageTitle}</title>
+	</head>
+
+	<body>
+		<noscript>You need to enable JavaScript to run this app.</noscript>
+		<vscode-panels aria-label="Default">
+			<vscode-panel-tab id="tab-characters">CHARACTERS</vscode-panel-tab>
+			<vscode-panel-tab id="tab-locations">LOCATIONS</vscode-panel-tab>
+			<vscode-panel-tab id="tab-scenes">SCENES</vscode-panel-tab>
+			<vscode-panel-tab id="tab-duration">DURATION</vscode-panel-tab>
+			<vscode-panel-view id="view-characters">
+				<vscode-data-grid id="grid-characters" aria-label="Default"></vscode-data-grid>
+			</vscode-panel-view>
+			<vscode-panel-view id="view-locations">
+				<vscode-data-grid id="grid-locations" aria-label="Default"></vscode-data-grid>
+			</vscode-panel-view>
+			<vscode-panel-view id="view-scenes">
+				<vscode-data-grid id="grid-scenes" aria-label="Default"></vscode-data-grid>
+			</vscode-panel-view>
+			<vscode-panel-view id="view-duration">
+				Some Duration stats here...
+			</vscode-panel-view>
+		</vscode-panels>
+	</body>
 </html>
