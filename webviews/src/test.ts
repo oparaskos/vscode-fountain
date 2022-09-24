@@ -33,7 +33,7 @@ function HSVToRGB(h: number, s: number, v: number): Array<number> {
 }
 
 //We are using colors with same value and saturation as highlighters
-export function wordToColor(word: string, s = 0.5, v = 1): Array<number> {
+function wordToColor(word: string, s = 0.5, v = 1): Array<number> {
 	const n = 5; //so that colors are spread apart
 	const h = nPearsonHash(word, n) / 2 ** (8 - n);
 	return HSVToRGB(h, s, v);
@@ -56,8 +56,15 @@ function getDataGrid(id: string) {
 	return document.getElementById(id) as unknown as { rowsData: object[] };
 }
 
-function updateCharacterTable(characterStats: object[]) {
-	getDataGrid('grid-characters').rowsData = characterStats.map((row: any) => ({
+function updateLocationsTable(stats: object[]) {
+	getDataGrid('grid-locations').rowsData = stats.map((row: any) => ({
+		...row,
+		Duration: formatTime(row.Duration),
+	}));
+}
+
+function updateCharacterTable(stats: object[]) {
+	getDataGrid('grid-characters').rowsData = stats.map((row: any) => ({
 		...row,
 		Duration: formatTime(row.Duration),
 	}));
@@ -65,12 +72,14 @@ function updateCharacterTable(characterStats: object[]) {
 
 function onMessage(ev: MessageEvent) {
 	// eslint-disable-next-line no-debugger
-	debugger;
-	if (ev.data.command == "fountain.characterStats") {
+	if (ev.data.command == "fountain.statistics.characters") {
 		updateCharacterTable(ev.data.stats);
+	}
+	if (ev.data.command == "fountain.statistics.locations") {
+		updateLocationsTable(ev.data.stats);
 	}
 }
 
 function main() {
-	// updateCharacterTable();
+	return;
 }

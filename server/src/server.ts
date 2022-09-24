@@ -91,9 +91,15 @@ connection.onInitialized(() => {
 	}
 });
 
-connection.onRequest("fountain.characters", async (params) => {
+connection.onRequest("fountain.statistics.characters", async (params) => {
 	const parsedScript = parsedDocuments[(params as any).uri];
 	const result = parsedScript.characters;
+	return result;
+});
+
+connection.onRequest("fountain.statistics.locations", async (params) => {
+	const parsedScript = parsedDocuments[(params as any).uri];
+	const result = parsedScript.locations;
 	return result;
 });
 

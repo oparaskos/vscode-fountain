@@ -37,15 +37,27 @@ function statsPanel(context: vscode.ExtensionContext, fileName: string) {
 	return _statsPanels[panelName];
 }
 
+export async function updateLocationStats(webview: vscode.Webview, client: LanguageClient, uri: string) {
+	const stats = await client.sendRequest(new RequestType("fountain.statistics.locations"), { uri } );
+	webview.postMessage({ command: "fountain.statistics.locations", uri, stats });
+}
+
 export async function updateCharacterStats(webview: vscode.Webview, client: LanguageClient, uri: string) {
-	const stats = await client.sendRequest(new RequestType("fountain.characters"), { uri } );
-	webview.postMessage({ command: "fountain.characterStats", uri, stats });
+	const stats = await client.sendRequest(new RequestType("fountain.statistics.characters"), { uri } );
+	webview.postMessage({ command: "fountain.statistics.characters", uri, stats });
+}
+
+export async function updateWebviewStats(webview: vscode.Webview, client: LanguageClient, uri: string) {
+	await Promise.all([
+		updateCharacterStats(webview, client, uri),
+		updateLocationStats(webview, client, uri)
+	]);
 }
 
 export function analyseCharacter(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
 	return async ({ uri, name }) => {
 		const webview = statsPanel(context, uri).webview;
-		await updateCharacterStats(webview, client, uri);
+		await updateWebviewStats(webview, client, uri);
 		webview.postMessage({ command: "fountain.analyseCharacter", uri, name });
 	};
 }

@@ -1,15 +1,11 @@
+import { stat } from 'fs';
+import { Location } from 'vscode-languageserver';
 import { DialogueElement } from "./DialogueElement";
 import { FountainElement } from "./FountainElement";
-import { FountainElementWithChildren } from "./FountainElementWithChildren";
 import { FountainToken } from "./FountainTokenType";
-import { SceneElement } from "./SceneElement";
+import { getElementsByType } from './getElementsByType';
+import { LocationType, SceneElement } from "./SceneElement";
 
-function getElementsByType<T extends FountainElement>(children: FountainElement[], type: string): T[] {
-    const base: T[] = children.filter(child => child.type === type) as T[];
-    const elementsWithChildren: FountainElementWithChildren[] = children.filter(child => child instanceof FountainElementWithChildren && child.children.length > 0) as FountainElementWithChildren[];
-    const nested: T[] = elementsWithChildren.map(child => getElementsByType<T>(child.children, type)).flat();
-    return [...base, ...nested];
-}
 
 export class FountainScript {
     private _characterNames: string[] | undefined;
@@ -75,12 +71,33 @@ export class FountainScript {
     }
 
     public get locations() {
-        return this.scenes.map(it => it.location).filter(it => it != null);
+        return this.locationNames.map((name) => {
+            const locationScenes = this.scenesByLocationName[name];
+            const stats = locationScenes.reduce((prev, scene: SceneElement) => ({
+                Duration: prev.Duration + scene.duration,
+                Type: prev.Type | (scene.location?.locationType || 0)
+            }), { Duration: 0, Type: LocationType.UNKNOWN });
+
+            return {
+                Name: name,
+                Duration: stats.Duration,
+                Scenes: locationScenes.length,
+                Type: LocationType[stats.Type]
+            };
+        });
+    }
+
+    public get locationNames() {
+        return this.scenes.map(it => it.location)
+            .filter(it => it != null)
+            .map(it => it?.name)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .filter(it => !!it) as string[];
     }
 
     public get scenesByLocationName() {
         if(!this._scenesByLocationName) {
-            const locationNames = this.locations.map(it => it?.name).filter((v, i, a) => a.indexOf(v) === i).filter(it => !!it) as string[];
+            const locationNames = this.locationNames;
             this._scenesByLocationName = locationNames.reduce((acc, curr) => {
                 acc[curr] = this.scenes.filter(it => it.location?.name === curr);
                 return acc;
