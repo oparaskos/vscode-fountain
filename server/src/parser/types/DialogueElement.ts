@@ -30,15 +30,16 @@ function mode(array: (number | undefined)[]): number | undefined {
 }
 
 
-export class DialogueElement implements FountainElement<'dialogue'> {
-    public type: 'dialogue' = 'dialogue';
+export class DialogueElement extends FountainElement<'dialogue'> {
     constructor(
         public tokens: FountainToken[],
         public character: string,
         public extension: string | null,
         public parenthetical: FountainToken | null,
         public dialogueTokens: FountainToken[]
-    ) { }
+    ) {
+        super('dialogue', tokens);
+    }
 
     get readingGrade() {
         const results = readabilityScores(this.dialogue);

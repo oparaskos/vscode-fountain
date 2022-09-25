@@ -1,7 +1,10 @@
 import { FountainToken } from "./FountainTokenType";
 
 
-export interface FountainElement<T = string> {
-    type: T;
-    tokens: FountainToken[];
+export abstract class FountainElement<T = string> {
+    constructor(public type: T, public tokens: FountainToken[]) { }
+
+    public get textContent() {
+        return this.tokens.map(t => t.text).join(" ");
+    }
 }

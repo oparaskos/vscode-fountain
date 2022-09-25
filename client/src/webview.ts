@@ -47,10 +47,16 @@ export async function updateCharacterStats(webview: vscode.Webview, client: Lang
 	webview.postMessage({ command: "fountain.statistics.characters", uri, stats });
 }
 
+export async function updateSceneStats(webview: vscode.Webview, client: LanguageClient, uri: string) {
+	const stats = await client.sendRequest(new RequestType("fountain.statistics.scenes"), { uri } );
+	webview.postMessage({ command: "fountain.statistics.scenes", uri, stats });
+}
+
 export async function updateWebviewStats(webview: vscode.Webview, client: LanguageClient, uri: string) {
 	await Promise.all([
 		updateCharacterStats(webview, client, uri),
-		updateLocationStats(webview, client, uri)
+		updateLocationStats(webview, client, uri),
+		updateSceneStats(webview, client, uri)
 	]);
 }
 
@@ -59,5 +65,22 @@ export function analyseCharacter(context: vscode.ExtensionContext, client: Langu
 		const webview = statsPanel(context, uri).webview;
 		await updateWebviewStats(webview, client, uri);
 		webview.postMessage({ command: "fountain.analyseCharacter", uri, name });
+	};
+}
+
+export function analyseLocation(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
+	return async ({ uri, name }) => {
+		const webview = statsPanel(context, uri).webview;
+		await updateWebviewStats(webview, client, uri);
+		webview.postMessage({ command: "fountain.analyseLocation", uri, name });
+	};
+}
+
+
+export function analyseScene(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
+	return async ({ uri, name }) => {
+		const webview = statsPanel(context, uri).webview;
+		await updateWebviewStats(webview, client, uri);
+		webview.postMessage({ command: "fountain.analyseScene", uri, name });
 	};
 }

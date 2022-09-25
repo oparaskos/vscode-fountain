@@ -30,3 +30,24 @@ export function locationsLens(lines: string[], parsedScript: FountainScript, uri
 	});
 }
 
+
+export function scenesLens(lines: string[], parsedScript: FountainScript, uri: string): CodeLens[] {
+	return parsedScript.scenes.map(scene => {
+		const lineNo = scene.tokens[0].codeLocation.start.line;
+		return {
+			range: Range.create(lineNo, 0, lineNo, lines[lineNo].length),
+			data: { name: scene.title, uri, duration: formatTime(scene.duration), type: 'scene' }
+		};
+	});
+}
+
+export function formatTime(seconds: number) {
+	const h = Math.floor(seconds / 3600);
+	const m = Math.floor((seconds % 3600) / 60);
+	const s = Math.round(seconds % 60);
+	return [
+		h,
+		m > 9 ? m : (h ? '0' + m : m || '0'),
+		s > 9 ? s : '0' + s
+	].filter(Boolean).join(':');
+}

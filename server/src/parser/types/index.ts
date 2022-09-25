@@ -24,7 +24,7 @@ export class FountainScript {
         return this._characterNames;
     }
 
-    public get characters() {
+    public get statsPerCharacter() {
         if (!this._characterStats) {
             const dialogueByCharacters = this.dialogueByCharacters;
             const characters = Object.keys(dialogueByCharacters).map(characterName => {
@@ -70,7 +70,16 @@ export class FountainScript {
         return getElementsByType<SceneElement>(this.children, "scene");
     }
 
-    public get locations() {
+    public get statsPerScene() {
+        return this.scenes.map((scene) => ({
+            Duration: scene.duration,
+            Characters: scene.characters,
+            Synopsis: scene.synopsis,
+            Name: scene.title
+        }));
+    }
+
+    public get statsPerLocation() {
         return this.locationNames.map((name) => {
             const locationScenes = this.scenesByLocationName[name];
             const stats = locationScenes.reduce((prev, scene: SceneElement) => ({
@@ -107,11 +116,12 @@ export class FountainScript {
     }
 }
 
-export class FountainTitlePage implements FountainElement<'title-page'> {
-    public type: 'title-page' = 'title-page';
+export class FountainTitlePage extends FountainElement<'title-page'> {
     constructor(
         public tokens: FountainToken[],
-        ) {}
+        ) {
+            super('title-page', tokens);
+        }
     public get attributes(): {[s: string]: string} {
         const keys: string[] = this.tokens.map(t => t.key).filter((k, i, a) => !!k && a.indexOf(k) === i) as string[];
         return keys.map((k: string) => {
@@ -122,61 +132,63 @@ export class FountainTitlePage implements FountainElement<'title-page'> {
     
 }
 
-export class ActionElement implements FountainElement<'action'> {
-    public type: 'action' = 'action';
-    constructor(public tokens: FountainToken[]) {}
-}
-
-export class LyricsElement implements FountainElement<'lyrics'> {
-    public type: 'lyrics' = 'lyrics';
-    constructor(public tokens: FountainToken[]) {}
-}
-
-export class TransitionElement implements FountainElement<'transition'> {
-    public type: 'transition' = 'transition';
-    constructor(
-        public tokens: FountainToken[]) {
+export class ActionElement extends FountainElement<'action'> {
+    constructor(public tokens: FountainToken[]) {
+        super('action', tokens);
     }
 }
 
-export class CenteredTextElement implements FountainElement<'centered-text'> {
-    public type: 'centered-text' = 'centered-text';
-    constructor(
-        public tokens: FountainToken[]) {
+export class LyricsElement extends FountainElement<'lyrics'> {
+    constructor(public tokens: FountainToken[]) {
+        super('lyrics', tokens);
     }
 }
 
-export class PageBreakElement implements FountainElement<'page-break'> {
-    public type: 'page-break' = 'page-break';
+export class TransitionElement extends FountainElement<'transition'> {
     constructor(
         public tokens: FountainToken[]) {
+            super('transition', tokens);
     }
 }
 
-export class LineBreakElement implements FountainElement<'line-break'> {
-    public type: 'line-break' = 'line-break';
+export class CenteredTextElement extends FountainElement<'centered-text'> {
     constructor(
         public tokens: FountainToken[]) {
+            super('centered-text', tokens);
     }
 }
 
-export class NotesElement implements FountainElement<'notes'> {
-    public type: 'notes' = 'notes';
+export class PageBreakElement extends FountainElement<'page-break'> {
     constructor(
         public tokens: FountainToken[]) {
+            super('page-break', tokens);
     }
 }
 
-export class BoneyardElement implements FountainElement<'boneyard'> {
-    public type: 'boneyard' = 'boneyard';
+export class LineBreakElement extends FountainElement<'line-break'> {
     constructor(
         public tokens: FountainToken[]) {
+            super('line-break', tokens);
     }
 }
 
-export class SynopsesElement implements FountainElement<'synopses'> {
-    public type: 'synopses' = 'synopses';
+export class NotesElement extends FountainElement<'notes'> {
     constructor(
         public tokens: FountainToken[]) {
+            super('notes', tokens);
+    }
+}
+
+export class BoneyardElement extends FountainElement<'boneyard'> {
+    constructor(
+        public tokens: FountainToken[]) {
+            super('boneyard', tokens);
+    }
+}
+
+export class SynopsesElement extends FountainElement<'synopses'> {
+    constructor(
+        public tokens: FountainToken[]) {
+            super('synopses', tokens);
     }
 }

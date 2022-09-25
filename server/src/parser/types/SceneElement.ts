@@ -3,6 +3,7 @@ import { GroupingFountainElement } from "./GroupingFountainElement";
 import { FountainToken } from "./FountainTokenType";
 import { DialogueElement } from './DialogueElement';
 import { getElementsByType } from './getElementsByType';
+import { BoneyardElement, LineBreakElement, NotesElement, SynopsesElement } from '.';
 
 export enum LocationType {
     UNKNOWN = 0x0,
@@ -34,6 +35,26 @@ export class SceneElement extends GroupingFountainElement<'scene'> {
     public get duration() {
         return getElementsByType<DialogueElement>(this.children, "dialogue")
             .reduce((prev, curr) => prev + curr.duration, 0);
+    }
+
+    public get characters() {
+        return getElementsByType<DialogueElement>(this.children, "dialogue").map(it => it.character).filter((v, i, a) => a.indexOf(v) === i);
+    }
+
+    public get synopsis() {
+        const synopsis = [];
+        for(let i = 0; i < this.children.length; ++i) {
+            if (this.children[i] instanceof LineBreakElement) continue;
+            if (this.children[i] instanceof BoneyardElement) continue;
+            if (this.children[i] instanceof NotesElement) continue;
+            if (this.children[i] instanceof SynopsesElement) {
+                synopsis.push(this.children[i]);
+                continue;
+            } else {
+                break;
+            }
+        }
+        return synopsis.map(it => it.textContent).join("\n");
     }
 
     public parseLocationData(): LocationData | undefined {

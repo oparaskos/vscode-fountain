@@ -24,7 +24,7 @@ import { parse } from './parser';
 import { FountainScript } from './parser/types';
 import { characterCompletions, closingCompletions, dialogueCompletions, openingCompletions, sceneCompletions, titlePageCompletions, transitionCompletions } from './completions';
 import { isTitlePage } from './util/range';
-import { dialogueLens, locationsLens } from './lenses';
+import { dialogueLens, locationsLens, scenesLens } from './lenses';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -93,13 +93,19 @@ connection.onInitialized(() => {
 
 connection.onRequest("fountain.statistics.characters", async (params) => {
 	const parsedScript = parsedDocuments[(params as any).uri];
-	const result = parsedScript.characters;
+	const result = parsedScript.statsPerCharacter;
 	return result;
 });
 
 connection.onRequest("fountain.statistics.locations", async (params) => {
 	const parsedScript = parsedDocuments[(params as any).uri];
-	const result = parsedScript.locations;
+	const result = parsedScript.statsPerLocation;
+	return result;
+});
+
+connection.onRequest("fountain.statistics.scenes", async (params) => {
+	const parsedScript = parsedDocuments[(params as any).uri];
+	const result = parsedScript.statsPerScene;
 	return result;
 });
 
@@ -194,7 +200,8 @@ connection.onCodeLens((params) => {
 	const parsedScript = parsedDocuments[uri];
 	return [
 		...dialogueLens(lines[uri], parsedScript, uri),
-		...locationsLens(lines[uri], parsedScript, uri)
+		...locationsLens(lines[uri], parsedScript, uri),
+		...scenesLens(lines[uri], parsedScript, uri)
 	];
 });
 
@@ -205,6 +212,8 @@ connection.onCodeLensResolve((codeLens) => {
 		codeLens.command = Command.create(`Character ${args.name} (${args.lines} lines)`, 'fountain.analyseCharacter', args);
 	} else if(args.type === 'location') {
 		codeLens.command = Command.create(`Location ${args.name} (${args.references} references)`, 'fountain.analyseLocation', args);
+	} else if(args.type === 'scene') {
+		codeLens.command = Command.create(`Scene Duration ${args.duration}`, 'fountain.analyseScene', args);
 	}
 	return codeLens;
 });

@@ -14,7 +14,7 @@ import {
 	ServerOptions,
 	TransportKind
 } from 'vscode-languageclient/node';
-import { analyseCharacter } from './webview';
+import { analyseCharacter, analyseLocation, analyseScene } from './webview';
 
 let client: LanguageClient;
 
@@ -57,6 +57,8 @@ export function activate(context: ExtensionContext) {
 	);
 
 	context.subscriptions.push(vscode.commands.registerCommand("fountain.analyseCharacter", analyseCharacter(context, client)));
+	context.subscriptions.push(vscode.commands.registerCommand("fountain.analyseLocation", analyseLocation(context, client)));
+	context.subscriptions.push(vscode.commands.registerCommand("fountain.analyseScene", analyseScene(context, client)));
 
 	// Start the client. This will also launch the server
 	client.start();
