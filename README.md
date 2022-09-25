@@ -19,9 +19,10 @@ This Language Server works for fountain files. It has the following language fea
 ├── package.json // The extension manifest.
 ├── syntaxes // The extension manifest.
 │   └── fountain.tmLanguage.json // Grammar for syntax highlighting
-└── server // Language Server
-    └── src
-        └── server.ts // Language Server entry point
+├── server // Language Server
+│   └── src
+│       └── server.ts // Language Server entry point
+└── webviews // VSCode UI Framework Webview, shows stats etc.
 ```
 
 ## Running the Sample

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import {readFile} from 'fs/promises';
-import {join, basename} from 'path';
+import { readFile } from 'fs/promises';
+import { join, basename } from 'path';
 import { LanguageClient, RequestType } from 'vscode-languageclient/node';
 
 async function loadWebviewHtml(context: vscode.ExtensionContext, relativePath: string) {
