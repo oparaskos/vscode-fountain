@@ -16,7 +16,7 @@ import {
 	Command,
 	SymbolKind,
 } from 'vscode-languageserver/node';
-
+import { getGender } from "gender-detection-from-name";
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
@@ -26,6 +26,22 @@ import { characterCompletions, closingCompletions, dialogueCompletions, openingC
 import { isTitlePage } from './util/range';
 import { dialogueLens, locationsLens, scenesLens } from './lenses';
 
+function guessGender(rawName: string) {
+	// Guess based on common english names using a library TODO: find a more comprehensive one..
+	const initialGuess = getGender(rawName);
+	if (initialGuess != 'unknown') return initialGuess;
+	// If no luck look for clues by common gendered words -- problematic because 'postman' is often in place of 'postwoman'.
+	const name = rawName.toLocaleLowerCase();
+	const femaleWords = ["female", "woman", "girl", "mum", "mom", "aunt", "mother", "neice", "grandma", "mistress", "lady"];
+	const femaleness: number = femaleWords.reduce((acc, it) => acc += name.includes(it) ? 1 : 0, 0);
+	const maleWords = ["male", "man", "boy", "dad", "uncle", "father", "nephew", "master"];
+	let maleness: number = maleWords.reduce((acc, it) => acc += name.includes(it) ? 1 : 0, 0);
+	if (name.includes("woman")) maleness--;
+	if (name.includes("female")) maleness--;
+	if(maleness > femaleness) return 'male';
+	if(femaleness > maleness) return 'female';
+	return 'unknown';
+}
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -92,8 +108,12 @@ connection.onInitialized(() => {
 });
 
 connection.onRequest("fountain.statistics.characters", async (params) => {
+	const settings = await getDocumentSettings((params as any).uri);
 	const parsedScript = parsedDocuments[(params as any).uri];
 	const result = parsedScript.statsPerCharacter;
+	if (settings.guessCharacterGenders) {
+		return result.map((it: any) => ({...it, Gender: guessGender(it.Name)}));
+	}
 	return result;
 });
 
@@ -111,13 +131,13 @@ connection.onRequest("fountain.statistics.scenes", async (params) => {
 
 // The example settings
 interface ExampleSettings {
-	maxNumberOfProblems: number;
+	guessCharacterGenders: boolean;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-const defaultSettings: ExampleSettings = { maxNumberOfProblems: 1000 };
+const defaultSettings: ExampleSettings = { guessCharacterGenders: true };
 let globalSettings: ExampleSettings = defaultSettings;
 
 // Cache the settings of all open documents
@@ -149,7 +169,7 @@ function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
 		});
 		documentSettings.set(resource, result);
 	}
-	return result;
+	return result.then(it => it || globalSettings);
 }
 
 // Only keep settings for open documents
@@ -224,6 +244,17 @@ connection.onCompletion((documentPosition: TextDocumentPositionParams): Completi
 
 	const parsedScript = parsedDocuments[documentPosition.textDocument.uri];
 	const currentLine = lines[documentPosition.textDocument.uri][documentPosition.position.line];
+
+	// Blank page...
+	if (lines[documentPosition.textDocument.uri].join("").trim().length === 0)
+	{
+		completions.push(...openingCompletions(currentLine, parsedScript));
+		completions.push(...titlePageCompletions(currentLine, parsedScript));
+		completions.push(...sceneCompletions(currentLine, parsedScript));
+		return completions;
+	}
+
+	// Not a blank page.
 	if (isTitlePage(documentPosition, parsedScript)) {
 		completions.push(...titlePageCompletions(currentLine, parsedScript));
 	} else {

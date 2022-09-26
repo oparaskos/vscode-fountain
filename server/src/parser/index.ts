@@ -165,12 +165,13 @@ function parseDialogue(token: FountainToken, tokens: FountainToken[], i: number,
     const extension = hasCharacterExtension ? token.text?.split('(')[1].split(')')[0] : null;
     let characterName = (hasCharacterExtension ? token.text!!.split('(')[0] : token.text!!).trim();
     if (characterName.endsWith('^')) characterName = characterName.substring(0, characterName.length - 2).trim();
-    const hasParenthetical = tokens[i + 1].type === 'parenthetical';
+    const hasParenthetical = tokens.length > i + 1 && tokens[i + 1].type === 'parenthetical';
     const parenthetical = hasParenthetical ? tokens[i + 1] : null;
     const dialogueTokens = tokens.slice(i + 1, nextNonDialogue ?? tokens.length);
     const dialogueElement: DialogueElement
         = new DialogueElement(filterNotNull([token, parenthetical, ...dialogueTokens]), characterName, extension || null, parenthetical || null, dialogueTokens);
 
+    if (nextNonDialogue >= tokens.length || nextNonDialogue <= -1) return [-1, dialogueElement]; // bail out
     if (tokens[nextNonDialogue].type === 'character' && tokens[nextNonDialogue].text?.trim().endsWith('^')) {
         // This is dual dialogue
         const nextNextNonDialogue = tokens.findIndex((t, id) => id > i && t.type !== 'dialogue' && t.type !== 'parenthetical');

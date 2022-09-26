@@ -44,7 +44,7 @@ export function activate(context: ExtensionContext) {
 		documentSelector: [{ language: 'fountain' }],
 		synchronize: {
 			// Notify the server about file changes to '.clientrc files contained in the workspace
-			fileEvents: workspace.createFileSystemWatcher('**/*.fountain')
+			fileEvents: workspace.createFileSystemWatcher('**/.fountainrc')
 		}
 	};
 

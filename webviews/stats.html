@@ -17,22 +17,41 @@
 
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
+		<p id="asd"></p>
+
+
+
+
 		<vscode-panels aria-label="Default" id="root-panel">
-			<vscode-panel-tab id="tab-characters">CHARACTERS</vscode-panel-tab>
-			<vscode-panel-tab id="tab-locations">LOCATIONS</vscode-panel-tab>
-			<vscode-panel-tab id="tab-scenes">SCENES</vscode-panel-tab>
-			<vscode-panel-tab id="tab-duration">DURATION</vscode-panel-tab>
+			<vscode-panel-tab id="tab-characters">
+				CHARACTERS
+				<vscode-badge appearance="secondary">0</vscode-badge>
+			</vscode-panel-tab>
+			<vscode-panel-tab id="tab-locations">
+				LOCATIONS
+				<vscode-badge appearance="secondary">0</vscode-badge>
+			</vscode-panel-tab>
+			<vscode-panel-tab id="tab-scenes">
+				SCENES
+				<vscode-badge appearance="secondary">0</vscode-badge>
+			</vscode-panel-tab>
+			
 			<vscode-panel-view id="view-characters">
-				<vscode-data-grid id="grid-characters" aria-label="Default"></vscode-data-grid>
+				<section style="display: flex; flex-direction: column; width: 100%;">
+					<vscode-data-grid id="grid-characters" aria-label="Default"></vscode-data-grid>
+					<p id="characters-observations"></p>
+					<h3>CHARACTER NAME</h3>
+				</section>
 			</vscode-panel-view>
 			<vscode-panel-view id="view-locations">
-				<vscode-data-grid id="grid-locations" aria-label="Default"></vscode-data-grid>
+				<section style="display: flex; flex-direction: column; width: 100%;">
+					<vscode-data-grid id="grid-locations" aria-label="Default"></vscode-data-grid>
+				</section>
 			</vscode-panel-view>
 			<vscode-panel-view id="view-scenes">
-				<vscode-data-grid id="grid-scenes" aria-label="Default"></vscode-data-grid>
-			</vscode-panel-view>
-			<vscode-panel-view id="view-duration">
-				Some Duration stats here...
+				<section style="display: flex; flex-direction: column; width: 100%;">
+					<vscode-data-grid id="grid-scenes" aria-label="Default"></vscode-data-grid>
+				</section>
 			</vscode-panel-view>
 		</vscode-panels>
 	</body>

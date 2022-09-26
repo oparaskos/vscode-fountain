@@ -12,6 +12,7 @@
 		"url": "https://github.com/Microsoft/vscode-extension-samples"
 	},
 	"dependencies": {
+		"gender-detection-from-name": "^1.7.4",
 		"memoize": "^0.1.1",
 		"memoized-decorator": "^0.0.4",
 		"readability-scores": "^1.0.8",

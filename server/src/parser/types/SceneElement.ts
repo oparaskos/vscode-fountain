@@ -3,7 +3,7 @@ import { GroupingFountainElement } from "./GroupingFountainElement";
 import { FountainToken } from "./FountainTokenType";
 import { DialogueElement } from './DialogueElement';
 import { getElementsByType } from './getElementsByType';
-import { BoneyardElement, LineBreakElement, NotesElement, SynopsesElement } from '.';
+import { ActionElement, BoneyardElement, LineBreakElement, NotesElement, SynopsesElement } from '.';
 
 export enum LocationType {
     UNKNOWN = 0x0,
@@ -32,13 +32,30 @@ export class SceneElement extends GroupingFountainElement<'scene'> {
         this.location = this.parseLocationData();
     }
 
-    public get duration() {
-        return getElementsByType<DialogueElement>(this.children, "dialogue")
+    private get dialogueElements() {
+        return getElementsByType<DialogueElement>(this.children, "dialogue");
+    }
+
+    private get actionElements() {
+        return getElementsByType<ActionElement>(this.children, "action");
+    }
+
+    public get dialogueDuration() {
+        return this.dialogueElements
             .reduce((prev, curr) => prev + curr.duration, 0);
     }
 
+    public get actionDuration() {
+        return this.actionElements
+            .reduce((prev, curr) => prev + curr.duration, 0);
+    }
+
+    public get duration() {
+        return this.dialogueDuration + this.actionDuration;
+    }
+
     public get characters() {
-        return getElementsByType<DialogueElement>(this.children, "dialogue").map(it => it.character).filter((v, i, a) => a.indexOf(v) === i);
+        return this.dialogueElements.map(it => it.character).filter((v, i, a) => a.indexOf(v) === i);
     }
 
     public get synopsis() {

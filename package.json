@@ -66,8 +66,5 @@
 				"path": "./syntaxes/fountain.tmLanguage.json"
 			}
 		]
-	},
-	"dependencies": {
-		"@vscode/codicons": "^0.0.32"
 	}
 }

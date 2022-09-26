@@ -6,7 +6,7 @@ export function dialogueLens(lines: string[], parsedScript: FountainScript, uri:
 	return Object.keys(dialogueByCharacters).flatMap(characterName => {
 		const dialogues = dialogueByCharacters[characterName];
 		return dialogueByCharacters[characterName].map(dialogue => {
-			const lineNo = dialogue.tokens[0].codeLocation.start.line;
+			const lineNo = dialogue.tokens?.[0]?.codeLocation?.start?.line || 0;
 			return {
 				range: Range.create(lineNo, 0, lineNo, lines[lineNo].length),
 				data: { name: characterName, uri, lines: dialogues.length, type: 'character' }
@@ -21,7 +21,7 @@ export function locationsLens(lines: string[], parsedScript: FountainScript, uri
 	return Object.keys(locationsByName).flatMap(locationName => {
 		const scenes = locationsByName[locationName];
 		return scenes.map(scene => {
-			const lineNo = scene.tokens[0].codeLocation.start.line;
+			const lineNo = scene.tokens?.[0]?.codeLocation?.start?.line || 0;
 			return {
 				range: Range.create(lineNo, 0, lineNo, lines[lineNo].length),
 				data: { name: locationName, uri, references: scenes.length, type: 'location' }
@@ -33,7 +33,7 @@ export function locationsLens(lines: string[], parsedScript: FountainScript, uri
 
 export function scenesLens(lines: string[], parsedScript: FountainScript, uri: string): CodeLens[] {
 	return parsedScript.scenes.map(scene => {
-		const lineNo = scene.tokens[0].codeLocation.start.line;
+		const lineNo = scene.tokens?.[0]?.codeLocation?.start?.line || 0;
 		return {
 			range: Range.create(lineNo, 0, lineNo, lines[lineNo].length),
 			data: { name: scene.title, uri, duration: formatTime(scene.duration), type: 'scene' }

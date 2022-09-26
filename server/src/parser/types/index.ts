@@ -72,10 +72,12 @@ export class FountainScript {
 
     public get statsPerScene() {
         return this.scenes.map((scene) => ({
+            Name: scene.title,
             Duration: scene.duration,
             Characters: scene.characters,
             Synopsis: scene.synopsis,
-            Name: scene.title
+            DialogueDuration: scene.dialogueDuration,
+            ActionDuration: scene.actionDuration,
         }));
     }
 
@@ -135,6 +137,11 @@ export class FountainTitlePage extends FountainElement<'title-page'> {
 export class ActionElement extends FountainElement<'action'> {
     constructor(public tokens: FountainToken[]) {
         super('action', tokens);
+    }
+
+    public get duration() {
+        // Assumes about 20 characters for 1 second worth of acting.
+        return (this.textContent.length) / 20;
     }
 }
 
