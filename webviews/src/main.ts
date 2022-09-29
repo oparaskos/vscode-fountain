@@ -1,4 +1,4 @@
-import { formatTime } from './formatTime.js';
+import { formatTime } from './formatTime';
 
 const fountain = {
 	selections: {} as { [key: string]: any },
@@ -85,10 +85,12 @@ function updateLocationsTable(stats: object[]) {
 	if (badge) { badge.innerHTML = '' + stats.length; }
 }
 
-function updateCharacterTable(stats: object[]) {
-	updateTable('grid-characters', stats.map((row: any) => ({
-		...row,
-		Duration: formatTime(row.Duration),
+function updateCharacterTable(stats: {[key: string]: any}[]) {
+	updateTable('grid-characters', stats.map((row: {[key: string]: any}) => ({
+		"Name": row.Name,
+		"Gender": row.Gender.toUpperCase(),
+		"Length & Duration": `${formatTime(row.Duration)} - ${row.Lines} lines - ${row.Words} words`,
+		"Reading Age": row.ReadingAge
 	})));
 
 	const badge = document.querySelector("vscode-panel-tab#tab-characters > vscode-badge");
@@ -98,14 +100,26 @@ function updateCharacterTable(stats: object[]) {
 	const dialogueBalance: {[gender: string]: number} = {};
 	for (const characterStats of stats) {
 		const char = characterStats as any;
-		dialogueBalance[char.Gender] = (dialogueBalance[char.Gender] || 0) + (char.Duration || 0);
-		totalDialogue += (char.Duration || 0);
+		let gender = char.Gender as string;
+		gender = gender[0].toLocaleUpperCase() + gender.slice(1);
+
+		const duration = char.Duration as number;
+
+		dialogueBalance[gender] = (dialogueBalance[gender] || 0) + (duration || 0);
+		totalDialogue += (duration || 0);
 	}
-	const observations = [];
-	for (const gender in dialogueBalance) {
-		observations.push(`${gender} characters speak for ${formatTime(dialogueBalance[gender])} (${Math.round(100 * (dialogueBalance[gender] / totalDialogue))}%)`);
-	}
-	document.getElementById("characters-observations")!.innerHTML = observations.join("<br />");
+
+	const genderDonutChart = (document.getElementById("characters-gender-dialogue") as any);
+	genderDonutChart.setEntries(dialogueBalance);
+	genderDonutChart.setFormat((n: number | { valueOf(): number; }) => {
+		console.log({n});
+		return formatTime(n.valueOf());
+	});
+	// const observations = [];
+	// for (const gender in dialogueBalance) {
+	// 	observations.push(`${gender} characters speak for ${formatTime(dialogueBalance[gender])} (${Math.round(100 * (dialogueBalance[gender] / totalDialogue))}%)`);
+	// }
+	// document.getElementById("characters-observations")!.innerHTML = observations.join("<br />");
 }
 
 function onMessage(ev: MessageEvent) {

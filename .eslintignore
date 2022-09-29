@@ -5,3 +5,5 @@ server/node_modules/**
 server/out/**
 webviews/node_modules/**
 webviews/out/**
+
+webpack.config.js

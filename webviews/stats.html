@@ -5,10 +5,11 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 		<meta name="theme-color" content="#000000">
-		
-		<script type="module" src="node_modules/@vscode/webview-ui-toolkit/dist/toolkit.js"></script>
-		<script type="module" src="out/main.js"></script>
 
+		<script type="module" src="node_modules/@vscode/webview-ui-toolkit/dist/toolkit.js"></script>
+		<script type="module" src="dist/main.bundle.js"></script>
+		<script type="module" src="dist/donut-chart.bundle.js"></script>
+	
 		<link rel="stylesheet" href="node_modules/@vscode/codicons/dist/codicon.css">
 		<link rel="stylesheet" href="styles/style.css">
 
@@ -17,11 +18,6 @@
 
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
-		<p id="asd"></p>
-
-
-
-
 		<vscode-panels aria-label="Default" id="root-panel">
 			<vscode-panel-tab id="tab-characters">
 				CHARACTERS
@@ -39,8 +35,8 @@
 			<vscode-panel-view id="view-characters">
 				<section style="display: flex; flex-direction: column; width: 100%;">
 					<vscode-data-grid id="grid-characters" aria-label="Default"></vscode-data-grid>
-					<p id="characters-observations"></p>
-					<h3>CHARACTER NAME</h3>
+					<h4>Gender Representation</h4>
+					<donut-chart id="characters-gender-dialogue" width="100" height="100" style="overflow: visible;"></donut-chart>
 				</section>
 			</vscode-panel-view>
 			<vscode-panel-view id="view-locations">
