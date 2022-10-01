@@ -98,16 +98,29 @@ function updateCharacterTable(stats: {[key: string]: any}[]) {
 
 	let totalDialogue = 0;
 	const dialogueBalance: {[gender: string]: number} = {};
+	const readingAgeByGender: {[gender: string]: number} = {};
+	const numSpeakingRolesByGender: {[gender: string]: number} = {};
 	for (const characterStats of stats) {
 		const char = characterStats as any;
 		let gender = char.Gender as string;
 		gender = gender[0].toLocaleUpperCase() + gender.slice(1);
+		
+		const readingAge = char.ReadingAge as number;
 
 		const duration = char.Duration as number;
 
 		dialogueBalance[gender] = (dialogueBalance[gender] || 0) + (duration || 0);
 		totalDialogue += (duration || 0);
+
+		const numChars = numSpeakingRolesByGender[gender] || 0;
+		const averageReadingAge = readingAgeByGender[gender] || 0;
+		const newAverageReadingAge = ((averageReadingAge * numChars) + readingAge) / (numChars + 1);
+		readingAgeByGender[gender] = newAverageReadingAge;
+		numSpeakingRolesByGender[gender] = numChars + 1;
 	}
+
+	console.log({stats});
+
 
 	const genderDonutChart = (document.getElementById("characters-gender-dialogue") as any);
 	genderDonutChart.setEntries(dialogueBalance);
@@ -115,6 +128,19 @@ function updateCharacterTable(stats: {[key: string]: any}[]) {
 		console.log({n});
 		return formatTime(n.valueOf());
 	});
+
+
+
+	console.log(readingAgeByGender);
+	const genderBarChart = (document.getElementById("characters-gender-readingAge") as any);
+	genderBarChart.setEntries(Object.keys(readingAgeByGender).map(label => ({label, value: readingAgeByGender[label]})));
+
+
+	console.log(readingAgeByGender);
+	const speakingRolesBarChart = (document.getElementById("characters-speaking-roles-by-gender") as any);
+	speakingRolesBarChart.setEntries(Object.keys(numSpeakingRolesByGender).map(label => ({label, value: numSpeakingRolesByGender[label]})));
+
+	
 	// const observations = [];
 	// for (const gender in dialogueBalance) {
 	// 	observations.push(`${gender} characters speak for ${formatTime(dialogueBalance[gender])} (${Math.round(100 * (dialogueBalance[gender] / totalDialogue))}%)`);

@@ -50,6 +50,20 @@ export class DonutChart extends HTMLElement {
 				.attr("viewBox", [-this.width / 2, -this.height / 2, this.width, this.height])
 				.attr("style", this.style.cssText + "; max-width: 100%; height: auto; height: intrinsic;");
 
+			if(this.title) {
+				svg.append("g")
+					.attr("font-family", "sans-serif")
+					.attr("font-size", 10)
+					.attr("text-anchor", "middle")
+					.append("text")
+					.selectAll("tspan")
+					.data(this.title.split('\n'))
+					.join("tspan")
+					.attr("x", 0)
+					.attr("y", (_, i) => `${i * 1.1}em`)
+					.attr("font-weight", (_, i) => i ? null : "bold")
+					.text(d => d);
+			}
 
 			svg.append("g")
 				.attr("stroke", this.stroke)
@@ -166,6 +180,10 @@ export class DonutChart extends HTMLElement {
 			.range(this.colourScheme);
 	}
 
+	get colourScheme() {
+		return schemeSpectral[this.names.length] || quantize(t => interpolateSpectral(t * 0.8 + 0.1), this.names.length);
+	}
+
 	// stroke separating widths
 	get stroke() {
 		const defaultStroke = this.innerRadius > 0 ? "none" : "white";
@@ -186,10 +204,6 @@ export class DonutChart extends HTMLElement {
 	get padAngle() {
 		const defaultPadAngle = this.stroke === "none" ? 1 / this.outerRadius : 0;
 		return parseFloat(this.getAttribute('padAngle') || `${defaultPadAngle}`);
-	}
-
-	get colourScheme() {
-		return schemeSpectral[this.names.length] || quantize(t => interpolateSpectral(t * 0.8 + 0.1), this.names.length);
 	}
 }
 

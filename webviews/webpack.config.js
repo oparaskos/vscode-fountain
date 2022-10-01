@@ -5,7 +5,7 @@ module.exports = {
 	devtool: 'inline-source-map',
 	entry: {
 		main: './src/main.ts',
-		'donut-chart': './src/donut-chart.ts'
+		'charts': './src/charts.ts'
 	},
 	module: {
 		rules: [
