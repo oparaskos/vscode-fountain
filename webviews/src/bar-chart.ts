@@ -1,4 +1,4 @@
-import { InternSet, map, max, range } from 'd3-array';
+import { InternSet, map, min, max, range } from 'd3-array';
 import { axisTop, axisLeft } from 'd3-axis';
 import { create } from 'd3-selection';
 import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
@@ -61,10 +61,10 @@ export class BarChart extends HTMLElement {
 				.selectAll("rect")
 				.data(this.I)
 				.join("rect")
-				.attr("x", xScale(0))
+				.attr("x", xScale(this.min))
 				.attr("y", i => yScale(this.Y[i])!)
 				.attr("fill", i => this.colors(this.Y[i]) as string)
-				.attr("width", i => xScale(this.X[i]) - xScale(0))
+				.attr("width", i => xScale(this.X[i]) - xScale(this.min))
 				.attr("height", yScale.bandwidth());
 
 			svg.append("g")
@@ -80,7 +80,7 @@ export class BarChart extends HTMLElement {
 				.attr("dy", "0.35em")
 				.attr("dx", -4)
 				.text(this.title)
-				.call(text => text.filter(i => xScale(this.X[i]) - xScale(0) < 20) // short bars
+				.call(text => text.filter(i => xScale(this.X[i]) - xScale(this.min) < 20) // short bars
 					.attr("dx", +4)
 					.attr("fill", this.titleAltColor)
 					.attr("text-anchor", "start"));
@@ -196,8 +196,11 @@ export class BarChart extends HTMLElement {
 	get titleAltColor() {
 		return "currentColor";
 	}
+	get min() {
+		return Math.min(0, min(this.X));
+	}
 	get xDomain() {
-		return [0, max(this.X)];
+		return [this.min, max(this.X)];
 	}
 	get yDomain() {
 		return new InternSet(this.Y);

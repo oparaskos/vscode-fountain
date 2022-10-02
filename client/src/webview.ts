@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import { readFile } from 'fs/promises';
 import { join, basename } from 'path';
 import { LanguageClient, RequestType } from 'vscode-languageclient/node';
+import { ClientRequest } from 'http';
+import { Console } from 'console';
 
 async function loadWebviewHtml(context: vscode.ExtensionContext, relativePath: string) {
 	const absolutePath = vscode.Uri.file(join(context.extensionPath, relativePath));
@@ -10,7 +12,7 @@ async function loadWebviewHtml(context: vscode.ExtensionContext, relativePath: s
 }
 
 const _statsPanels: {[key: string]: vscode.WebviewPanel} = {};
-function statsPanel(context: vscode.ExtensionContext, fileName: string) {
+function webviewPanel(context: vscode.ExtensionContext, fileName: string, onDispose: (arg0: void) => void = (() => {return;})) {
 	const baseFileName = basename(fileName);
 	const fileNameParts = baseFileName.split('.');
 	const panelName = fileNameParts.splice(0, fileNameParts.length - 1).join(".");
@@ -22,7 +24,11 @@ function statsPanel(context: vscode.ExtensionContext, fileName: string) {
 			panelName,
 			vscode.ViewColumn.Three,
 			{ enableScripts: true, });
-		_statsPanels[panelName].onDidDispose(() => delete _statsPanels[panelName]);
+
+		_statsPanels[panelName].onDidDispose((e) => {
+			delete _statsPanels[panelName];
+			onDispose(e);
+		});
 
 		const relativePath = join("webviews", "stats.html");
 		const baseUri = vscode.Uri.joinPath(context.extensionUri, relativePath);
@@ -40,6 +46,7 @@ function statsPanel(context: vscode.ExtensionContext, fileName: string) {
 export async function updateLocationStats(webview: vscode.Webview, client: LanguageClient, uri: string) {
 	const stats = await client.sendRequest(new RequestType("fountain.statistics.locations"), { uri } );
 	webview.postMessage({ command: "fountain.statistics.locations", uri, stats });
+	
 }
 
 export async function updateCharacterStats(webview: vscode.Webview, client: LanguageClient, uri: string) {
@@ -60,9 +67,21 @@ export async function updateWebviewStats(webview: vscode.Webview, client: Langua
 	]);
 }
 
+export function statsWebview(context: vscode.ExtensionContext, client: LanguageClient, uri: string) {
+	const watcher = vscode.workspace.createFileSystemWatcher('**/*.fountain');
+	watcher.onDidChange((e) => {
+		console.log({uri, path: e.path});
+		updateWebviewStats(panel.webview, client, uri);
+	});
+	const panel = webviewPanel(context, uri, () => {
+		watcher.dispose();
+	});
+	return panel.webview;
+}
+
 export function analyseCharacter(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
 	return async ({ uri, name }) => {
-		const webview = statsPanel(context, uri).webview;
+		const webview = statsWebview(context, client, uri);
 		await updateWebviewStats(webview, client, uri);
 		webview.postMessage({ command: "fountain.analyseCharacter", uri, name });
 	};
@@ -70,16 +89,15 @@ export function analyseCharacter(context: vscode.ExtensionContext, client: Langu
 
 export function analyseLocation(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
 	return async ({ uri, name }) => {
-		const webview = statsPanel(context, uri).webview;
+		const webview = statsWebview(context, client, uri);
 		await updateWebviewStats(webview, client, uri);
 		webview.postMessage({ command: "fountain.analyseLocation", uri, name });
 	};
 }
 
-
 export function analyseScene(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
 	return async ({ uri, name }) => {
-		const webview = statsPanel(context, uri).webview;
+		const webview = statsWebview(context, client, uri);
 		await updateWebviewStats(webview, client, uri);
 		webview.postMessage({ command: "fountain.analyseScene", uri, name });
 	};

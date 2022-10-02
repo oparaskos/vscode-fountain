@@ -1,8 +1,7 @@
 import { FountainElement } from "./FountainElement";
 import { FountainToken } from "./FountainTokenType";
-
+import Sentiment from 'sentiment';
 import readabilityScores from "readability-scores";
-import { isUndefined } from 'util';
 
 function mode(array: (number | undefined)[]): number | undefined {
     const mode: { [k: string]: number } = {};
@@ -69,6 +68,11 @@ export class DialogueElement extends FountainElement<'dialogue'> {
 
     public get words(): string[] {
         return this.dialogue.split(/\s+/ig);
+    }
+
+    // Valence between negative five and positive five.
+    public get sentiment() {
+        return new Sentiment().analyze(this.dialogue).score;
     }
 
     // yoink: https://github.com/piersdeseilligny/betterfountain/blob/master/src/utils.ts#L92

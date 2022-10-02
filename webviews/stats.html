@@ -1,63 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<base href="${baseUri}">
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-		<meta name="theme-color" content="#000000">
 
-		<script type="module" src="node_modules/@vscode/webview-ui-toolkit/dist/toolkit.js"></script>
-		<script type="module" src="dist/main.bundle.js"></script>
-		<script type="module" src="dist/charts.bundle.js"></script>
-	
-		<link rel="stylesheet" href="node_modules/@vscode/codicons/dist/codicon.css">
-		<link rel="stylesheet" href="styles/style.css">
+<head>
+	<base href="${baseUri}">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+	<meta name="theme-color" content="#000000">
 
-		<title>${pageTitle}</title>
-	</head>
+	<script type="module" src="node_modules/@vscode/webview-ui-toolkit/dist/toolkit.js"></script>
+	<script type="module" src="dist/main.bundle.js"></script>
+	<script type="module" src="dist/charts.bundle.js"></script>
 
-	<body>
-		<noscript>You need to enable JavaScript to run this app.</noscript>
-		<vscode-panels aria-label="Default" id="root-panel">
-			<vscode-panel-tab id="tab-characters">
-				CHARACTERS
-				<vscode-badge appearance="secondary">0</vscode-badge>
-			</vscode-panel-tab>
-			<vscode-panel-tab id="tab-locations">
-				LOCATIONS
-				<vscode-badge appearance="secondary">0</vscode-badge>
-			</vscode-panel-tab>
-			<vscode-panel-tab id="tab-scenes">
-				SCENES
-				<vscode-badge appearance="secondary">0</vscode-badge>
-			</vscode-panel-tab>
-			
-			<vscode-panel-view id="view-characters">
-				<section style="display: flex; flex-direction: column; width: 100%;">
+	<link rel="stylesheet" href="node_modules/@vscode/codicons/dist/codicon.css">
+	<link rel="stylesheet" href="styles/style.css">
+
+	<title>${pageTitle}</title>
+</head>
+
+<body>
+	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<vscode-panels aria-label="Default" id="root-panel">
+		<vscode-panel-tab id="tab-characters">
+			CHARACTERS
+			<vscode-badge appearance="secondary">0</vscode-badge>
+		</vscode-panel-tab>
+		<vscode-panel-tab id="tab-locations">
+			LOCATIONS
+			<vscode-badge appearance="secondary">0</vscode-badge>
+		</vscode-panel-tab>
+		<vscode-panel-tab id="tab-scenes">
+			SCENES
+			<vscode-badge appearance="secondary">0</vscode-badge>
+		</vscode-panel-tab>
+
+		<vscode-panel-view id="view-characters">
+			<div style="display: flex; flex-direction: column; width: 100%;">
+				<section>
 					<h4>Gender Representation</h4>
-					<p>N.B: Gender is a guess based on character name, TODO: Allow for specifying character gender in a config file of some sort.</p>
 					<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-						<bar-chart id="characters-speaking-roles-by-gender" width="200" height="100" style="overflow: visible;" title="Speaking Roles"></bar-chart>
-						<div></div>
+						<bar-chart id="characters-speaking-roles-by-gender" width="200" height="100"
+							style="overflow: visible;" title="Speaking Roles"></bar-chart>
+						<bar-chart id="characters-sentiment-by-gender" width="200" height="100"
+							style="overflow: visible;" title="Sentiment"></bar-chart>
 					</div>
 					<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-						<donut-chart id="characters-gender-dialogue" width="100" height="100" style="overflow: visible;" title="Dialogue&#10;Duration"></donut-chart>
-						<bar-chart id="characters-gender-readingAge" width="200" height="100" style="overflow: visible;" title="Reading Age"></bar-chart>
+						<donut-chart id="characters-gender-dialogue" width="100" height="100" style="overflow: visible;"
+							title="Dialogue&#10;Duration"></donut-chart>
+						<bar-chart id="characters-gender-readingAge" width="200" height="100" style="overflow: visible;"
+							title="Reading Age"></bar-chart>
 					</div>
+					<aside>
+						Please note: Gender is a guess based on character name. (TODO: For more accurate gender representation statistics, set characters' genders explicitly.)
+					</aside>
+				</section>
+				<section>
 					<h4>Characters</h4>
 					<vscode-data-grid id="grid-characters" aria-label="Default"></vscode-data-grid>
 				</section>
-			</vscode-panel-view>
-			<vscode-panel-view id="view-locations">
-				<section style="display: flex; flex-direction: column; width: 100%;">
-					<vscode-data-grid id="grid-locations" aria-label="Default"></vscode-data-grid>
-				</section>
-			</vscode-panel-view>
-			<vscode-panel-view id="view-scenes">
-				<section style="display: flex; flex-direction: column; width: 100%;">
-					<vscode-data-grid id="grid-scenes" aria-label="Default"></vscode-data-grid>
-				</section>
-			</vscode-panel-view>
-		</vscode-panels>
-	</body>
+			</div>
+		</vscode-panel-view>
+		<vscode-panel-view id="view-locations">
+			<section style="display: flex; flex-direction: column; width: 100%;">
+				<vscode-data-grid id="grid-locations" aria-label="Default"></vscode-data-grid>
+			</section>
+		</vscode-panel-view>
+		<vscode-panel-view id="view-scenes">
+			<section style="display: flex; flex-direction: column; width: 100%;">
+				<vscode-data-grid id="grid-scenes" aria-label="Default"></vscode-data-grid>
+			</section>
+		</vscode-panel-view>
+	</vscode-panels>
+</body>
+
 </html>

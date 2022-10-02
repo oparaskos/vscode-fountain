@@ -58,6 +58,10 @@ export class SceneElement extends GroupingFountainElement<'scene'> {
         return this.dialogueElements.map(it => it.character).filter((v, i, a) => a.indexOf(v) === i);
     }
 
+    public get sentiment() {
+        return this.dialogueElements.reduce((prev, it) => prev + it.sentiment, 0) / this.dialogueElements.reduce((prev, it) => prev + it.lines.length, 0);
+    }
+
     public get synopsis() {
         const synopsis = [];
         for(let i = 0; i < this.children.length; ++i) {

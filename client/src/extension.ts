@@ -56,6 +56,7 @@ export function activate(context: ExtensionContext) {
 		clientOptions
 	);
 
+
 	context.subscriptions.push(vscode.commands.registerCommand("fountain.analyseCharacter", analyseCharacter(context, client)));
 	context.subscriptions.push(vscode.commands.registerCommand("fountain.analyseLocation", analyseLocation(context, client)));
 	context.subscriptions.push(vscode.commands.registerCommand("fountain.analyseScene", analyseScene(context, client)));

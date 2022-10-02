@@ -30,18 +30,7 @@ export class FountainScript {
             const characters = Object.keys(dialogueByCharacters).map(characterName => {
                 const dialogues = dialogueByCharacters[characterName];
                 try {
-                    const dialogueStats = dialogues.reduce((prev, curr) => ({
-                        Duration: prev.Duration + curr.duration,
-                        Lines: prev.Lines + curr.lines.length,
-                        Words: prev.Words + curr.words.length,
-                        ReadingAge: curr.readingGrade!= undefined ? Math.max(prev.ReadingAge, curr.readingGrade) : prev.ReadingAge,
-                        Monologues: prev.Monologues + (curr.duration > 30 ? 1 : 0),
-                    }), {Duration: 0, Lines: 0, Words: 0, ReadingAge: 0, Monologues: 0});
-                    return {
-                        Name: characterName,
-                        References: dialogues.length,
-                        ...dialogueStats
-                    };
+                    return this.generateCharacterDialogueStats(dialogues, characterName);
                 } catch(e) {
                     return {
                         Name: characterName,
@@ -52,6 +41,23 @@ export class FountainScript {
             this._characterStats = characters;
         }
         return this._characterStats;
+    }
+
+    private generateCharacterDialogueStats(dialogues: DialogueElement[], characterName: string) {
+        const dialogueStats = dialogues.reduce((prev, curr) => ({
+            Duration: prev.Duration + curr.duration,
+            Lines: prev.Lines + curr.lines.length,
+            Words: prev.Words + curr.words.length,
+            ReadingAge: curr.readingGrade != undefined ? Math.max(prev.ReadingAge, curr.readingGrade) : prev.ReadingAge,
+            Monologues: prev.Monologues + (curr.duration > 30 ? 1 : 0),
+            Sentiment: prev.Sentiment + curr.sentiment,
+        }), { Duration: 0, Lines: 0, Words: 0, ReadingAge: 0, Monologues: 0, Sentiment: 0 });
+        return {
+            Name: characterName,
+            References: dialogues.length,
+            ...dialogueStats,
+            Sentiment: dialogueStats.Sentiment / dialogues.length,
+        };
     }
 
     public get dialogue(): DialogueElement[]{
@@ -78,6 +84,7 @@ export class FountainScript {
             Synopsis: scene.synopsis,
             DialogueDuration: scene.dialogueDuration,
             ActionDuration: scene.actionDuration,
+            Sentiment: scene.sentiment,
         }));
     }
 
