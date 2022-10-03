@@ -67,7 +67,7 @@ export async function updateWebviewStats(webview: vscode.Webview, client: Langua
 }
 
 export function statsWebview(context: vscode.ExtensionContext, client: LanguageClient, uri: string) {
-	const watcher = vscode.workspace.createFileSystemWatcher('**/*.fountain');
+	const watcher = vscode.workspace.createFileSystemWatcher('**/*.fountain*');
 	watcher.onDidChange((e) => {
 		updateWebviewStats(panel.webview, client, uri);
 	});

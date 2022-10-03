@@ -1,0 +1,26 @@
+{
+	"$id": "https://example.com/address.schema.json",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"description": "Metadata about a script, or collection of scripts",
+	"type": "object",
+	"properties": {
+	  "characters": {
+		"type": "object",
+		"additionalProperties": {
+			"type": "object",
+			"properties": {
+				"gender": {
+					"description": "Set the gender of a character to update gender representation statistics",
+					"example": "male"
+				}
+			}
+		}
+	  },
+	  "locale": {
+		"type": "string",
+		"enum": ["en"]
+	  }
+	},
+	"required": []
+  }
+  

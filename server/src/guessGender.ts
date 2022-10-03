@@ -36,7 +36,7 @@ const WORDS_INDICATING_MALE_CHARACTER = [
 ];
 
 export function guessGender(rawName: string, config: any) {
-	if (config?.characters?.[rawName]?.Gender) return (config.characters[rawName].Gender as string).toLowerCase();
+	if (config?.characters?.[rawName]?.gender) return (config.characters[rawName].gender as string).toLowerCase();
 	// Guess based on common english names using a library TODO: find a more comprehensive one..
 	const initialGuess = getGender(rawName, config?.Language || 'en');
 	if (initialGuess != 'unknown')
