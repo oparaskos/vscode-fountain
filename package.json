@@ -48,6 +48,10 @@
 		},
 		"languages": [
 			{
+				"id":  "yaml",
+				"extensions": [".fountainrc"]
+			},
+			{
 				"id": "fountain",
 				"aliases": [
 					"Fountain",

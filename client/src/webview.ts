@@ -7,7 +7,6 @@ import { Console } from 'console';
 
 async function loadWebviewHtml(context: vscode.ExtensionContext, relativePath: string) {
 	const absolutePath = vscode.Uri.file(join(context.extensionPath, relativePath));
-	console.log(absolutePath.fsPath);
 	return (await readFile(absolutePath.fsPath)).toString('utf-8');
 }
 
@@ -70,7 +69,6 @@ export async function updateWebviewStats(webview: vscode.Webview, client: Langua
 export function statsWebview(context: vscode.ExtensionContext, client: LanguageClient, uri: string) {
 	const watcher = vscode.workspace.createFileSystemWatcher('**/*.fountain');
 	watcher.onDidChange((e) => {
-		console.log({uri, path: e.path});
 		updateWebviewStats(panel.webview, client, uri);
 	});
 	const panel = webviewPanel(context, uri, () => {

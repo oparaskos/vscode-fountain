@@ -29,7 +29,6 @@ export class BarChart extends HTMLElement {
 
 	// add items to the list
 	onChange(e: Event | null) {
-		console.log({ entries: this.entries });
 		if (this.entries) {
 			// Construct scales and axes.
 			const xScale = this.xType(this.xDomain, this.xRange);

@@ -14,9 +14,9 @@ import {
 	TextDocumentSyncKind,
 	InitializeResult,
 	Command,
-	SymbolKind,
+	FileChangeType,
 } from 'vscode-languageserver/node';
-import { getGender } from "gender-detection-from-name";
+import { URI } from 'vscode-uri';
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
@@ -25,23 +25,12 @@ import { FountainScript } from './parser/types';
 import { characterCompletions, closingCompletions, dialogueCompletions, openingCompletions, sceneCompletions, titlePageCompletions, transitionCompletions } from './completions';
 import { isTitlePage } from './util/range';
 import { dialogueLens, locationsLens, scenesLens } from './lenses';
+import { readFile } from 'fs/promises';
+import { guessGender } from './guessGender';
+import { connect } from 'http2';
+import path from 'path';
+import { getConfig as getFountainrc } from './fountainrc';
 
-function guessGender(rawName: string) {
-	// Guess based on common english names using a library TODO: find a more comprehensive one..
-	const initialGuess = getGender(rawName);
-	if (initialGuess != 'unknown') return initialGuess;
-	// If no luck look for clues by common gendered words -- problematic because 'postman' is often in place of 'postwoman'.
-	const name = rawName.toLocaleLowerCase();
-	const femaleWords = ["female", "woman", "girl", "mum", "mom", "aunt", "mother", "neice", "grandma", "mistress", "lady"];
-	const femaleness: number = femaleWords.reduce((acc, it) => acc += name.includes(it) ? 1 : 0, 0);
-	const maleWords = ["male", "man", "boy", "dad", "uncle", "father", "nephew", "master"];
-	let maleness: number = maleWords.reduce((acc, it) => acc += name.includes(it) ? 1 : 0, 0);
-	if (name.includes("woman")) maleness--;
-	if (name.includes("female")) maleness--;
-	if(maleness > femaleness) return 'male';
-	if(femaleness > maleness) return 'female';
-	return 'unknown';
-}
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -109,10 +98,11 @@ connection.onInitialized(() => {
 
 connection.onRequest("fountain.statistics.characters", async (params) => {
 	const settings = await getDocumentSettings((params as any).uri);
+	const fountainrc = await getFountainrc((params as any).uri);
 	const parsedScript = parsedDocuments[(params as any).uri];
 	const result = parsedScript.statsPerCharacter;
 	if (settings.guessCharacterGenders) {
-		return result.map((it: any) => ({...it, Gender: guessGender(it.Name)}));
+		return result.map((it: any) => ({...it, Gender: guessGender(it.Name, fountainrc)}));
 	}
 	return result;
 });
@@ -127,6 +117,10 @@ connection.onRequest("fountain.statistics.scenes", async (params) => {
 	const parsedScript = parsedDocuments[(params as any).uri];
 	const result = parsedScript.statsPerScene;
 	return result;
+});
+
+connection.onRequest((params) => {
+	connection.console.log(JSON.stringify({onRequest: params}));
 });
 
 // The example settings
@@ -210,9 +204,9 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
 
-connection.onDidChangeWatchedFiles(_change => {
+connection.onDidChangeWatchedFiles(async (change) => {
 	// Monitored files have change in VSCode
-	connection.console.log('We received an file change event');
+	// TODO: flush config cache...
 });
 
 connection.onCodeLens((params) => {

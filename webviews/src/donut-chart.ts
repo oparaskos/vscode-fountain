@@ -29,7 +29,6 @@ export class DonutChart extends HTMLElement {
 
 	// add items to the list
 	onChange(e: Event | null) {
-		console.log({ entries: this.entries });
 		if (this.entries) {
 			// Compute values.
 			const N = this.names;
