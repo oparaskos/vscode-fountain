@@ -5,10 +5,11 @@ import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
 import { schemeSpectral, interpolateSpectral } from 'd3-scale-chromatic';
 import { format } from 'd3-format';
 import { quantize } from 'd3-interpolate';
+import { applySeriesBaackgrounds } from './chart-series-backgrounds';
 
 export class BarChart extends HTMLElement {
 
-	private shadow: ShadowRoot; 
+	private shadow: ShadowRoot;
 	private formatValue: (null | ((n: number | { valueOf(): number; }) => string)) = null;
 
 	constructor() {
@@ -42,6 +43,9 @@ export class BarChart extends HTMLElement {
 				.attr("viewBox", [0, 0, this.width, this.height])
 				.attr("style", this.style.cssText + "; max-width: 100%; height: auto; height: intrinsic;");
 
+			applySeriesBaackgrounds(svg);
+
+
 			svg.append("g")
 				.attr("transform", `translate(0,${this.marginTop})`)
 				.call(xAxis)
@@ -62,7 +66,8 @@ export class BarChart extends HTMLElement {
 				.join("rect")
 				.attr("x", xScale(this.min))
 				.attr("y", i => yScale(this.Y[i])!)
-				.attr("fill", i => this.colors(this.Y[i]) as string)
+				.attr("class", i => `chart-series-colour-${i}`)
+				// .attr("fill", i => this.colors(this.Y[i]) as string)
 				.attr("width", i => xScale(this.X[i]) - xScale(this.min))
 				.attr("height", yScale.bandwidth());
 
@@ -230,3 +235,6 @@ export class BarChart extends HTMLElement {
 
 // let the browser know about the custom element
 customElements.define('bar-chart', BarChart);
+
+
+

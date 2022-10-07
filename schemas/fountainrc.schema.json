@@ -10,8 +10,12 @@
 			"type": "object",
 			"properties": {
 				"gender": {
-					"description": "Set the gender of a character to update gender representation statistics",
+					"description": "Set the gender of a character to update gender representation statistics.",
 					"example": "male"
+				},
+				"racial identity": {
+					"description": "Set the racial identity of the character to update representation statistics.",
+					"example": "british/caucasian"
 				}
 			}
 		}

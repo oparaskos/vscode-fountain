@@ -5,6 +5,7 @@ import { format } from "d3-format";
 import { scaleOrdinal } from "d3-scale";
 import { schemeSpectral, interpolateSpectral } from "d3-scale-chromatic";
 import { quantize } from "d3-interpolate";
+import { applySeriesBaackgrounds } from './chart-series-backgrounds';
 
 export class DonutChart extends HTMLElement {
 
@@ -49,6 +50,8 @@ export class DonutChart extends HTMLElement {
 				.attr("viewBox", [-this.width / 2, -this.height / 2, this.width, this.height])
 				.attr("style", this.style.cssText + "; max-width: 100%; height: auto; height: intrinsic;");
 
+			applySeriesBaackgrounds(svg);
+
 			if(this.title) {
 				svg.append("g")
 					.attr("font-family", "sans-serif")
@@ -71,6 +74,7 @@ export class DonutChart extends HTMLElement {
 				.selectAll("path")
 				.data(arcs)
 				.join("path")
+				.attr("class", d => `chart-series-colour-${d.index}` )
 				.attr("fill", d => this.colors(N[d.index]) as string)
 				.attr("d", innerArc as unknown as string)
 				.append("title")

@@ -36,6 +36,24 @@
 		<vscode-panel-view id="view-characters">
 			<div style="display: flex; flex-direction: column; width: 100%;">
 				<section>
+					<h4>Representation by Racial Identity</h4>
+					<div style="display: flex; flex-direction: row; justify-content: space-evenly;" class="hide-if-no-racial-identity">
+						<bar-chart id="characters-speaking-roles-by-racial-identity" width="200" height="100"
+							style="overflow: visible;" title="Speaking Roles"></bar-chart>
+						<bar-chart id="characters-sentiment-by-racial-identity" width="200" height="100"
+							style="overflow: visible;" title="Sentiment"></bar-chart>
+					</div>
+					<div style="display: flex; flex-direction: row; justify-content: space-evenly;" class="hide-if-no-racial-identity">
+						<donut-chart id="characters-racial-identity-dialogue" width="100" height="100" style="overflow: visible;"
+							title="Dialogue&#10;Duration"></donut-chart>
+						<bar-chart id="characters-racial-identity-readingAge" width="200" height="100" style="overflow: visible;"
+							title="Reading Age"></bar-chart>
+					</div>
+					<aside id="characters-racial-identity-fountainrc">
+						You can set the Racial Identiy of characters in the .fountainrc file.
+					</aside>
+				</section>
+				<section>
 					<h4>Gender Representation</h4>
 					<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
 						<bar-chart id="characters-speaking-roles-by-gender" width="200" height="100"

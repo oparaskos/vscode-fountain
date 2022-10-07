@@ -30,11 +30,14 @@ import { guessGender } from './guessGender';
 import { connect } from 'http2';
 import path from 'path';
 import { getConfig as getFountainrc } from './fountainrc';
+import { logger } from './logger';
+import { findRacialIdentity } from './racialIdentity';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
+logger.connection = connection;
 
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -97,14 +100,29 @@ connection.onInitialized(() => {
 });
 
 connection.onRequest("fountain.statistics.characters", async (params) => {
-	const settings = await getDocumentSettings((params as any).uri);
-	const fountainrc = await getFountainrc((params as any).uri);
-	const parsedScript = parsedDocuments[(params as any).uri];
-	const result = parsedScript.statsPerCharacter;
-	if (settings.guessCharacterGenders) {
-		return result.map((it: any) => ({...it, Gender: guessGender(it.Name, fountainrc)}));
+	try {
+		connection.console.log("fountain.statistics.characters get document settings");
+		const settings = await getDocumentSettings((params as any).uri);
+		connection.console.log("fountain.statistics.characters get script");
+		const parsedScript = parsedDocuments[(params as any).uri];
+		connection.console.log("fountain.statistics.characters get character stats");
+		const result = parsedScript.statsPerCharacter;
+		connection.console.log("fountain.statistics.characters guess gender");
+		if (settings.guessCharacterGenders) {
+			connection.console.log("fountain.statistics.characters find fountainrc");
+			const fountainrc = await getFountainrc((params as any).uri);
+			connection.console.log("fountain.statistics.characters applying gender guesses");
+			return result.map((it: any) => ({
+				...it,
+				Gender: guessGender(it.Name, fountainrc),
+				RacialIdentity: findRacialIdentity(it.Name, fountainrc)
+			}));
+		}
+		connection.console.log(JSON.stringify(result));
+		return result;
+	} catch(e: any) {
+		connection.console.error(e.toString());
 	}
-	return result;
 });
 
 connection.onRequest("fountain.statistics.locations", async (params) => {
