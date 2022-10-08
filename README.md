@@ -1,4 +1,4 @@
-# Fountain Language Server and Client
+# <img src="./assets/fountain-logo-monochrome.svg" alt="icon" width="36" style="display: inline; margin-bottom: -10px"/> Fountain Language Server and Client
 
 ## Functionality
 
@@ -8,7 +8,7 @@ This Language Server works for fountain files. It has the following language fea
 
 <!-- It also includes an End-to-End test. -->
 
-## Structure
+## Folder Structure
 
 ```
 .
@@ -25,7 +25,7 @@ This Language Server works for fountain files. It has the following language fea
 └── webviews // VSCode UI Framework Webview, shows stats etc.
 ```
 
-## Running the Sample
+## Running the Language Server and Extension
 
 - Run `npm install` in this folder. This installs all necessary npm modules in both the client and server folder
 - Open VS Code on this folder.

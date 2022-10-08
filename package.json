@@ -1,17 +1,18 @@
 {
 	"name": "fountain-lsp",
 	"description": "Fountain Lanuage Server",
-	"author": "Microsoft Corporation",
+	"author": "Oliver Paraskos",
 	"license": "MIT",
-	"version": "1.0.0",
+	"version": "0.0.1-alpha",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/oparaskos/fountain-lsp"
 	},
-	"publisher": "vscode-samples",
+	"publisher": "oliverparaskos",
 	"categories": [],
 	"keywords": [
-		"multi-root ready"
+		"fountain",
+		"scriptwriting"
 	],
 	"engines": {
 		"vscode": "^1.63.0"
@@ -39,8 +40,8 @@
 		"concurrently": "^7.4.0"
 	},
 	"extensionDependencies": [
-        "redhat.vscode-yaml"
-    ],
+		"redhat.vscode-yaml"
+	],
 	"contributes": {
 		"yamlValidation": [
 			{
@@ -57,8 +58,14 @@
 		},
 		"languages": [
 			{
-				"id":  "yaml",
-				"extensions": [".fountainrc"]
+				"id": "yaml",
+				"extensions": [
+					".fountainrc"
+				],
+				"icon": {
+					"light": "./assets/fountain-config-monochrome.svg",
+					"dark": "./assets/fountain-config-monochrome.svg"
+				}
 			},
 			{
 				"id": "fountain",
@@ -70,6 +77,10 @@
 					".fountain",
 					".spmd"
 				],
+				"icon": {
+					"light": "./assets/fountain-logo-monochrome.svg",
+					"dark": "./assets/fountain-logo-monochrome.svg"
+				},
 				"configuration": "./language-configuration.json"
 			}
 		],
