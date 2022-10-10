@@ -29,6 +29,7 @@ import { guessGender } from './guessGender';
 import { getConfig as getFountainrc } from './fountainrc';
 import { logger } from './logger';
 import { findRacialIdentity } from './racialIdentity';
+import { getDocumentation } from './documentation';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -220,12 +221,9 @@ connection.onHover(async (params) => {
 	const uri = params.textDocument.uri;
 	const parsedScript = parsedDocuments[uri];
 	const hoveredElements = parsedScript.getElementsByPosition(params.position);
-	logger.log("Hovering Over", hoveredElements);
 	if(hoveredElements.length > 0) {
 		const deepestHoveredElement= hoveredElements[hoveredElements.length - 1];
-		return {
-			contents: `Hovering over: ${deepestHoveredElement.type}`
-		};
+		return await getDocumentation(deepestHoveredElement.type);
 	}
 	return null;
 });

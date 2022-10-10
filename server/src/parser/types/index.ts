@@ -32,11 +32,8 @@ export class FountainScript {
     }
 
     public getElementsByPosition(position: Position): FountainElement[] {
-        logger.log("FountainScript: getElementsByPosition");
-        const elementsInRange = this.children
-            .filter(it => positionInRange(position, it.range));
-        logger.log("elementsInRange: " + elementsInRange.length);
-        return elementsInRange
+        return this.children
+            .filter(it => positionInRange(position, it.range))
             .flatMap(it => it.getElementsByPosition(position));
 	}
 
