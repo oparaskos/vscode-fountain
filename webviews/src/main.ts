@@ -74,6 +74,9 @@ function updateScenesTable(stats: object[]) {
 		};
 	}));
 
+	console.log("updateScenesTable");
+	(document.getElementById("scenes-timeline") as any).setEntries(stats);
+
 	const badge = document.querySelector("vscode-panel-tab#tab-scenes > vscode-badge");
 	if (badge) { badge.innerHTML = '' + stats.length; }
 }

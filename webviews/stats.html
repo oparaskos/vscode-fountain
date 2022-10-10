@@ -35,8 +35,9 @@
 
 		<vscode-panel-view id="view-characters">
 			<div style="display: flex; flex-direction: column; width: 100%;">
+				<h4>Characters</h4>
 				<section>
-					<h4>Representation by Racial Identity</h4>
+					<h5>Representation by Racial Identity</h5>
 					<div style="display: flex; flex-direction: row; justify-content: space-evenly;" class="hide-if-no-racial-identity">
 						<bar-chart id="characters-speaking-roles-by-racial-identity" width="200" height="100"
 							style="overflow: visible;" title="Speaking Roles"></bar-chart>
@@ -54,7 +55,7 @@
 					</aside>
 				</section>
 				<section>
-					<h4>Gender Representation</h4>
+					<h5>Gender Representation</h5>
 					<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
 						<bar-chart id="characters-speaking-roles-by-gender" width="200" height="100"
 							style="overflow: visible;" title="Speaking Roles"></bar-chart>
@@ -72,7 +73,6 @@
 					</aside>
 				</section>
 				<section>
-					<h4>Characters</h4>
 					<vscode-data-grid id="grid-characters" aria-label="Default"></vscode-data-grid>
 				</section>
 			</div>
@@ -84,6 +84,7 @@
 		</vscode-panel-view>
 		<vscode-panel-view id="view-scenes">
 			<section style="display: flex; flex-direction: column; width: 100%;">
+				<script-timeline id="scenes-timeline"></script-timeline>
 				<vscode-data-grid id="grid-scenes" aria-label="Default"></vscode-data-grid>
 			</section>
 		</vscode-panel-view>
