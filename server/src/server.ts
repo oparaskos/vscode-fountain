@@ -14,21 +14,18 @@ import {
 	TextDocumentSyncKind,
 	InitializeResult,
 	Command,
-	FileChangeType,
+	Hover,
+	NullLogger,
 } from 'vscode-languageserver/node';
-import { URI } from 'vscode-uri';
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 import { parse } from './parser';
 import { FountainScript } from './parser/types';
 import { characterCompletions, closingCompletions, dialogueCompletions, openingCompletions, sceneCompletions, titlePageCompletions, transitionCompletions } from './completions';
-import { isTitlePage } from './util/range';
+import { isTitlePage } from "./util/isTitlePage";
 import { dialogueLens, locationsLens, scenesLens } from './lenses';
-import { readFile } from 'fs/promises';
 import { guessGender } from './guessGender';
-import { connect } from 'http2';
-import path from 'path';
 import { getConfig as getFountainrc } from './fountainrc';
 import { logger } from './logger';
 import { findRacialIdentity } from './racialIdentity';
@@ -66,6 +63,7 @@ connection.onInitialize((params: InitializeParams) => {
 	const result: InitializeResult = {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
+			hoverProvider: true,
 			declarationProvider: true,
 			codeLensProvider: {
 				resolveProvider: true
@@ -101,24 +99,17 @@ connection.onInitialized(() => {
 
 connection.onRequest("fountain.statistics.characters", async (params) => {
 	try {
-		connection.console.log("fountain.statistics.characters get document settings");
 		const settings = await getDocumentSettings((params as any).uri);
-		connection.console.log("fountain.statistics.characters get script");
 		const parsedScript = parsedDocuments[(params as any).uri];
-		connection.console.log("fountain.statistics.characters get character stats");
 		const result = parsedScript.statsPerCharacter;
-		connection.console.log("fountain.statistics.characters guess gender");
 		if (settings.guessCharacterGenders) {
-			connection.console.log("fountain.statistics.characters find fountainrc");
 			const fountainrc = await getFountainrc((params as any).uri);
-			connection.console.log("fountain.statistics.characters applying gender guesses");
 			return result.map((it: any) => ({
 				...it,
 				Gender: guessGender(it.Name, fountainrc),
 				RacialIdentity: findRacialIdentity(it.Name, fountainrc)
 			}));
 		}
-		connection.console.log(JSON.stringify(result));
 		return result;
 	} catch(e: any) {
 		connection.console.error(e.toString());
@@ -216,8 +207,6 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 	const diagnostics: Diagnostic[] = [];
 
-	
-
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
@@ -225,6 +214,20 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 connection.onDidChangeWatchedFiles(async (change) => {
 	// Monitored files have change in VSCode
 	// TODO: flush config cache...
+});
+
+connection.onHover(async (params) => {
+	const uri = params.textDocument.uri;
+	const parsedScript = parsedDocuments[uri];
+	const hoveredElements = parsedScript.getElementsByPosition(params.position);
+	logger.log("Hovering Over", hoveredElements);
+	if(hoveredElements.length > 0) {
+		const deepestHoveredElement= hoveredElements[hoveredElements.length - 1];
+		return {
+			contents: `Hovering over: ${deepestHoveredElement.type}`
+		};
+	}
+	return null;
 });
 
 connection.onCodeLens((params) => {

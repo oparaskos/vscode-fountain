@@ -10,7 +10,16 @@ import { SceneElement } from "./types/SceneElement";
 import { SectionElement } from "./types/SectionElement";
 import { filterNotNull } from "./filterNotNull";
 import { SourceMapElement, FountainToken, FountainTokenType } from "./types/FountainTokenType";
-import { ActionElement, BoneyardElement, CenteredTextElement, FountainScript, FountainTitlePage, LineBreakElement, NotesElement, PageBreakElement, SynopsesElement, TransitionElement } from "./types";
+import { FountainScript } from "./types";
+import { FountainTitlePage } from "./types/FountainTitlePage";
+import { ActionElement } from "./types/ActionElement";
+import { TransitionElement } from "./types/TransitionElement";
+import { CenteredTextElement } from "./types/CenteredTextElement";
+import { PageBreakElement } from "./types/PageBreakElement";
+import { LineBreakElement } from "./types/LineBreakElement";
+import { SynopsesElement } from "./types/SynopsesElement";
+import { BoneyardElement } from "./types/BoneyardElement";
+import { NotesElement } from "./types/NotesElement";
 
 const FountainRegexSceneHeading = /^((?:\*{0,3}_?)?(?:(?:int|ext|est|i\/e)[. ]).+)|^(?:\.(?!\.+))(.+)/i;
 const FountainRegexSceneNumber = /( *#(.+)# *)/;

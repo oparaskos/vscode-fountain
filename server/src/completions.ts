@@ -1,6 +1,7 @@
 
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
-import { FountainScript, FountainTitlePage } from "./parser/types";
+import { FountainScript } from "./parser/types";
+import { FountainTitlePage } from "./parser/types/FountainTitlePage";
 
 const revisionDocumentation = `New revisions are generally printed on different-colored paper, and named accordingly. The WGA order for revisions is:
 * White Draft (original)

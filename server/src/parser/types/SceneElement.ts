@@ -3,7 +3,11 @@ import { GroupingFountainElement } from "./GroupingFountainElement";
 import { FountainToken } from "./FountainTokenType";
 import { DialogueElement } from './DialogueElement';
 import { getElementsByType } from './getElementsByType';
-import { ActionElement, BoneyardElement, LineBreakElement, NotesElement, SynopsesElement } from '.';
+import { ActionElement } from "./ActionElement";
+import { LineBreakElement } from "./LineBreakElement";
+import { SynopsesElement } from "./SynopsesElement";
+import { BoneyardElement } from "./BoneyardElement";
+import { NotesElement } from "./NotesElement";
 
 export enum LocationType {
     UNKNOWN = 0x0,

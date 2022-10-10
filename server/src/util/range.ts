@@ -1,10 +1,9 @@
-import { FountainElement } from "../parser/types/FountainElement";
-import { Position, Range, TextDocumentPositionParams } from "vscode-languageserver";
-import { FountainScript, FountainTitlePage } from "../parser/types";
+import { Position, Range } from "vscode-languageserver";
+import { FountainToken } from '../parser/types/FountainTokenType';
 
-export function elementToRange(element: FountainElement): Range {
-    const start = element.tokens[0].codeLocation.start;
-    const end = element.tokens[element.tokens.length - 1].codeLocation.end;
+export function tokensToRange(tokens: FountainToken[]): Range {
+    const start = tokens[0].codeLocation.start;
+    const end = tokens[tokens.length - 1].codeLocation.end;
     return {
         start: {
             character: start.column,
@@ -26,10 +25,3 @@ export function positionInRange(position: Position, range: Range): boolean {
 }
 
 
-export function isTitlePage(documentPosition: TextDocumentPositionParams, parsedScript: FountainScript): boolean {
-    const titlePage = parsedScript.children[0];
-    if (!(titlePage instanceof FountainTitlePage)) return false;
-    const titlePageRange = elementToRange(titlePage);
-    if (positionInRange(documentPosition.position, titlePageRange)) return true;
-    return false;
-}

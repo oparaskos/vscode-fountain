@@ -1,8 +1,8 @@
-import { stat } from 'fs';
-import { Location } from 'vscode-languageserver';
+import { Position, Range } from 'vscode-languageserver';
+import { logger } from '../../logger';
+import { positionInRange } from '../../util/range';
 import { DialogueElement } from "./DialogueElement";
 import { FountainElement } from "./FountainElement";
-import { FountainToken } from "./FountainTokenType";
 import { getElementsByType } from './getElementsByType';
 import { LocationType, SceneElement } from "./SceneElement";
 
@@ -23,6 +23,22 @@ export class FountainScript {
                 .filter((element, index, array) => array.findIndex(e => e === element) === index);
         return this._characterNames;
     }
+
+    public get range(): Range {
+        return {
+            start: this.children[0].range.start,
+            end: this.children[this.children.length - 1].range.end
+        };
+    }
+
+    public getElementsByPosition(position: Position): FountainElement[] {
+        logger.log("FountainScript: getElementsByPosition");
+        const elementsInRange = this.children
+            .filter(it => positionInRange(position, it.range));
+        logger.log("elementsInRange: " + elementsInRange.length);
+        return elementsInRange
+            .flatMap(it => it.getElementsByPosition(position));
+	}
 
     public get statsPerCharacter() {
         if (!this._characterStats) {
@@ -125,84 +141,4 @@ export class FountainScript {
     }
 }
 
-export class FountainTitlePage extends FountainElement<'title-page'> {
-    constructor(
-        public tokens: FountainToken[],
-        ) {
-            super('title-page', tokens);
-        }
-    public get attributes(): {[s: string]: string} {
-        const keys: string[] = this.tokens.map(t => t.key).filter((k, i, a) => !!k && a.indexOf(k) === i) as string[];
-        return keys.map((k: string) => {
-            const values = this.tokens.filter(t => t.key === k).map(t => t.text).join('\n');
-            return [k, values];
-        }).reduce((acc, [k, v]) => ({...acc, [k]: v}), {});
-    }
-    
-}
 
-export class ActionElement extends FountainElement<'action'> {
-    constructor(public tokens: FountainToken[]) {
-        super('action', tokens);
-    }
-
-    public get duration() {
-        // Assumes about 20 characters for 1 second worth of acting.
-        return (this.textContent.length) / 20;
-    }
-}
-
-export class LyricsElement extends FountainElement<'lyrics'> {
-    constructor(public tokens: FountainToken[]) {
-        super('lyrics', tokens);
-    }
-}
-
-export class TransitionElement extends FountainElement<'transition'> {
-    constructor(
-        public tokens: FountainToken[]) {
-            super('transition', tokens);
-    }
-}
-
-export class CenteredTextElement extends FountainElement<'centered-text'> {
-    constructor(
-        public tokens: FountainToken[]) {
-            super('centered-text', tokens);
-    }
-}
-
-export class PageBreakElement extends FountainElement<'page-break'> {
-    constructor(
-        public tokens: FountainToken[]) {
-            super('page-break', tokens);
-    }
-}
-
-export class LineBreakElement extends FountainElement<'line-break'> {
-    constructor(
-        public tokens: FountainToken[]) {
-            super('line-break', tokens);
-    }
-}
-
-export class NotesElement extends FountainElement<'notes'> {
-    constructor(
-        public tokens: FountainToken[]) {
-            super('notes', tokens);
-    }
-}
-
-export class BoneyardElement extends FountainElement<'boneyard'> {
-    constructor(
-        public tokens: FountainToken[]) {
-            super('boneyard', tokens);
-    }
-}
-
-export class SynopsesElement extends FountainElement<'synopses'> {
-    constructor(
-        public tokens: FountainToken[]) {
-            super('synopses', tokens);
-    }
-}
