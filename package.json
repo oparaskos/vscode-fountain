@@ -1,96 +1,97 @@
 {
-	"name": "fountain-lsp",
-	"description": "Fountain Lanuage Server",
-	"author": "Oliver Paraskos",
-	"license": "MIT",
-	"version": "0.0.1-alpha",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/oparaskos/fountain-lsp"
-	},
-	"publisher": "oliverparaskos",
-	"categories": [],
-	"keywords": [
-		"fountain",
-		"scriptwriting"
-	],
-	"engines": {
-		"vscode": "^1.63.0"
-	},
-	"activationEvents": [
-		"onLanguage:fountain"
-	],
-	"main": "./client/out/extension",
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"build": "npm run compile",
-		"compile": "tsc -b",
-		"watch": "tsc -b -w",
-		"lint": "eslint ./client/src ./server/src ./webviews/src --ext .ts,.tsx",
-		"postinstall": "cd client && npm install && cd ../server && npm install && cd ../webviews && npm install && cd ..",
-		"test": "sh ./scripts/e2e.sh"
-	},
-	"devDependencies": {
-		"@types/mocha": "^9.1.0",
-		"@types/node": "^16.11.7",
-		"@typescript-eslint/eslint-plugin": "^5.30.0",
-		"@typescript-eslint/parser": "^5.30.0",
-		"eslint": "^8.13.0",
-		"mocha": "^9.2.1",
-		"typescript": "^4.7.2",
-		"concurrently": "^7.4.0"
-	},
-	"extensionDependencies": [
-		"redhat.vscode-yaml"
-	],
-	"contributes": {
-		"yamlValidation": [
-			{
-				"fileMatch": ".fountainrc",
-				"url": "./schemas/fountainrc.schema.json"
-			}
-		],
-		"configurationDefaults": {
-			"[fountain]": {
-				"editor.wordWrap": "on",
-				"editor.wordBasedSuggestions": false,
-				"editor.suggestSelection": "first"
-			}
-		},
-		"languages": [
-			{
-				"id": "yaml",
-				"extensions": [
-					".fountainrc"
-				],
-				"icon": {
-					"light": "./assets/fountain-config-monochrome.svg",
-					"dark": "./assets/fountain-config-monochrome.svg"
-				}
-			},
-			{
-				"id": "fountain",
-				"aliases": [
-					"Fountain",
-					"fountain"
-				],
-				"extensions": [
-					".fountain",
-					".spmd"
-				],
-				"icon": {
-					"light": "./assets/fountain-logo-monochrome.svg",
-					"dark": "./assets/fountain-logo-monochrome.svg"
-				},
-				"configuration": "./language-configuration.json"
-			}
-		],
-		"grammars": [
-			{
-				"language": "fountain",
-				"scopeName": "text.source.fountain",
-				"path": "./syntaxes/fountain.tmLanguage.json"
-			}
-		]
-	}
+  "name": "fountain-lsp",
+  "description": "Fountain Lanuage Server",
+  "author": "Oliver Paraskos",
+  "license": "MIT",
+  "version": "0.0.0-development",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oparaskos/vscode-fountain"
+  },
+  "publisher": "oliverparaskos",
+  "categories": [],
+  "keywords": [
+    "fountain",
+    "scriptwriting"
+  ],
+  "engines": {
+    "vscode": "^1.63.0"
+  },
+  "activationEvents": [
+    "onLanguage:fountain"
+  ],
+  "main": "./client/out/extension",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "build": "npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "lint": "eslint ./client/src ./server/src ./webviews/src --ext .ts,.tsx",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd ../webviews && npm install && cd ..",
+    "test": "sh ./scripts/e2e.sh"
+  },
+  "devDependencies": {
+    "@types/mocha": "^9.1.0",
+    "@types/node": "^16.11.7",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "eslint": "^8.13.0",
+    "mocha": "^9.2.1",
+    "typescript": "^4.7.2",
+    "concurrently": "^7.4.0",
+    "semantic-release": "^19.0.5"
+  },
+  "extensionDependencies": [
+    "redhat.vscode-yaml"
+  ],
+  "contributes": {
+    "yamlValidation": [
+      {
+        "fileMatch": ".fountainrc",
+        "url": "./schemas/fountainrc.schema.json"
+      }
+    ],
+    "configurationDefaults": {
+      "[fountain]": {
+        "editor.wordWrap": "on",
+        "editor.wordBasedSuggestions": false,
+        "editor.suggestSelection": "first"
+      }
+    },
+    "languages": [
+      {
+        "id": "yaml",
+        "extensions": [
+          ".fountainrc"
+        ],
+        "icon": {
+          "light": "./assets/fountain-config-monochrome.svg",
+          "dark": "./assets/fountain-config-monochrome.svg"
+        }
+      },
+      {
+        "id": "fountain",
+        "aliases": [
+          "Fountain",
+          "fountain"
+        ],
+        "extensions": [
+          ".fountain",
+          ".spmd"
+        ],
+        "icon": {
+          "light": "./assets/fountain-logo-monochrome.svg",
+          "dark": "./assets/fountain-logo-monochrome.svg"
+        },
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "fountain",
+        "scopeName": "text.source.fountain",
+        "path": "./syntaxes/fountain.tmLanguage.json"
+      }
+    ]
+  }
 }
