@@ -23,6 +23,7 @@
 	"main": "./client/out/extension",
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
+		"build": "npm run compile",
 		"compile": "tsc -b",
 		"watch": "tsc -b -w",
 		"lint": "eslint ./client/src ./server/src ./webviews/src --ext .ts,.tsx",
