@@ -53,8 +53,8 @@ export class ScriptTimeline extends HTMLElement {
 		`;
 
 		const renderFn = this.render.bind(this);
-		this.zoomSlider = this.shadow.getElementById("zoom")! as HTMLInputElement;
-		this.zoomSlider.addEventListener("input", (e) => { renderFn(); });
+		this.zoomSlider = this.shadow.getElementById("zoom") as HTMLInputElement;
+		this.zoomSlider.addEventListener("input", () => { renderFn(); });
 		this.render();
 
 	}
@@ -72,7 +72,7 @@ export class ScriptTimeline extends HTMLElement {
 	private render() {
 		const totalDuration = this.entries.reduce((acc: number, it) => acc + it.Duration, 0);
 		const totalWidth = (totalDuration / parseFloat(this.zoomSlider.value)) * 3; // 30 minutes = 3rem
-		const container = this.shadow.getElementById('container')!;
+		const container = this.shadow.getElementById('container') as HTMLDivElement;
 		container.innerHTML = '';
 		return select(container)
 			.selectAll('div')

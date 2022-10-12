@@ -1,3 +1,4 @@
+import { CharacterStats } from './CharacterStats';
 import { formatTime } from './formatTime';
 
 type StatsResult = {
@@ -9,11 +10,11 @@ type StatsResult = {
 }
 
 type ChartElement = {
-	setEntries: (entries: any) => void;
-	setFormat: (entries: any) => void;
+	setEntries: (entries: unknown) => void;
+	setFormat: (entries: unknown) => void;
 }
 
-export function showRacialIdentityRepresentationStatistics(stats: { [key: string]: any; }[]) {
+export function showRacialIdentityRepresentationStatistics(stats: CharacterStats[]) {
 	const { durationBy, readingAgeBy, speakingRolesBy, sentimentBy , hasRacialIdentity} = generateRacialIdentityStats(stats);
 
 
@@ -40,15 +41,14 @@ export function showRacialIdentityRepresentationStatistics(stats: { [key: string
 	}
 }
 
-function generateRacialIdentityStats(stats: { [key: string]: any; }[]): StatsResult {
-	let totalDialogue = 0;
+function generateRacialIdentityStats(stats: CharacterStats[]): StatsResult {
 	const durationBy: { [racialIdentity: string]: number; } = {};
 	const readingAgeBy: { [racialIdentity: string]: number; } = {};
 	const speakingRolesBy: { [racialIdentity: string]: number; } = {};
 	const sentimentBy: { [racialIdentity: string]: number; } = {};
 	let hasRacialIdentity = false;
 	for (const characterStats of stats) {
-		const char = characterStats as any;
+		const char = characterStats;
 		const readingAge = char.ReadingAge as number;
 		const duration = char.Duration as number;
 		const sentiment = char.Sentiment as number;
@@ -61,7 +61,6 @@ function generateRacialIdentityStats(stats: { [key: string]: any; }[]): StatsRes
 		racialIdentity = racialIdentity[0].toLocaleUpperCase() + racialIdentity.slice(1);
 
 		durationBy[racialIdentity] = (durationBy[racialIdentity] || 0) + (duration || 0);
-		totalDialogue += (duration || 0);
 
 		const numChars = speakingRolesBy[racialIdentity] || 0;
 		const averageReadingAge = readingAgeBy[racialIdentity] || 0;

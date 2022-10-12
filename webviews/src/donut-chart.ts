@@ -24,12 +24,12 @@ export class DonutChart extends HTMLElement {
 		this.onChange = this.onChange.bind(this);
 		this.setFormat = this.setFormat.bind(this);
 		this.setEntries = this.setEntries.bind(this);
-		this.onChange(null);
+		this.onChange();
 
 	}
 
 	// add items to the list
-	onChange(e: Event | null) {
+	onChange() {
 		if (this.entries) {
 			// Compute values.
 			const N = this.names;
@@ -88,6 +88,7 @@ export class DonutChart extends HTMLElement {
 				.selectAll("text")
 				.data(arcs)
 				.join("text")
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				.attr("transform", d => `translate(${labelArc.centroid(d as any)})`)
 				.selectAll("tspan")
 				.data(d => {
@@ -101,7 +102,9 @@ export class DonutChart extends HTMLElement {
 				.text(d => d);
 			// appending the container to the shadow DOM
 			this.shadow.innerHTML = '';
-			this.shadow.appendChild(svg.node()!);
+			const node = svg.node();
+			if(node)
+				this.shadow.appendChild(node);
 		}
 	}
 
@@ -123,7 +126,7 @@ export class DonutChart extends HTMLElement {
 
 	setEntries(newEntries: { [key: string]: number }) {
 		this.setAttribute('entries', JSON.stringify(newEntries));
-		this.onChange(null);
+		this.onChange();
 	}
 
 	
@@ -170,7 +173,7 @@ export class DonutChart extends HTMLElement {
 		} else {
 			this.setAttribute('format', `[Function]`);
 		}
-		this.onChange(null);
+		this.onChange();
 	}
 
 	// array of names (the domain of the color scale)

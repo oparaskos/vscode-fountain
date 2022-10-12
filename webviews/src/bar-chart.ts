@@ -24,12 +24,12 @@ export class BarChart extends HTMLElement {
 		this.onChange = this.onChange.bind(this);
 		this.setFormat = this.setFormat.bind(this);
 		this.setEntries = this.setEntries.bind(this);
-		this.onChange(null);
+		this.onChange();
 
 	}
 
 	// add items to the list
-	onChange(e: Event | null) {
+	onChange() {
 		if (this.entries) {
 			// Construct scales and axes.
 			const xScale = this.xType(this.xDomain, this.xRange);
@@ -65,7 +65,7 @@ export class BarChart extends HTMLElement {
 				.data(this.I)
 				.join("rect")
 				.attr("x", xScale(this.min))
-				.attr("y", i => yScale(this.Y[i])!)
+				.attr("y", i => yScale(this.Y[i]) ?? 0)
 				.attr("class", i => `chart-series-colour-${i}`)
 				// .attr("fill", i => this.colors(this.Y[i]) as string)
 				.attr("width", i => xScale(this.X[i]) - xScale(this.min))
@@ -80,7 +80,7 @@ export class BarChart extends HTMLElement {
 				.data(this.I)
 				.join("text")
 				.attr("x", i => xScale(this.X[i]))
-				.attr("y", i => yScale(this.Y[i])! + yScale.bandwidth() / 2)
+				.attr("y", i => (yScale(this.Y[i]) ?? 0) + yScale.bandwidth() / 2)
 				.attr("dy", "0.35em")
 				.attr("dx", -4)
 				.text(this.title)
@@ -95,7 +95,9 @@ export class BarChart extends HTMLElement {
 
 			// appending the container to the shadow DOM
 			this.shadow.innerHTML = '';
-			this.shadow.appendChild(svg.node()!);
+			const node = svg.node();
+			if(node)
+				this.shadow.appendChild(node);
 		}
 	}
 
@@ -111,13 +113,13 @@ export class BarChart extends HTMLElement {
 	}
 
 
-	get entries(): object[] {
+	get entries(): {[k: string]: string | number}[] {
 		return JSON.parse(this.getAttribute('entries') || '[]') || [];
 	}
 
 	setEntries(newEntries: object[]) {
 		this.setAttribute('entries', JSON.stringify(newEntries));
-		this.onChange(null);
+		this.onChange();
 	}
 
 
@@ -147,20 +149,20 @@ export class BarChart extends HTMLElement {
 		} else {
 			this.setAttribute('format', `[Function]`);
 		}
-		this.onChange(null);
+		this.onChange();
 	}
 
 	// array of names (the domain of the color scale)
 	get names() { return Object.keys(this.entries); }
 
-	get quantitativeFunction() {
+	get quantitativeFunction(): (datum: {[key: string]: string | number}, index: number) => number {
 		const attributeValue = this.getAttribute("quantitativeFunction") || 'value';
-		return (datum: any, index: number) => datum[attributeValue];
+		return (d) => parseFloat(`${d[attributeValue]}`);
 	}
 
-	get ordinalFunction() {
+	get ordinalFunction(): (datum: {[key: string]: number | string}, index: number) => string {
 		const attributeValue = this.getAttribute("ordinalFunction") || 'label';
-		return (datum: any, index: number) => datum[attributeValue];
+		return (d) => `${d[attributeValue]}`;
 	}
 
 	get marginTop() {
@@ -201,10 +203,10 @@ export class BarChart extends HTMLElement {
 		return "currentColor";
 	}
 	get min() {
-		return Math.min(0, min(this.X));
+		return Math.min(0, min(this.X) ?? 0);
 	}
 	get xDomain() {
-		return [this.min, max(this.X)];
+		return [this.min, max(this.X) ?? 0];
 	}
 	get yDomain() {
 		return new InternSet(this.Y);

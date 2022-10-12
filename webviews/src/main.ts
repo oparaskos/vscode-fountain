@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CharacterStats } from './CharacterStats';
 import { formatTime } from './formatTime';
 import { showGenderRepresentationStatistics } from './genderRepresentation';
+import { LocationsStats } from './LocationsStats';
 import { showRacialIdentityRepresentationStatistics } from './racialIdentityRepresentation';
+import { ScenesStats } from './ScenesStats';
 
 const fountain = {
-	selections: {} as { [key: string]: any },
 	statistics: {
 		characters: [],
 		locations: [],
@@ -16,37 +19,17 @@ window.addEventListener("load", main);
 window.addEventListener("message", onMessage);
 
 function getPanels(id = "root-panel") {
-	return document.getElementById("root-panel") as unknown as { activeid: string };
+	return document.getElementById(id) as unknown as { activeid: string };
 }
 
 function getDataGrid(id: string) {
 	return document.getElementById(id) as HTMLElement & { rowsData: object[] };
 }
 
-function onSelectionChanged(name: string, i: number, rowData: object[]) {
-	const charactersPanel = document.querySelector("vscode-panel-view#view-characters");
-	if (charactersPanel) {
-		charactersPanel.getElementsByTagName("h3")[0].innerHTML = fountain.selections[name].Name;
-	}
-}
-
-function onRowElementClicked(name: string, i: number, rowData: object[]) {
-	return (evt: Event) => {
-		fountain.selections[name] = rowData[i - 1];
-		onSelectionChanged(name, i, rowData);
-	};
-}
 
 function updateTable(name: string, rowData: object[]) {
 	const dataGrid = getDataGrid(name);
 	dataGrid.rowsData = rowData;
-	setTimeout(() => {
-		const rowElements = dataGrid.getElementsByTagName("vscode-data-grid-row");
-		for (let i = 0; i < rowElements.length; ++i) {
-			const element = rowElements[i];
-			element.addEventListener("click", onRowElementClicked(name, i, rowData));
-		}
-	}, 1);
 }
 
 function describeDuration(dialogueActionRatio: number, duration : number) {
@@ -62,8 +45,8 @@ function describeDuration(dialogueActionRatio: number, duration : number) {
 
 }
 
-function updateScenesTable(stats: object[]) {
-	updateTable('grid-scenes', stats.map((row: any) => {
+function updateScenesTable(stats: ScenesStats[]) {
+	updateTable('grid-scenes', stats.map((row) => {
 		const dialogueRatio = row.DialogueDuration / row.Duration;
 		return {
             Name: row.Name,
@@ -81,8 +64,8 @@ function updateScenesTable(stats: object[]) {
 	if (badge) { badge.innerHTML = '' + stats.length; }
 }
 
-function updateLocationsTable(stats: object[]) {
-	updateTable('grid-locations', stats.map((row: any) => ({
+function updateLocationsTable(stats: LocationsStats[]) {
+	updateTable('grid-locations', stats.map((row) => ({
 		...row,
 		Duration: formatTime(row.Duration),
 	})));
@@ -100,18 +83,18 @@ function sentimentToEmoji(sentiment: number | null) {
 	return `${emoji[emojiIndex] || emoji[5]} (${sentiment.toFixed(1)})`;
 }
 
-function updateCharacterTable(stats: {[key: string]: any}[]) {
-	updateTable('grid-characters', stats.map((row: {[key: string]: any}) => ({
+function updateCharacterTable(stats: CharacterStats[]) {
+	updateTable('grid-characters', stats.map((row) => ({
 		"Name": row.Name,
-		"Gender": row.Gender.toUpperCase(),
+		"Gender": row.Gender?.toUpperCase(),
 		"Length & Duration": [
-			`${formatTime(row.Duration)}`,
+			`${row?.Duration ? formatTime(row.Duration) : ''}`,
 			`${row.Lines}\u00a0lines`,
 			`${row.Words}\u00a0words`,
 			`${row.Monologues}\u00a0monologues`
-		].join('\u00a0\u00ad\u00a0'),
+		].filter(v => !!v).join('\u00a0\u00ad\u00a0'),
 		"Reading Age": row.ReadingAge,
-		"Sentiment": sentimentToEmoji(row.Sentiment)
+		"Sentiment": row?.Sentiment ? sentimentToEmoji(row.Sentiment) : undefined
 	})));
 
 	const badge = document.querySelector("vscode-panel-tab#tab-characters > vscode-badge");

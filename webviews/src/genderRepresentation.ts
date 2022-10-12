@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CharacterStats } from './CharacterStats';
 import { formatTime } from './formatTime';
 
 type StatsResult = {
@@ -7,7 +9,7 @@ type StatsResult = {
 	sentimentByGender: { [gender: string]: number; } ;
 }
 
-export function showGenderRepresentationStatistics(stats: { [key: string]: any; }[]) {
+export function showGenderRepresentationStatistics(stats: CharacterStats[]) {
 	const { dialogueBalance, readingAgeByGender, numSpeakingRolesByGender, sentimentByGender } = generateCharacterStats(stats);
 
 	const genderDonutChart = (document.getElementById("characters-gender-dialogue") as any);
@@ -24,14 +26,13 @@ export function showGenderRepresentationStatistics(stats: { [key: string]: any; 
 	sentimentByGenderBarChart.setEntries(Object.keys(sentimentByGender).map(label => ({ label, value: sentimentByGender[label] })));
 }
 
-function generateCharacterStats(stats: { [key: string]: any; }[]): StatsResult {
-	let totalDialogue = 0;
+function generateCharacterStats(stats: CharacterStats[]): StatsResult {
 	const dialogueBalance: { [gender: string]: number; } = {};
 	const readingAgeByGender: { [gender: string]: number; } = {};
 	const numSpeakingRolesByGender: { [gender: string]: number; } = {};
 	const sentimentByGender: { [gender: string]: number; } = {};
 	for (const characterStats of stats) {
-		const char = characterStats as any;
+		const char = characterStats;
 		const readingAge = char.ReadingAge as number;
 		const duration = char.Duration as number;
 		const sentiment = char.Sentiment as number;
@@ -40,7 +41,6 @@ function generateCharacterStats(stats: { [key: string]: any; }[]): StatsResult {
 
 
 		dialogueBalance[gender] = (dialogueBalance[gender] || 0) + (duration || 0);
-		totalDialogue += (duration || 0);
 
 		const numChars = numSpeakingRolesByGender[gender] || 0;
 		const averageReadingAge = readingAgeByGender[gender] || 0;
