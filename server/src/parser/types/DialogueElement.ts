@@ -2,7 +2,6 @@ import { FountainElement } from "./FountainElement";
 import { FountainToken } from "./FountainTokenType";
 import Sentiment from 'sentiment';
 import readabilityScores from "readability-scores";
-import { Position } from 'vscode-languageserver';
 
 function mode(array: (number | undefined)[]): number | undefined {
     const mode: { [k: string]: number } = {};

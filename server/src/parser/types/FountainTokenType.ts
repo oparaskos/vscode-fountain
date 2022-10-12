@@ -1,5 +1,3 @@
-
-
 export interface SourceMapElement {
     file: string;
     start: CodeLocation;
@@ -50,7 +48,7 @@ export type FountainTokenType =
 export interface FountainToken {
     type: FountainTokenType;
     text?: string;
-    scene_number?: any;
+    scene_number?: string;
     depth?: number;
     dual?: 'left' |
 'right';

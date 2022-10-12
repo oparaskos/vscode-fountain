@@ -2,8 +2,6 @@ import * as vscode from 'vscode';
 import { readFile } from 'fs/promises';
 import { join, basename } from 'path';
 import { LanguageClient, RequestType } from 'vscode-languageclient/node';
-import { ClientRequest } from 'http';
-import { Console } from 'console';
 
 async function loadWebviewHtml(context: vscode.ExtensionContext, relativePath: string) {
 	const absolutePath = vscode.Uri.file(join(context.extensionPath, relativePath));
@@ -68,7 +66,7 @@ export async function updateWebviewStats(webview: vscode.Webview, client: Langua
 
 export function statsWebview(context: vscode.ExtensionContext, client: LanguageClient, uri: string) {
 	const watcher = vscode.workspace.createFileSystemWatcher('**/*.fountain*');
-	watcher.onDidChange((e) => {
+	watcher.onDidChange(() => {
 		updateWebviewStats(panel.webview, client, uri);
 	});
 	const panel = webviewPanel(context, uri, () => {
@@ -77,7 +75,7 @@ export function statsWebview(context: vscode.ExtensionContext, client: LanguageC
 	return panel.webview;
 }
 
-export function analyseCharacter(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
+export function analyseCharacter(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: string; name: string; }) => Promise<void> {
 	return async ({ uri, name }) => {
 		const webview = statsWebview(context, client, uri);
 		await updateWebviewStats(webview, client, uri);
@@ -85,7 +83,7 @@ export function analyseCharacter(context: vscode.ExtensionContext, client: Langu
 	};
 }
 
-export function analyseLocation(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
+export function analyseLocation(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: string; name: string; }) => Promise<void> {
 	return async ({ uri, name }) => {
 		const webview = statsWebview(context, client, uri);
 		await updateWebviewStats(webview, client, uri);
@@ -93,7 +91,7 @@ export function analyseLocation(context: vscode.ExtensionContext, client: Langua
 	};
 }
 
-export function analyseScene(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: any; name: any; }) => any  {
+export function analyseScene(context: vscode.ExtensionContext, client: LanguageClient): (args: { uri: string; name: string; }) => Promise<void> {
 	return async ({ uri, name }) => {
 		const webview = statsWebview(context, client, uri);
 		await updateWebviewStats(webview, client, uri);

@@ -10,7 +10,6 @@ import * as vscode from 'vscode';
 import {
 	LanguageClient,
 	LanguageClientOptions,
-	RequestType,
 	ServerOptions,
 	TransportKind
 } from 'vscode-languageclient/node';

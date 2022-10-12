@@ -1,15 +1,25 @@
 import { Position, Range } from 'vscode-languageserver';
-import { logger } from '../../logger';
 import { positionInRange } from '../../util/range';
 import { DialogueElement } from "./DialogueElement";
 import { FountainElement } from "./FountainElement";
 import { getElementsByType } from './getElementsByType';
 import { LocationType, SceneElement } from "./SceneElement";
 
+export interface CharacterStats {
+    Name: string;
+    References: number;
+    Duration?: number;
+    Lines?: number;
+    Words?: number;
+    ReadingAge?: number;
+    Monologues?: number;
+    Sentiment?: number;
+
+}
 
 export class FountainScript {
     private _characterNames: string[] | undefined;
-    private _characterStats: undefined | object[];
+    private _characterStats: undefined | CharacterStats[];
     private _dialogueByCharacters: {[k: string]: DialogueElement[]} | undefined;
     private _scenesByLocationName: {[k: string]: SceneElement[]} | undefined;
     constructor(
@@ -37,10 +47,10 @@ export class FountainScript {
             .flatMap(it => it.getElementsByPosition(position));
 	}
 
-    public get statsPerCharacter() {
+    public get statsPerCharacter(): CharacterStats[] {
         if (!this._characterStats) {
             const dialogueByCharacters = this.dialogueByCharacters;
-            const characters = Object.keys(dialogueByCharacters).map(characterName => {
+            const characters: CharacterStats[] = Object.keys(dialogueByCharacters).map(characterName => {
                 const dialogues = dialogueByCharacters[characterName];
                 try {
                     return this.generateCharacterDialogueStats(dialogues, characterName);
@@ -56,7 +66,7 @@ export class FountainScript {
         return this._characterStats;
     }
 
-    private generateCharacterDialogueStats(dialogues: DialogueElement[], characterName: string) {
+    private generateCharacterDialogueStats(dialogues: DialogueElement[], characterName: string): CharacterStats {
         const dialogueStats = dialogues.reduce((prev, curr) => ({
             Duration: prev.Duration + curr.duration,
             Lines: prev.Lines + curr.lines.length,

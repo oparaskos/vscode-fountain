@@ -3,21 +3,21 @@ import { _Connection } from 'vscode-languageserver';
 class VSCodeLogger {
 	public connection: _Connection | undefined;
 
-	log(message: string, ...attributes: any[]) {
+	log(message: string, ...attributes: unknown[]) {
 		if(this.connection) {
 			this.connection.console.log('LOG:   ' + message + '\n' + JSON.stringify(attributes));
 		} else {
 			console.log(message, ...attributes);
 		}
 	}
-	warn(message: string, ...attributes: any[]) {
+	warn(message: string, ...attributes: unknown[]) {
 		if(this.connection) {
 			this.connection.console.warn('WARN:  ' + message + '\n' + JSON.stringify(attributes));
 		} else {
 			console.warn(message, ...attributes);
 		}
 	}
-	error(message: string, ...attributes: any[]) {
+	error(message: string | unknown, ...attributes: unknown[]) {
 		if(this.connection) {
 			this.connection.console.error('ERROR: ' + message + '\n' + JSON.stringify(attributes));
 		} else {

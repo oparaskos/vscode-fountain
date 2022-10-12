@@ -20,7 +20,7 @@ export async function getDocumentation(topic: string): Promise<Hover> {
 			logger.trace(`No doc file at ${documentPath}`);
 		}
 		return EMPTY_DOCS;
-	} catch(e: any) {
+	} catch(e: unknown) {
 		logger.error('Could not load documentation', e);
 		return EMPTY_DOCS; // TODO:
 	}

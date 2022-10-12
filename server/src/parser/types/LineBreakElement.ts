@@ -1,4 +1,3 @@
-import { Position } from 'vscode-languageserver';
 import { FountainElement } from "./FountainElement";
 import { FountainToken } from "./FountainTokenType";
 

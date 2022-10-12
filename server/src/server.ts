@@ -14,8 +14,6 @@ import {
 	TextDocumentSyncKind,
 	InitializeResult,
 	Command,
-	Hover,
-	NullLogger,
 } from 'vscode-languageserver/node';
 import {
 	TextDocument
@@ -42,7 +40,6 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
-let hasDiagnosticRelatedInformationCapability = false;
 
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
@@ -54,11 +51,6 @@ connection.onInitialize((params: InitializeParams) => {
 	);
 	hasWorkspaceFolderCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.workspaceFolders
-	);
-	hasDiagnosticRelatedInformationCapability = !!(
-		capabilities.textDocument &&
-		capabilities.textDocument.publishDiagnostics &&
-		capabilities.textDocument.publishDiagnostics.relatedInformation
 	);
 
 	const result: InitializeResult = {
@@ -92,7 +84,7 @@ connection.onInitialized(() => {
 		connection.client.register(DidChangeConfigurationNotification.type, undefined);
 	}
 	if (hasWorkspaceFolderCapability) {
-		connection.workspace.onDidChangeWorkspaceFolders(_event => {
+		connection.workspace.onDidChangeWorkspaceFolders(() => {
 			connection.console.log('Workspace folder change event received.');
 		});
 	}
@@ -100,31 +92,31 @@ connection.onInitialized(() => {
 
 connection.onRequest("fountain.statistics.characters", async (params) => {
 	try {
-		const settings = await getDocumentSettings((params as any).uri);
-		const parsedScript = parsedDocuments[(params as any).uri];
+		const settings = await getDocumentSettings(params.uri);
+		const parsedScript = parsedDocuments[params.uri];
 		const result = parsedScript.statsPerCharacter;
 		if (settings.guessCharacterGenders) {
-			const fountainrc = await getFountainrc((params as any).uri);
-			return result.map((it: any) => ({
+			const fountainrc = await getFountainrc(params.uri);
+			return result.map((it) => ({
 				...it,
 				Gender: guessGender(it.Name, fountainrc),
 				RacialIdentity: findRacialIdentity(it.Name, fountainrc)
 			}));
 		}
 		return result;
-	} catch(e: any) {
-		connection.console.error(e.toString());
+	} catch(e: unknown) {
+		logger.error(e);
 	}
 });
 
 connection.onRequest("fountain.statistics.locations", async (params) => {
-	const parsedScript = parsedDocuments[(params as any).uri];
+	const parsedScript = parsedDocuments[params.uri];
 	const result = parsedScript.statsPerLocation;
 	return result;
 });
 
 connection.onRequest("fountain.statistics.scenes", async (params) => {
-	const parsedScript = parsedDocuments[(params as any).uri];
+	const parsedScript = parsedDocuments[params.uri];
 	const result = parsedScript.statsPerScene;
 	return result;
 });
@@ -190,13 +182,9 @@ documents.onDidChangeContent(change => {
 const parsedDocuments: { [uri: string]: FountainScript } = {};
 const lines: { [uri: string]: string[] } = {};
 
-function analyse(parsedScript: FountainScript) {
-	return;
-}
-
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	// In this simple example we get the settings for every validate run.
-	const settings = await getDocumentSettings(textDocument.uri);
+	// const settings = await getDocumentSettings(textDocument.uri);
 	// The validator creates diagnostics for all uppercase words length 2 and more
 	const text = textDocument.getText();
 	lines[textDocument.uri] = text.split(/\r\n|\n\r|\n|\r/);
@@ -204,15 +192,13 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	const parsedScript = parse(text);
 	parsedDocuments[textDocument.uri] = parsedScript;
 
-	analyse(parsedScript);
-
 	const diagnostics: Diagnostic[] = [];
 
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
 
-connection.onDidChangeWatchedFiles(async (change) => {
+connection.onDidChangeWatchedFiles(async () => {
 	// Monitored files have change in VSCode
 	// TODO: flush config cache...
 });

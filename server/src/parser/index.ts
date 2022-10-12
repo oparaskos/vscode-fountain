@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+// FIXME: I'm lazy
 /* eslint-disable @typescript-eslint/no-extra-non-null-assertion */
 /* eslint-disable no-case-declarations */
+
 // fountain-js 0.1.10
 // http://www.opensource.org/licenses/mit-license.php
 
@@ -29,14 +32,15 @@ const FountainRegexSection = /^(#+)(?: *)(.*)/;
 const FountainRegexSynopsis = /^(?:=(?!=+) *)(.*)/;
 const FountainRegexPageBreak = /^={3,}$/;
 const FountainRegexLineBreak = /^ {2}$/;
-const FountainRegexEmphasis = /(_|\*{1,3}|_\*{1,3}|\*{1,3}_)(.+)(_|\*{1,3}|_\*{1,3}|\*{1,3}_)/g;
-const FountainRegexBoldItalicUnderline = /(_{1}\*{3}(?=.+\*{3}_{1})|\*{3}_{1}(?=.+_{1}\*{3}))(.+?)(\*{3}_{1}|_{1}\*{3})/g;
-const FountainRegexBoldUnderline = /(_{1}\*{2}(?=.+\*{2}_{1})|\*{2}_{1}(?=.+_{1}\*{2}))(.+?)(\*{2}_{1}|_{1}\*{2})/g;
-const FountainRegexItalicUnderline = /(?:_{1}\*{1}(?=.+\*{1}_{1})|\*{1}_{1}(?=.+_{1}\*{1}))(.+?)(\*{1}_{1}|_{1}\*{1})/g;
-const FountainRegexBoldItalic = /(\*{3}(?=.+\*{3}))(.+?)(\*{3})/g;
-const FountainRegexBold = /(\*{2}(?=.+\*{2}))(.+?)(\*{2})/g;
-const FountainRegexItalic = /(\*{1}(?=.+\*{1}))(.+?)(\*{1})/g;
-const FountainRegexUnderline = /(_{1}(?=.+_{1}))(.+?)(_{1})/g;
+// TODO: handle formatting here or in the presentation layer?
+// const FountainRegexEmphasis = /(_|\*{1,3}|_\*{1,3}|\*{1,3}_)(.+)(_|\*{1,3}|_\*{1,3}|\*{1,3}_)/g;
+// const FountainRegexBoldItalicUnderline = /(_{1}\*{3}(?=.+\*{3}_{1})|\*{3}_{1}(?=.+_{1}\*{3}))(.+?)(\*{3}_{1}|_{1}\*{3})/g;
+// const FountainRegexBoldUnderline = /(_{1}\*{2}(?=.+\*{2}_{1})|\*{2}_{1}(?=.+_{1}\*{2}))(.+?)(\*{2}_{1}|_{1}\*{2})/g;
+// const FountainRegexItalicUnderline = /(?:_{1}\*{1}(?=.+\*{1}_{1})|\*{1}_{1}(?=.+_{1}\*{1}))(.+?)(\*{1}_{1}|_{1}\*{1})/g;
+// const FountainRegexBoldItalic = /(\*{3}(?=.+\*{3}))(.+?)(\*{3})/g;
+// const FountainRegexBold = /(\*{2}(?=.+\*{2}))(.+?)(\*{2})/g;
+// const FountainRegexItalic = /(\*{1}(?=.+\*{1}))(.+?)(\*{1})/g;
+// const FountainRegexUnderline = /(_{1}(?=.+_{1}))(.+?)(_{1})/g;
 const FountainRegexNewlineWithCarriageReturn = /\r\n|\r/g;
 
 function findLastNonWhitespace(tokens: FountainToken[]) {
@@ -197,7 +201,7 @@ function parseDialogue(token: FountainToken, tokens: FountainToken[], i: number,
     return [nextNonDialogue, dialogueElement];
 }
 
-function tokensBetween(tokens: Array<FountainToken>, index: number, end_type: string, predicate = (t: FountainToken, i: number) => true): [Array<FountainToken>, number] {
+function tokensBetween(tokens: Array<FountainToken>, index: number, end_type: string, predicate: (t: FountainToken, i: number) => boolean = () => true): [Array<FountainToken>, number] {
     const endIndex = tokens.findIndex((t, idx) => idx > index && t.type === end_type && predicate(t, idx));
     if (endIndex === -1) {
         const slice = tokens.slice(index + 1, tokens.length);
@@ -284,7 +288,7 @@ function extractToken(line: string, codeLocation: SourceMapElement, lastToken: F
                 meta = metaMatch[2];
                 text = text.replace(FountainRegexSceneNumber, '');
             }
-            return [{ type: 'scene_heading', line, codeLocation, text: text, scene_number: meta || undefined }];
+            return [{ type: 'scene_heading', line, codeLocation, text: text, scene_number: meta }];
         }
         return [];
     }

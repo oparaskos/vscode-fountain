@@ -25,7 +25,7 @@ export async function getConfig(documentUri: string) {
 			pathParts.pop();
 		}
 		return EMPTY_CONFIG;
-	} catch(e: any) {
+	} catch(e: unknown) {
 		logger.error('Could not load .fountainrc file', e);
 		return EMPTY_CONFIG; // TODO:
 	}

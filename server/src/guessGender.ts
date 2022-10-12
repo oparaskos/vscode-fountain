@@ -47,7 +47,7 @@ export function guessGender(rawName: string, config: GenderGuesserConfig) {
 		if (config?.characters?.[rawName]?.gender) return (config.characters[rawName].gender as string).toLowerCase();
 		// Guess based on common english names using a library TODO: find a more comprehensive one..
 		const name = rawName.toLocaleLowerCase().replace(/young|old|adult|kid/ig, '');
-		const initialGuess = getGender(name, config?.locale as any || 'en');
+		const initialGuess = getGender(name, supportedLocale(config));
 		if (initialGuess != 'unknown')
 			return initialGuess;
 		// If no luck look for clues by common gendered words -- problematic because 'postman' is often in place of 'postwoman'.
@@ -61,6 +61,15 @@ export function guessGender(rawName: string, config: GenderGuesserConfig) {
 		return 'unknown';
 	} catch(e) {
 		return 'unknown';
+	}
+}
+
+function supportedLocale(config: GenderGuesserConfig): "en" | "it" | undefined {
+	const configuredLocale = config?.locale;
+	if(["en", "it"].includes(configuredLocale)) {
+		return configuredLocale as "en" | "it";
+	} else {
+		return "en";
 	}
 }
 

@@ -22,15 +22,17 @@ const revisionDocumentation = `New revisions are generally printed on different-
 * Second Salmon Revision
 * Second Cherry Revision`;
 
-export function closingCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
+type CompletionHandler = (currentLine: string, parsedDocument: FountainScript) => CompletionItem[];
+
+export const closingCompletions: CompletionHandler = () => {
     return [
         { label: "FADE OUT.", kind: CompletionItemKind.Event },
         { label: "FADE TO BLACK.", kind: CompletionItemKind.Event },
         { label: "> BURN TO WHITE.", kind: CompletionItemKind.Event },
     ];
-}
+};
 
-export function characterCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
+export const characterCompletions: CompletionHandler = (_currentLine, parsedDocument) => {
     return [
         ...parsedDocument.characterNames.map(it => ({ label: it, kind: CompletionItemKind.Value })),
         { label: "(O.S.)", kind: CompletionItemKind.Snippet },
@@ -38,30 +40,31 @@ export function characterCompletions(currentLine: string, parsedDocument: Founta
         { label: "(V.O.)", kind: CompletionItemKind.Snippet },
         { label: "(on TV)", kind: CompletionItemKind.Snippet },
     ];
-}
+};
 
-export function dialogueCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
+
+export const dialogueCompletions: CompletionHandler = () => {
     return [
         { label: "(beat)", kind: CompletionItemKind.Snippet },
     ];
-}
+};
 
-export function openingCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
+export const openingCompletions: CompletionHandler = () => {
     return [
         { label: "FADE IN:", kind: CompletionItemKind.Event },
     ];
-}
+};
 
-export function sceneCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
+export const sceneCompletions: CompletionHandler = () => {
     return [
         { label: "INT. ", kind: CompletionItemKind.Class },
         { label: "EST. ", kind: CompletionItemKind.Class },
         { label: "EXT. ", kind: CompletionItemKind.Class },
         { label: "INT/EXT. ", kind: CompletionItemKind.Class },
     ];
-}
+};
 
-export function transitionCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
+export const transitionCompletions: CompletionHandler = () => {
     return [
         { label: "DISSOLVE TO:", kind: CompletionItemKind.Event },
         { label: "MATCH CUT TO:", kind: CompletionItemKind.Event },
@@ -75,9 +78,9 @@ export function transitionCompletions(currentLine: string, parsedDocument: Fount
         { label: "FADE TO:", kind: CompletionItemKind.Event },
         { label: "CUT TO:", kind: CompletionItemKind.Event }
     ];
-}
+};
 
-export function titlePageCompletions(currentLine: string, parsedDocument: FountainScript): CompletionItem[] {
+export const titlePageCompletions: CompletionHandler = (_currentLine, parsedDocument) => {
     const completions: CompletionItem[] = [];
     const titlePage = parsedDocument.children[0];
     const attributes = (titlePage as FountainTitlePage)?.attributes || {};
@@ -117,4 +120,4 @@ export function titlePageCompletions(currentLine: string, parsedDocument: Founta
     completions.push({ label: 'Footer', detail: "Header used throughout the document", documentation: "This will be printed in the bottom left of every single page, excluding the title page. Can also be set globally by the 'Page Footer' setting", kind: CompletionItemKind.Property });
 
     return completions;
-}
+};
