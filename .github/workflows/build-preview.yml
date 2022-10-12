@@ -17,12 +17,10 @@ jobs:
           cache: npm
       - id: current_version
         run: echo "::set-output name=version::$(npm pkg get version)"
-      - run: rm package-lock.json
       - run: npm --no-git-tag-version version ${{ steps.current_version.outputs.version }}-${{ github.run_number }}-nightly
-      - run: npm i
-      - uses: lannonbr/vsce-action@3.0.0
-        with:
-          args: package
+      - run: |
+          npm install
+          npx vsce package
       - name: Create Release
         uses: softprops/action-gh-release@v1
         env:
