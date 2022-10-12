@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/oparaskos/vscode-fountain/compare/v1.1.0...v1.2.0) (2022-10-12)
+
+
+### Features
+
+* **release:** vsix release on release ([cfc031c](https://github.com/oparaskos/vscode-fountain/commit/cfc031c542a2dc38399462320a163f93b221ed5f))
+
 # [1.1.0](https://github.com/oparaskos/vscode-fountain/compare/v1.0.0...v1.1.0) (2022-10-12)
 
 
