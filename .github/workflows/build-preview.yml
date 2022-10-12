@@ -16,7 +16,7 @@ jobs:
           node-version: 16.x
           cache: npm
       - id: current_version
-        run: echo "::set-output name=version::$(npm pkg get version)"
+        run: echo "::set-output name=version::$(npm pkg get version | tr -d \")"
       - run: npm --no-git-tag-version version ${{ steps.current_version.outputs.version }}-${{ github.run_number }}-nightly
       - run: |
           npm install
