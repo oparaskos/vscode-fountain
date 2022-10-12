@@ -17,7 +17,7 @@ jobs:
           cache: npm
       - id: current_version
         run: echo "::set-output name=version::$(npm pkg get version | tr -d \")"
-      - run: npm --no-git-tag-version version ${{ steps.current_version.outputs.version }}-${{ github.run_number }}-nightly
+      - run: npm --no-git-tag-version version ${{ steps.current_version.outputs.version }}-nightly-${{ github.run_number }}
       - run: |
           npm install
           npx vsce package
@@ -26,7 +26,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          release_name: Nightly Build ${{ github.run_number }}
+          tag: ${{ steps.current_version.outputs.version }}-nightly-${{ github.run_number }}
+          name: Nightly Build ${{ github.run_number }}
           draft: false
           prerelease: true
-          files: ./vscode-github-actions-${{ steps.current_version.outputs.version }}-${{ github.run_number }}-nightly.vsix
+          files: ./vscode-github-actions-${{ steps.current_version.outputs.version }}-nightly-${{ github.run_number }}.vsix
