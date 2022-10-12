@@ -20,7 +20,9 @@ jobs:
       - run: rm package-lock.json
       - run: npm --no-git-tag-version version ${{ steps.current_version.outputs.version }}-${{ github.run_number }}-nightly
       - run: npm i
-      - run: npm run package
+      - uses: lannonbr/vsce-action@3.0.0
+        with:
+          args: package
       - name: Create Release
         uses: softprops/action-gh-release@v1
         env:
