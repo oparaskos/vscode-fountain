@@ -1,6 +1,6 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/oparaskos/vscode-fountain/badge)](https://www.codefactor.io/repository/github/oparaskos/vscode-fountain)
 
-# <img src="./assets/fountain-logo-monochrome.svg" alt="icon" width="36" style="display: inline; margin-bottom: -10px"/> Fountain Language Server and Client
+# <img src="https://github.com/oparaskos/vscode-fountain/blob/main/assets/fountain-logo-monochrome@1x.png" alt="icon" width="36" style="display: inline; margin-bottom: -10px"/> Fountain Language Server and Client
 
 ## Functionality
 
