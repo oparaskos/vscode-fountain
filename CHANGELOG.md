@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/oparaskos/vscode-fountain/compare/v1.4.0...v1.5.0) (2022-10-13)
+
+
+### Features
+
+* **ci:** fix .releaserc github plugin configuration ([197fc90](https://github.com/oparaskos/vscode-fountain/commit/197fc902a9e5b876add071da146411899fa5f0a1))
+
 # [1.4.0](https://github.com/oparaskos/vscode-fountain/compare/v1.3.0...v1.4.0) (2022-10-13)
 
 
