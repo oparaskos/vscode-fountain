@@ -2,6 +2,7 @@
   "name": "fountain-lsp",
   "description": "Fountain Lanuage Server",
   "author": "Oliver Paraskos",
+  "icon": "./assets/fountain-logo-monochrome@1x.png",
   "license": "MIT",
   "version": "1.5.0",
   "repository": {
