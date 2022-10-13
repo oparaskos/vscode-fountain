@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/oparaskos/vscode-fountain/compare/v1.5.0...v1.5.1) (2022-10-13)
+
+
+### Bug Fixes
+
+* **icon:** Add icon ([2376206](https://github.com/oparaskos/vscode-fountain/commit/23762061e4ab35beebc4c439f1dff9bdbe13ad75))
+
 # [1.5.0](https://github.com/oparaskos/vscode-fountain/compare/v1.4.0...v1.5.0) (2022-10-13)
 
 
