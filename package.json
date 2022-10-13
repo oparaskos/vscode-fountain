@@ -6,7 +6,7 @@
   "icon": "assets/fountain-logo-monochrome@1x.png",
   "main": "./client/dist/main",
   "license": "MIT",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/oparaskos/vscode-fountain"

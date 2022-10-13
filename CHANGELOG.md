@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/oparaskos/vscode-fountain/compare/v1.5.2...v1.6.0) (2022-10-13)
+
+
+### Features
+
+* **bundle:** Bundle the extension in parts ([576dd8e](https://github.com/oparaskos/vscode-fountain/commit/576dd8e7897b3f28cf3c96ed753e2ee84965acff))
+
 ## [1.5.2](https://github.com/oparaskos/vscode-fountain/compare/v1.5.1...v1.5.2) (2022-10-13)
 
 
