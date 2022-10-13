@@ -20,10 +20,15 @@
 	},
 	"scripts": {
 		"compile": "tsc",
-		"build": "esbuild ./src/index.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap"
+		"build": "esbuild ./src/index.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap",
+		"test": "ts-mocha -p tsconfig.json src/**/*.test.ts"
 	},
 	"devDependencies": {
+		"@types/expect": "^24.3.0",
+		"@types/mocha": "^10.0.0",
 		"@types/sentiment": "^5.0.1",
-		"esbuild": "^0.15.10"
+		"esbuild": "^0.15.10",
+		"mocha": "^10.0.0",
+		"ts-mocha": "^10.0.0"
 	}
 }
