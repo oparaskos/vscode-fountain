@@ -5,6 +5,10 @@
 **/tsconfig.json
 **/tsconfig.base.json
 CONTRIBUTING.md
+
+webviews/node_modules/**
+webviews/out/**
+
 client/node_modules/**
 !client/node_modules/vscode-jsonrpc/**
 !client/node_modules/vscode-languageclient/**

@@ -14,14 +14,15 @@ jobs:
       with:
         node-version: 16.x
         cache: npm
-    - name: npm install, build
+    - name: Build and Package
       run: |
         npm ci
         npm run build
         npx vsce package
       env:
         CI: true
-    - uses: cycjimmy/semantic-release-action@v2
+    - name: Automatic Semantic Release
+      uses: cycjimmy/semantic-release-action@v2
       id: semantic
       with:
         extra_plugins: |
@@ -30,7 +31,7 @@ jobs:
         branch: main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Do something when a new release published
+    - name: Publish to Visual Studio Marketplace
       if: steps.semantic.outputs.new_release_published == 'true'
       run: |
         npx vsce publish

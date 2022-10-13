@@ -5,7 +5,6 @@ on:
   schedule:
     - cron: "1 0 * * *"
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,8 +19,8 @@ jobs:
       - run: npm --no-git-tag-version version ${{ steps.current_version.outputs.version }}-nightly-${{ github.run_number }}
       - run: |
           npm install
-          npx vsce package
-      - name: Create Release
+          npx vsce package --pre-release
+      - name: Create Nightly Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
