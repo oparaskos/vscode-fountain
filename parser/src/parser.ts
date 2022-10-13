@@ -27,7 +27,8 @@ import { tokenize } from './tokenize';
 
 type FountainElementConstructor<T extends FountainElement> = new (tokens: FountainToken[]) => T;
 function instanceOfConstructor<T extends FountainElement>(cns: FountainElementConstructor<T>, b: unknown): b is T{
-    return !!b && cns.prototype === b?.constructor?.prototype;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return cns.prototype === (b as any)?.constructor?.prototype;
 }
 
 

@@ -22,4 +22,5 @@ export { LineBreakElement } from "./types/LineBreakElement";
 export { SynopsesElement } from "./types/SynopsesElement";
 export { BoneyardElement } from "./types/BoneyardElement";
 export { NotesElement } from "./types/NotesElement";
-export { parse, tokenize } from './parser';
+export { parse } from './parser';
+export { tokenize } from './tokenize';
