@@ -26,7 +26,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag: ${{ steps.current_version.outputs.version }}-nightly-${{ github.run_number }}
+          tag_name: ${{ steps.current_version.outputs.version }}-nightly-${{ github.run_number }}
           name: Nightly Build ${{ github.run_number }}
           draft: false
           prerelease: true
