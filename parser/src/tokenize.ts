@@ -30,8 +30,20 @@ function findLastNonWhitespace(tokens: FountainToken[]) {
 
 
 function matchCharacter(isFollowedByBlankLine: boolean, lastToken: FountainToken | undefined, line: string, codeLocation: SourceMapElement): FountainToken[] | false {
+    // A Character element is any line entirely in uppercase, with one empty line before it and without an empty line after it.
+    // Power User: You can force a Character element by preceding it with the "at" symbol @.
     if (!isFollowedByBlankLine && lastToken?.type === 'line_break' && line.toUpperCase() === line) {
         return [{ type: 'character', line, codeLocation, text: line.replace(/^@/, '') }];
+    }
+    // Parentheticals follow a Character or Dialogue element, and are wrapped in parentheses ().
+    if ((lastToken?.type === 'character' || lastToken?.type === 'dialogue')
+        && (line.trim().startsWith('(') && line.trim().endsWith(')'))) {
+        return [{ type: 'parenthetical', line, codeLocation, text: line.replace(/^\(|\)$/g, '') }];
+    }
+
+    // Dialogue is any text following a Character or Parenthetical element.
+    if (lastToken?.type === 'character' || lastToken?.type === 'parenthetical' || lastToken?.type === 'dialogue') {
+        return [{ type: 'dialogue', line, codeLocation, text: line }];
     }
     return false;
 }
@@ -175,21 +187,9 @@ function extractMultilineCommentTokens(
     }
 
     // title page
-    if (!lastNonWhitespaceToken || lastNonWhitespaceToken.type === 'title_page' ) {
-        const colonLocation = line.indexOf(':');
-        if (colonLocation > -1) {
-            return [{
-                type: 'title_page',
-                line,
-                key: line.substring(0, colonLocation).trim(),
-                text: line.substring(colonLocation + 1).trim(),
-                codeLocation: codeLocation,
-            }];
-        } else if (lastToken?.type === 'title_page') {
-            // title page values can have newlines so this must be a continuation of a previous property
-            lastToken.text += '\n' + line;
-            lastToken.codeLocation.end = codeLocation.end;
-        }
+    const titlePage = extractTitlePage(lastNonWhitespaceToken, line, codeLocation, lastToken);
+    if(titlePage ) {
+        return titlePage;
     }
 
     if (line.trim().length === 0) {
@@ -235,21 +235,9 @@ function extractMultilineCommentTokens(
     }
 
     // character
-    // A Character element is any line entirely in uppercase, with one empty line before it and without an empty line after it.
-    // Power User: You can force a Character element by preceding it with the "at" symbol @.
     const character = matchCharacter(isFollowedByBlankLine, lastToken, line, codeLocation);
     if(character) return character;
 
-    // Parentheticals follow a Character or Dialogue element, and are wrapped in parentheses ().
-    if ((lastToken?.type === 'character' || lastToken?.type === 'dialogue')
-        && (line.trim().startsWith('(') && line.trim().endsWith(')'))) {
-        return [{ type: 'parenthetical', line, codeLocation, text: line.replace(/^\(|\)$/g, '') }];
-    }
-
-    // Dialogue is any text following a Character or Parenthetical element.
-    if (lastToken?.type === 'character' || lastToken?.type === 'parenthetical' || lastToken?.type === 'dialogue') {
-        return [{ type: 'dialogue', line, codeLocation, text: line }];
-    }
 
 
     // synopsis
@@ -269,6 +257,26 @@ function extractMultilineCommentTokens(
     }
 
     return [{ type: 'action', text: line, line, codeLocation }];
+}
+
+function extractTitlePage(lastNonWhitespaceToken: FountainToken | undefined, line: string, codeLocation: SourceMapElement, lastToken: FountainToken | undefined): FountainToken[] | false {
+    if (!lastNonWhitespaceToken || lastNonWhitespaceToken.type === 'title_page') {
+        const colonLocation = line.indexOf(':');
+        if (colonLocation > -1) {
+            return [{
+                type: 'title_page',
+                line,
+                key: line.substring(0, colonLocation).trim(),
+                text: line.substring(colonLocation + 1).trim(),
+                codeLocation: codeLocation,
+            }];
+        } else if (lastToken?.type === 'title_page') {
+            // title page values can have newlines so this must be a continuation of a previous property
+            lastToken.text += '\n' + line;
+            lastToken.codeLocation.end = codeLocation.end;
+        }
+    }
+    return false;
 }
 
 function forcesElementType(line: string, codeLocation: SourceMapElement): FountainToken[] | false {
