@@ -24,7 +24,7 @@ function getExtension<T>(extensionId: string): vscode.Extension<T> {
  * Activates the vscode.lsp-sample extension
  */
 export async function activate(docUri: vscode.Uri) {
-	const ext = getExtension('vscode-samples.fountain-lsp');
+	const ext = getExtension('OliverParaskos.fountain-lsp');
 	await ext.activate();
 	try {
 		doc = await vscode.workspace.openTextDocument(docUri);
@@ -35,16 +35,9 @@ export async function activate(docUri: vscode.Uri) {
 	}
 }
 
-async function sleep(ms: number) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-export const getDocPath = (p: string) => {
-	return path.resolve(__dirname, '../../testFixture', p);
-};
-export const getDocUri = (p: string) => {
-	return vscode.Uri.file(getDocPath(p));
-};
+export const sleep = async(ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const getDocPath = (p: string) => path.resolve(__dirname, '../../testFixture', p);
+export const getDocUri = (p: string) => vscode.Uri.file(getDocPath(p));
 
 export async function setTestContent(content: string): Promise<boolean> {
 	const all = new vscode.Range(

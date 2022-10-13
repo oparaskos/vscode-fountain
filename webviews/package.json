@@ -4,6 +4,7 @@
   "description": "Webviews for Fountain Language Server Extension",
   "version": "0.0.1",
   "scripts": {
+		"test": "echo noop",
     "vscode:prepublish": "npm run build",
     "build": "webpack",
     "watch": "webpack --watch"

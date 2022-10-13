@@ -24,6 +24,7 @@
 		"yaml": "^2.1.2"
 	},
 	"scripts": {
+		"test": "echo noop",
 		"build": "esbuild ./src/server.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap"
 	},
 	"devDependencies": {

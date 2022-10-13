@@ -6,23 +6,30 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { getDocUri, activate } from './helper';
+import { CompletionItemKind } from 'vscode-languageclient';
 
 suite('Should do completion', () => {
-	const docUri = getDocUri('completion.txt');
+	const docUri = getDocUri('completion.fountain');
 
-	test('Completes JS/TS in txt file', async () => {
-		await testCompletion(docUri, new vscode.Position(0, 0), {
-			items: [
-				{ label: 'JavaScript', kind: vscode.CompletionItemKind.Text },
-				{ label: 'TypeScript', kind: vscode.CompletionItemKind.Text }
-			]
-		});
+	test('Complete Title Page Properties', async () => {
+		await testCompletion(docUri,
+			new vscode.Position(0, 0),
+			false,
+			{
+				items: [
+					{ label: 'Author', kind: CompletionItemKind.Module },
+					{ label: 'Title', kind: CompletionItemKind.Module },
+					{ label: 'Source', kind: CompletionItemKind.Module },
+					{ label: 'Revision', kind: CompletionItemKind.Module }
+				]
+			});
 	});
 });
 
 async function testCompletion(
 	docUri: vscode.Uri,
 	position: vscode.Position,
+	exclusive: boolean,
 	expectedCompletionList: vscode.CompletionList
 ) {
 	await activate(docUri);
@@ -34,10 +41,18 @@ async function testCompletion(
 		position
 	)) as vscode.CompletionList;
 
-	assert.ok(actualCompletionList.items.length >= 2);
-	expectedCompletionList.items.forEach((expectedItem, i) => {
-		const actualItem = actualCompletionList.items[i];
-		assert.equal(actualItem.label, expectedItem.label);
-		assert.equal(actualItem.kind, expectedItem.kind);
-	});
+	try {
+		if (exclusive) assert.ok(actualCompletionList.items.length >= 2);
+		expectedCompletionList.items.forEach((expectedItem) => {
+			const actualItem = actualCompletionList.items.find(it => it.label === expectedItem.label);
+			assert.ok(actualItem);
+			if(expectedItem.kind) assert.equal(actualItem.kind, expectedItem.kind);
+		});
+	} catch(e) {
+		throw new assert.AssertionError({
+			message: e.message,
+			actual: actualCompletionList.items.map(item => ({label: item.label, kind: item.kind})),
+			expected: expectedCompletionList.items.map(item => ({label: item.label, kind: item.kind}))
+		});
+	}
 }
