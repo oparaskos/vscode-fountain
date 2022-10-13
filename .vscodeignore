@@ -1,4 +1,10 @@
 .vscode/**
+.vscode-test/
+
+/node_modules/**
+
+*.vsix
+
 **/*.ts
 **/*.map
 .gitignore

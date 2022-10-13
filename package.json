@@ -11,7 +11,7 @@
     "type": "git",
     "url": "https://github.com/oparaskos/vscode-fountain"
   },
-  "publisher": "oliverparaskos",
+  "publisher": "OliverParaskos",
   "categories": [],
   "keywords": [
     "fountain",
@@ -30,7 +30,9 @@
     "watch": "tsc -b -w",
     "lint": "eslint ./client/src ./server/src ./webviews/src --ext .ts,.tsx",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd ../webviews && npm install && cd ..",
-    "test": "sh ./scripts/e2e.sh"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "concurrently 'cd parser && npm run test' 'cd client && npm run test' 'cd server && npm run test' 'cd webviews && npm run test'",
+    "test:e2e": "sh ./scripts/e2e.sh"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.0",

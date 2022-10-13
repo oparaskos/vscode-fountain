@@ -1,10 +1,10 @@
-import { Position } from 'vscode-languageserver';
-import { logger } from '../../logger';
-import { positionInRange, tokensToRange } from '../../util/range';
+import { positionInRange, tokensToRange } from '../range';
 import { FountainToken } from "./FountainTokenType";
+import { EmptyLogger, ILogger } from './ILogger';
+import { Position } from './Position';
 
 export abstract class FountainElement<T extends string = string> {
-    constructor(public type: T, public tokens: FountainToken[]) { }
+    constructor(public type: T, public tokens: FountainToken[], public logger: ILogger = EmptyLogger) { }
 
     public get textContent() {
         return this.tokens.map(t => t.text).join(" ");
@@ -12,7 +12,7 @@ export abstract class FountainElement<T extends string = string> {
 
     public get range() {
         const range = tokensToRange(this.tokens);
-        logger.log(`FountainElement: ${JSON.stringify(range)}`);
+        this.logger.log(`FountainElement: ${JSON.stringify(range)}`);
         return range;
     }
 

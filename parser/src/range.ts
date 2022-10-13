@@ -1,5 +1,6 @@
-import { Position, Range } from "vscode-languageserver";
-import { FountainToken } from "fountain-parser";
+import { Position } from "./types/Position";
+import { FountainToken } from './types/FountainTokenType';
+import { Range } from './types/Range';
 
 export function tokensToRange(tokens: FountainToken[]): Range {
     const start = tokens[0].codeLocation.start;
