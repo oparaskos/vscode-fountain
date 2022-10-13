@@ -4,38 +4,21 @@
 
 # <img src="https://raw.githubusercontent.com/oparaskos/vscode-fountain/main/assets/fountain-logo-monochrome%401x.png" alt="icon" width="36" style="display: inline; margin-bottom: -10px"/> Fountain Language Server and Client
 
-## Functionality
+This is a Language Server extension for [fountain](https://fountain.io/) files.
 
-This Language Server works for fountain files. It has the following language features:
-- Completions
-<!-- - Diagnostics regenerated on each file change or configuration change -->
+**Fountain** is a simple markup syntax for writing, editing and sharing screenplays in plain, human-readable text. Fountain allows you to work on your screenplay anywhere, on any computer or tablet, using any software that edits text files.
 
-<!-- It also includes an End-to-End test. -->
+## Features
 
-## Folder Structure
+* Full Syntax highlighting
+* Smart Auto-Completions
+* Fountain Syntax help on Hover
+* Screenplay Statistics Webview
 
-```
-.
-├── client // Language Client
-│   ├── src
-│   │   ├── test // End to End tests for Language Client / Server
-│   │   └── extension.ts // Language Client entry point
-├── package.json // The extension manifest.
-├── syntaxes // The extension manifest.
-│   └── fountain.tmLanguage.json // Grammar for syntax highlighting
-├── server // Language Server
-│   └── src
-│       └── server.ts // Language Server entry point
-└── webviews // VSCode UI Framework Webview, shows stats etc.
-```
+## Thanks / Third-party licenses
 
-## Running the Language Server and Extension
+* Syntax highlighting thanks to a modified version of the .tmlanguage for [fountain-sublime-text](https://github.com/poritsky/fountain-sublime-text) by [Jonathan Poritsky](https://github.com/poritsky) (modified by [Piers Deseilligny](https://github.com/piersdeseilligny) for [betterfountain](https://github.com/piersdeseilligny/betterfountain))
 
-- Run `npm install` in this folder. This installs all necessary npm modules in both the client and server folder
-- Open VS Code on this folder.
-- Press Ctrl+Shift+B to start compiling the client and server in [watch mode](https://code.visualstudio.com/docs/editor/tasks#:~:text=The%20first%20entry%20executes,the%20HelloWorld.js%20file.).
-- Switch to the Run and Debug View in the Sidebar (Ctrl+Shift+D).
-- Select `Launch Client` from the drop down (if it is not already).
-- Press ▷ to run the launch config (F5).
-- If you want to debug the server as well, use the launch configuration `Attach to Server`
-- In the [Extension Development Host](https://code.visualstudio.com/api/get-started/your-first-extension#:~:text=Then%2C%20inside%20the%20editor%2C%20press%20F5.%20This%20will%20compile%20and%20run%20the%20extension%20in%20a%20new%20Extension%20Development%20Host%20window.) instance of VSCode, open a document in 'fountain' language mode.
+* The statistics panel uses [d3](https://d3js.org/), covered by the [BSD-3-Clause License](https://github.com/d3/d3/blob/master/LICENSE).
+
+* The project was built using Microsoft's language server example extension as a boilerplate.
