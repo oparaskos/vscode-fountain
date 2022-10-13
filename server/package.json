@@ -1,5 +1,6 @@
 {
 	"name": "fountain-lsp-server",
+	"private": true,
 	"description": "Example implementation of a language server in node.",
 	"version": "1.0.0",
 	"author": "Microsoft Corporation",
@@ -21,8 +22,11 @@
 		"vscode-uri": "^3.0.6",
 		"yaml": "^2.1.2"
 	},
-	"scripts": {},
+	"scripts": {
+		"build": "esbuild ./src/server.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap"
+	},
 	"devDependencies": {
-		"@types/sentiment": "^5.0.1"
+		"@types/sentiment": "^5.0.1",
+		"esbuild": "^0.15.10"
 	}
 }

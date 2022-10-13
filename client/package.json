@@ -1,10 +1,14 @@
 {
 	"name": "fountain-lsp-client",
+	"private": true,
 	"description": "Fountain Language Server Client",
 	"author": "",
 	"license": "MIT",
 	"version": "0.0.1",
 	"publisher": "vscode",
+	"scripts": {
+		"build": "esbuild ./src/extension.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap"
+	},
 	"engines": {
 		"vscode": "^1.63.0"
 	},
@@ -13,9 +17,7 @@
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.63.0",
-		"@vscode/test-electron": "^2.1.2"
+		"@vscode/test-electron": "^2.1.2",
+		"esbuild": "^0.15.10"
 	}
 }
-
-
-

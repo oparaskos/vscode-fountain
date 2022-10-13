@@ -1,32 +1,12 @@
 {
-  "name": "hello-world",
-  "displayName": "hello-world",
-  "description": "A hello world sample extension to show off the Webview UI Toolkit for Visual Studio Code.",
+  "name": "fountain-lsp-webviews",
+  "private": true,
+  "description": "Webviews for Fountain Language Server Extension",
   "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.46.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onCommand:hello-world.showHelloWorld"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "hello-world.showHelloWorld",
-        "title": "Hello World: Show"
-      }
-    ]
-  },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts"
+    "vscode:prepublish": "npm run build",
+    "build": "webpack",
+    "watch": "webpack --watch"
   },
   "devDependencies": {
     "@types/d3": "^7.4.0",

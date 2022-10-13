@@ -8,11 +8,11 @@ CONTRIBUTING.md
 
 webviews/node_modules/**
 webviews/out/**
+!webviews/node_modules/@vscode/webview-ui-toolkit
+!webviews/node_modules/@vscode/codicons
 
 client/node_modules/**
-!client/node_modules/vscode-jsonrpc/**
-!client/node_modules/vscode-languageclient/**
-!client/node_modules/vscode-languageserver-protocol/**
-!client/node_modules/vscode-languageserver-types/**
-!client/node_modules/{minimatch,brace-expansion,concat-map,balanced-match}/**
-!client/node_modules/{semver,lru-cache,yallist}/**
+client/out/**
+
+server/node_modules/**
+server/out/**

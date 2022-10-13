@@ -1,8 +1,10 @@
 {
   "name": "fountain-lsp",
-  "description": "Fountain Lanuage Server",
+  "displayName": "Fountain Scriptwriting",
+  "description": "Fountain Lanuage Server and Client for Visual Studio Code",
   "author": "Oliver Paraskos",
   "icon": "assets/fountain-logo-monochrome@1x.png",
+  "main": "./client/dist/main",
   "license": "MIT",
   "version": "1.5.2",
   "repository": {
@@ -21,10 +23,9 @@
   "activationEvents": [
     "onLanguage:fountain"
   ],
-  "main": "./client/out/extension",
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "build": "npm run compile",
+    "vscode:prepublish": "npm run build",
+    "build": "concurrently 'cd webviews && npm run build' 'cd server && npm run build' 'cd client && npm run build'",
     "compile": "concurrently 'tsc -b' 'cd webviews && npm run compile'",
     "watch": "tsc -b -w",
     "lint": "eslint ./client/src ./server/src ./webviews/src --ext .ts,.tsx",
