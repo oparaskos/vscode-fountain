@@ -2,7 +2,7 @@
 [![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/OliverParaskos.fountain-lsp)](https://marketplace.visualstudio.com/items?itemName=OliverParaskos.fountain-lsp)
 [![CodeFactor](https://www.codefactor.io/repository/github/oparaskos/vscode-fountain/badge)](https://www.codefactor.io/repository/github/oparaskos/vscode-fountain)
 
-# <img src="https://github.com/oparaskos/vscode-fountain/blob/main/assets/fountain-logo-monochrome@1x.png" alt="icon" width="36" style="display: inline; margin-bottom: -10px"/> Fountain Language Server and Client
+# <img src="https://raw.githubusercontent.com/oparaskos/vscode-fountain/main/assets/fountain-logo-monochrome%401x.png" alt="icon" width="36" style="display: inline; margin-bottom: -10px"/> Fountain Language Server and Client
 
 ## Functionality
 
