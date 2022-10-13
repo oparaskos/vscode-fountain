@@ -25,7 +25,7 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "build": "npm run compile",
-    "compile": "tsc -b",
+    "compile": "concurrently 'tsc -b' 'cd webviews && npm run compile'",
     "watch": "tsc -b -w",
     "lint": "eslint ./client/src ./server/src ./webviews/src --ext .ts,.tsx",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd ../webviews && npm install && cd ..",
