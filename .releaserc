@@ -15,8 +15,8 @@ plugins:
       chore(release): ${nextRelease.version}
 
       ${nextRelease.notes}
-- "@semantic-release/github":
-    assets:
-      - path: "**/*.vsix"
-        label: "Visual Studio Extension Package"
+- - "@semantic-release/github":
+  - assets:
+    - path: "**/*.vsix"
+      label: "Visual Studio Extension Package"
       
