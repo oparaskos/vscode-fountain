@@ -1,6 +1,5 @@
 import { TextDocumentPositionParams } from "vscode-languageserver";
-import { FountainScript } from "../parser/types";
-import { FountainTitlePage } from "../parser/types/FountainTitlePage";
+import { FountainScript, FountainTitlePage } from "fountain-parser";
 import { tokensToRange, positionInRange } from './range';
 
 

@@ -1,8 +1,9 @@
-import { Position, Range } from 'vscode-languageserver';
-import { positionInRange } from '../../util/range';
+import { positionInRange } from '../range';
 import { DialogueElement } from "./DialogueElement";
 import { FountainElement } from "./FountainElement";
 import { getElementsByType } from './getElementsByType';
+import { Position } from './Position';
+import { Range } from './Range';
 import { LocationType, SceneElement } from "./SceneElement";
 
 export interface CharacterStats {
@@ -11,10 +12,7 @@ export interface CharacterStats {
     Duration?: number;
     Lines?: number;
     Words?: number;
-    ReadingAge?: number;
     Monologues?: number;
-    Sentiment?: number;
-
 }
 
 export class FountainScript {
@@ -71,15 +69,12 @@ export class FountainScript {
             Duration: prev.Duration + curr.duration,
             Lines: prev.Lines + curr.lines.length,
             Words: prev.Words + curr.words.length,
-            ReadingAge: curr.readingGrade != undefined ? Math.max(prev.ReadingAge, curr.readingGrade) : prev.ReadingAge,
             Monologues: prev.Monologues + (curr.duration > 30 ? 1 : 0),
-            Sentiment: prev.Sentiment + curr.sentiment,
-        }), { Duration: 0, Lines: 0, Words: 0, ReadingAge: 0, Monologues: 0, Sentiment: 0 });
+        }), { Duration: 0, Lines: 0, Words: 0, Monologues: 0 });
         return {
             Name: characterName,
             References: dialogues.length,
             ...dialogueStats,
-            Sentiment: dialogueStats.Sentiment / dialogues.length,
         };
     }
 
@@ -107,7 +102,6 @@ export class FountainScript {
             Synopsis: scene.synopsis,
             DialogueDuration: scene.dialogueDuration,
             ActionDuration: scene.actionDuration,
-            Sentiment: scene.sentiment,
         }));
     }
 

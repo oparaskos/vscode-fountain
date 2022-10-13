@@ -7,13 +7,13 @@
 ├── client // Language Client
 │   ├── src
 │   │   ├── test // End to End tests for Language Client / Server
-│   │   └── extension.ts // Language Client entry point
+│   │   └── extension.ts // Language Client entry point  (built to client/dist/main)
 ├── package.json // The extension manifest.
 ├── syntaxes // The extension manifest.
 │   └── fountain.tmLanguage.json // Grammar for syntax highlighting
 ├── server // Language Server
 │   └── src
-│       └── server.ts // Language Server entry point
+│       └── server.ts // Language Server entry point (built to server/dist/main)
 └── webviews // VSCode UI Framework Webview, shows stats etc.
 ```
 

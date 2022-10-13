@@ -1,5 +1,5 @@
 import { CodeLens, Range } from "vscode-languageserver";
-import { FountainScript } from "./parser/types";
+import { FountainScript } from "../../parser/types";
 
 export function dialogueLens(lines: string[], parsedScript: FountainScript, uri: string): CodeLens[] {
 	const dialogueByCharacters = parsedScript.dialogueByCharacters;

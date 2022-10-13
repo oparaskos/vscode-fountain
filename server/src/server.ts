@@ -18,8 +18,7 @@ import {
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
-import { parse } from './parser';
-import { FountainScript } from './parser/types';
+import { FountainScript, parse } from "fountain-parser";
 import { characterCompletions, closingCompletions, dialogueCompletions, openingCompletions, sceneCompletions, titlePageCompletions, transitionCompletions } from './completions';
 import { isTitlePage } from "./util/isTitlePage";
 import { dialogueLens, locationsLens, scenesLens } from './lenses';

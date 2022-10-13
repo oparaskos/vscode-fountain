@@ -1,35 +1,7 @@
 import { FountainElement } from "./FountainElement";
 import { FountainToken } from "./FountainTokenType";
-import Sentiment from 'sentiment';
-import readabilityScores from "readability-scores";
-
-function mode(array: (number | undefined)[]): number | undefined {
-    const mode: { [k: string]: number } = {};
-    let max = undefined, count = 0;
-
-    for (let i = 0; i < array.length; i++) {
-        const element = array[i];
-        if (element != undefined) {
-            const item = element.toFixed(0);
-
-            if (mode[item]) {
-                mode[item]++;
-            } else {
-                mode[item] = 1;
-            }
-
-            if (count < mode[item]) {
-                max = parseInt(item);
-                count = mode[item];
-            }
-        }
-    }
-
-    return max;
-}
 
 export class DialogueElement extends FountainElement<'dialogue'> {
-    
     constructor(
         public tokens: FountainToken[],
         public character: string,
@@ -40,21 +12,6 @@ export class DialogueElement extends FountainElement<'dialogue'> {
         super('dialogue', tokens);
     }
 
-    get readingGrade() {
-        const results = readabilityScores(this.dialogue);
-        const scores = [
-            results.daleChall,
-            results.ari,
-            results.colemanLiau,
-            results.fleschKincaid,
-            results.smog,
-            results.gunningFog,
-        ].filter(it => !!it)
-        .map(it => Math.max(it as number, 0));
-        const modalReadingGrade = mode(scores as number[]);
-        if(modalReadingGrade === undefined) return undefined;
-        return Math.min(22, Math.round(modalReadingGrade + 5));
-    }
     public get lines(): string[] {
         return this.dialogueTokens
             .filter(t => t.type === 'dialogue')
@@ -68,11 +25,6 @@ export class DialogueElement extends FountainElement<'dialogue'> {
 
     public get words(): string[] {
         return this.dialogue.split(/\s+/ig);
-    }
-
-    // Valence between negative five and positive five.
-    public get sentiment() {
-        return new Sentiment().analyze(this.dialogue).score;
     }
 
     // yoink: https://github.com/piersdeseilligny/betterfountain/blob/master/src/utils.ts#L92
