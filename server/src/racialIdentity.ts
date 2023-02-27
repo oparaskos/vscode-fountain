@@ -1,3 +1,6 @@
+import { CharacterStats } from 'fountain-parser/src/types';
+import { PostProcessProvider, ProviderOptions } from './TextBlockStatProvider';
+
 export interface RacialIdentityConfig {
 	locale: string;
 	characters: {[characterName: string]: {
@@ -11,4 +14,14 @@ export function findRacialIdentity(rawName: string, config: RacialIdentityConfig
 	return 'unknown';
 }
 
-
+export class CharacterRacialIdentityProvider extends PostProcessProvider {
+	constructor(opts: ProviderOptions) { super(opts, "RACIAL_IDENTITY"); }
+	
+	public override statsPerCharacter(stats: CharacterStats[]): CharacterStats[] {
+		const fountainrc = this.opts.fountainrc;
+		return stats.map((it) => ({
+			...it,
+			RacialIdentity: findRacialIdentity(it.Name, fountainrc)
+		}));
+	}
+}

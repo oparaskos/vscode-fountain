@@ -3,8 +3,19 @@ import { FountainToken } from "./FountainTokenType";
 import { EmptyLogger, ILogger } from './ILogger';
 import { Position } from './Position';
 
+export type PrimitiveOrObject = object | number | string | undefined;
+
 export abstract class FountainElement<T extends string = string> {
-    constructor(public type: T, public tokens: FountainToken[], public logger: ILogger = EmptyLogger) { }
+    constructor(
+        public type: T,
+        public tokens: FountainToken[],
+        public logger: ILogger = EmptyLogger,
+        public elementAttributes: {[key: string]: PrimitiveOrObject} = {}
+    ) { }
+
+    public addAttribute(key: string, value: PrimitiveOrObject) {
+        this.elementAttributes[key] = value;
+    }
 
     public get textContent() {
         return this.tokens.map(t => t.text).join(" ");

@@ -18,15 +18,19 @@ import {
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
-import { FountainScript, parse } from "fountain-parser";
 import { characterCompletions, closingCompletions, dialogueCompletions, openingCompletions, sceneCompletions, titlePageCompletions, transitionCompletions } from './completions';
 import { isTitlePage } from "./util/isTitlePage";
 import { dialogueLens, locationsLens, scenesLens } from './lenses';
-import { guessGender } from './guessGender';
+import { CharacterGenderIdentityProvider } from './guessGender';
 import { getConfig as getFountainrc } from './fountainrc';
 import { logger } from './logger';
-import { findRacialIdentity } from './racialIdentity';
+import { CharacterRacialIdentityProvider } from './racialIdentity';
 import { getDocumentation } from './documentation';
+import { SimpleSentimentProvider } from './sentiment';
+import { ExampleSettings } from './ExampleSettings';
+import { PostProcessedScript } from './PostProcessedScript';
+import { IFountainScript } from 'fountain-parser/src/types';
+import { ReadingGradeProvider } from './readingGrade';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -74,6 +78,7 @@ connection.onInitialize((params: InitializeParams) => {
 			}
 		};
 	}
+	// sentimentInit();
 	return result;
 });
 
@@ -90,22 +95,9 @@ connection.onInitialized(() => {
 });
 
 connection.onRequest("fountain.statistics.characters", async (params) => {
-	try {
-		const settings = await getDocumentSettings(params.uri);
-		const parsedScript = parsedDocuments[params.uri];
-		const result = parsedScript.statsPerCharacter;
-		if (settings.guessCharacterGenders) {
-			const fountainrc = await getFountainrc(params.uri);
-			return result.map((it) => ({
-				...it,
-				Gender: guessGender(it.Name, fountainrc),
-				RacialIdentity: findRacialIdentity(it.Name, fountainrc)
-			}));
-		}
-		return result;
-	} catch(e: unknown) {
-		logger.error(e);
-	}
+	const parsedScript = parsedDocuments[params.uri];
+	const result = parsedScript.statsPerCharacter;
+	return result;
 });
 
 connection.onRequest("fountain.statistics.locations", async (params) => {
@@ -121,18 +113,13 @@ connection.onRequest("fountain.statistics.scenes", async (params) => {
 });
 
 connection.onRequest((params) => {
-	connection.console.log(JSON.stringify({onRequest: params}));
+	connection.console.log(JSON.stringify({ onRequest: params }));
 });
-
-// The example settings
-interface ExampleSettings {
-	guessCharacterGenders: boolean;
-}
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-const defaultSettings: ExampleSettings = { guessCharacterGenders: true };
+const defaultSettings: ExampleSettings = { guessCharacterGenders: true, locale: "en" };
 let globalSettings: ExampleSettings = defaultSettings;
 
 // Cache the settings of all open documents
@@ -178,19 +165,22 @@ documents.onDidChangeContent(change => {
 	validateTextDocument(change.document);
 });
 
-const parsedDocuments: { [uri: string]: FountainScript } = {};
+const parsedDocuments: { [uri: string]: IFountainScript } = {};
 const lines: { [uri: string]: string[] } = {};
 
-async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-	// In this simple example we get the settings for every validate run.
-	// const settings = await getDocumentSettings(textDocument.uri);
-	// The validator creates diagnostics for all uppercase words length 2 and more
-	const text = textDocument.getText();
-	lines[textDocument.uri] = text.split(/\r\n|\n\r|\n|\r/);
-	// Parse the document.
-	const parsedScript = parse(text);
-	parsedDocuments[textDocument.uri] = parsedScript;
 
+async function validateTextDocument(textDocument: TextDocument): Promise<void> {
+	const settings = await getDocumentSettings(textDocument.uri);
+	const fountainrc = await getFountainrc(textDocument.uri);
+	const opts= { locale: new Intl.Locale(settings.locale), fountainrc };
+	const parser = new PostProcessedScript([
+		new SimpleSentimentProvider(opts),
+		new CharacterGenderIdentityProvider(opts),
+		new CharacterRacialIdentityProvider(opts),
+		new ReadingGradeProvider(opts)
+	], settings);
+	parsedDocuments[textDocument.uri] = await parser.parse(textDocument.getText());
+	lines[textDocument.uri] = parser.lines;
 	const diagnostics: Diagnostic[] = [];
 
 	// Send the computed diagnostics to VSCode.
@@ -206,14 +196,17 @@ connection.onHover(async (params) => {
 	const uri = params.textDocument.uri;
 	const parsedScript = parsedDocuments[uri];
 	const hoveredElements = parsedScript.getElementsByPosition(params.position);
-	if(hoveredElements.length > 0) {
-		const deepestHoveredElement= hoveredElements[hoveredElements.length - 1];
-		return await getDocumentation(deepestHoveredElement.type);
+	if (hoveredElements.length > 0) {
+		const deepestHoveredElement = hoveredElements[hoveredElements.length - 1];
+		const documentation = await getDocumentation(deepestHoveredElement.type);
+		documentation.contents += JSON.stringify(deepestHoveredElement.elementAttributes);
+		return documentation;
 	}
 	return null;
 });
 
 connection.onCodeLens((params) => {
+	logger.log("onCodeLens");
 	const uri = params.textDocument.uri;
 	const parsedScript = parsedDocuments[uri];
 	return [
@@ -225,12 +218,13 @@ connection.onCodeLens((params) => {
 
 
 connection.onCodeLensResolve((codeLens) => {
-	const args = {...codeLens.data, range: codeLens.range};
-	if(args.type === 'character') {
+	logger.log("onCodeLensResolve");
+	const args = { ...codeLens.data, range: codeLens.range };
+	if (args.type === 'character') {
 		codeLens.command = Command.create(`Character ${args.name} (${args.lines} lines)`, 'fountain.analyseCharacter', args);
-	} else if(args.type === 'location') {
+	} else if (args.type === 'location') {
 		codeLens.command = Command.create(`Location ${args.name} (${args.references} references)`, 'fountain.analyseLocation', args);
-	} else if(args.type === 'scene') {
+	} else if (args.type === 'scene') {
 		codeLens.command = Command.create(`Scene Duration ${args.duration}`, 'fountain.analyseScene', args);
 	}
 	return codeLens;
@@ -244,8 +238,7 @@ connection.onCompletion((documentPosition: TextDocumentPositionParams): Completi
 	const currentLine = lines[documentPosition.textDocument.uri][documentPosition.position.line];
 
 	// Blank page...
-	if (lines[documentPosition.textDocument.uri].join("").trim().length === 0)
-	{
+	if (lines[documentPosition.textDocument.uri].join("").trim().length === 0) {
 		completions.push(...openingCompletions(currentLine, parsedScript));
 		completions.push(...titlePageCompletions(currentLine, parsedScript));
 		completions.push(...sceneCompletions(currentLine, parsedScript));

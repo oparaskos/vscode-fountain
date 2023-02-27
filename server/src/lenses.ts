@@ -1,7 +1,8 @@
 import { CodeLens, Range } from "vscode-languageserver";
-import { FountainScript } from "fountain-parser";
+import { IFountainScript } from 'fountain-parser/src/types';
+import { logger } from './logger';
 
-export function dialogueLens(lines: string[], parsedScript: FountainScript, uri: string): CodeLens[] {
+export function dialogueLens(lines: string[], parsedScript: IFountainScript, uri: string): CodeLens[] {
 	const dialogueByCharacters = parsedScript.dialogueByCharacters;
 	return Object.keys(dialogueByCharacters).flatMap(characterName => {
 		const dialogues = dialogueByCharacters[characterName];
@@ -16,7 +17,7 @@ export function dialogueLens(lines: string[], parsedScript: FountainScript, uri:
 }
 
 
-export function locationsLens(lines: string[], parsedScript: FountainScript, uri: string): CodeLens[] {
+export function locationsLens(lines: string[], parsedScript: IFountainScript, uri: string): CodeLens[] {
 	const locationsByName = parsedScript.scenesByLocationName;
 	return Object.keys(locationsByName).flatMap(locationName => {
 		const scenes = locationsByName[locationName];
@@ -31,7 +32,7 @@ export function locationsLens(lines: string[], parsedScript: FountainScript, uri
 }
 
 
-export function scenesLens(lines: string[], parsedScript: FountainScript, uri: string): CodeLens[] {
+export function scenesLens(lines: string[], parsedScript: IFountainScript, uri: string): CodeLens[] {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return parsedScript.scenes.map((scene: { tokens: { codeLocation: { start: { line: number; }; }; }[]; title: any; duration: number; }) => {
 		const lineNo = scene.tokens?.[0]?.codeLocation?.start?.line || 0;

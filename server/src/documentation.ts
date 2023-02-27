@@ -9,7 +9,7 @@ const EMPTY_DOCS = {
 	contents: ""
 };
 // TODO: docs cache.
-export async function getDocumentation(topic: string): Promise<Hover> {
+export async function getDocumentation(topic: string): Promise<{contents:string}> {
 	try {
 		const documentPath = path.join(docsFolderPath, `syntax.${topic}.md`);
 		try {

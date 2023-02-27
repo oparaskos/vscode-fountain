@@ -53,7 +53,7 @@ function updateScenesTable(stats: ScenesStats[]) {
             Characters: row.Characters,
             Synopsis: row.Synopsis,
 			Duration: describeDuration(dialogueRatio, row.Duration),
-			Sentiment: sentimentToEmoji(row.Sentiment)
+			"Sentiment": row?.Sentiment ? sentimentToEmoji(row.Sentiment) : undefined
 		};
 	}));
 
@@ -68,34 +68,37 @@ function updateLocationsTable(stats: LocationsStats[]) {
 	updateTable('grid-locations', stats.map((row) => ({
 		...row,
 		Duration: formatTime(row.Duration),
+		"Sentiment": row?.Sentiment ? sentimentToEmoji(row.Sentiment) : undefined
 	})));
 
 	const badge = document.querySelector("vscode-panel-tab#tab-locations > vscode-badge");
 	if (badge) { badge.innerHTML = '' + stats.length; }
 }
 
-function sentimentToEmoji(sentiment: number | null) {
+function sentimentToEmoji(sentiment: any) {
 	if(sentiment !== 0 && !sentiment) return '∅';
 
 	const emojiIndex = Math.max(-5, Math.min(5, Math.round(sentiment))) + 5;
 	// Sentimenent is only guessing at good/bad not the difference between angry/sad so this is just a rough 'how good/bad does this character feel at this moment'.
 	const emoji = ['🤬', '😫', '😣', '🙁', '😕', '😐', '😏', '🙂', '😀', '😃', '😆'];
-	return `${emoji[emojiIndex] || emoji[5]} (${sentiment.toFixed(1)})`;
+	return `${emoji[emojiIndex] || emoji[5]} (${sentiment.good.toFixed(1)})`;
 }
 
 function updateCharacterTable(stats: CharacterStats[]) {
-	updateTable('grid-characters', stats.map((row) => ({
-		"Name": row.Name,
-		"Gender": row.Gender?.toUpperCase(),
-		"Length & Duration": [
-			`${row?.Duration ? formatTime(row.Duration) : ''}`,
-			`${row.Lines}\u00a0lines`,
-			`${row.Words}\u00a0words`,
-			`${row.Monologues}\u00a0monologues`
-		].filter(v => !!v).join('\u00a0\u00ad\u00a0'),
-		"Reading Age": row.ReadingAge,
-		"Sentiment": row?.Sentiment ? sentimentToEmoji(row.Sentiment) : undefined
-	})));
+	updateTable('grid-characters', stats.map((row) => {
+		console.log(row);
+		return {
+			"Name": row.Name,
+			"Gender": row.Gender?.toUpperCase(),
+			"Length & Duration": [
+				`${row?.Duration ? formatTime(row.Duration) : ''}`,
+				`${row.Lines}\u00a0lines`,
+				`${row.Words}\u00a0words`,
+				`${row.Monologues}\u00a0monologues`
+			].filter(v => !!v).join('\u00a0\u00ad\u00a0'),
+			"Reading Age": row.ReadingAge,
+			"Sentiment": row?.Sentiment ? sentimentToEmoji(row.Sentiment) : undefined
+		};}));
 
 	const badge = document.querySelector("vscode-panel-tab#tab-characters > vscode-badge");
 	if (badge) { badge.innerHTML = '' + stats.length; }

@@ -8,6 +8,7 @@
 	"publisher": "vscode",
 	"scripts": {
 		"test": "echo noop",
+		"watch": "npm run build -- --watch",
 		"build": "esbuild ./src/extension.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap"
 	},
 	"engines": {

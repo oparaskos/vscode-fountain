@@ -15,11 +15,40 @@ export interface CharacterStats {
     Monologues?: number;
 }
 
-export class FountainScript {
+export interface IFountainScript {
+    get children(): FountainElement[];
+    get characterNames(): string[];
+    get range(): Range;
+    get statsPerCharacter(): CharacterStats[];
+    get dialogue(): DialogueElement[];
+    get dialogueByCharacters(): Record<string, DialogueElement[]>;
+    get scenes(): SceneElement[];
+    get statsPerScene(): Array<{
+        Name: string,
+        Duration: number,
+        Characters: string[],
+        Synopsis: string,
+        DialogueDuration: number,
+        ActionDuration: number,
+    }>;
+    get statsPerLocation(): Array<{
+        Name: string;
+        Duration: number;
+        Scenes: number;
+        Type: string;
+    }>;
+    get locationNames(): string[];
+    get scenesByLocationName(): Record<string, SceneElement[]>;
+    getElementsByPosition(position: Position): FountainElement[];
+}
+
+
+export class FountainScript implements IFountainScript {
     private _characterNames: string[] | undefined;
     private _characterStats: undefined | CharacterStats[];
     private _dialogueByCharacters: {[k: string]: DialogueElement[]} | undefined;
     private _scenesByLocationName: {[k: string]: SceneElement[]} | undefined;
+
     constructor(
         public children: FountainElement[],
     ) {}

@@ -24,6 +24,7 @@ import { SynopsesElement } from "./types/SynopsesElement";
 import { BoneyardElement } from "./types/BoneyardElement";
 import { NotesElement } from "./types/NotesElement";
 import { tokenize } from './tokenize';
+import { ParserOpts } from './ParserOpts';
 
 type FountainElementConstructor<T extends FountainElement> = new (tokens: FountainToken[]) => T;
 function instanceOfConstructor<T extends FountainElement>(cns: FountainElementConstructor<T>, b: unknown): b is T{
@@ -31,21 +32,24 @@ function instanceOfConstructor<T extends FountainElement>(cns: FountainElementCo
     return cns.prototype === (b as any)?.constructor?.prototype;
 }
 
-
-
 /**
  * Generate a structured representation of the script.
  * 
  * @param script 
  * @returns 
  */
-export function parse(script: string): FountainScript {
-    const tokens = tokenize(script);
+export function parse<
+FElement extends FountainElement = FountainElement,
+FScript extends FountainScript = FountainScript,
+FToken extends FountainToken = FountainToken>(script: string, opts: ParserOpts<FElement, FScript, FToken> = {}): FScript {
+    const tokens = tokenize(script).map(token => opts?.tokenTransform?.(token) || token);
     const firstNonTitlePageElementIndex = tokens.findIndex(t => t.type !== 'title_page');
     const titlePageTokens = tokens.slice(0, firstNonTitlePageElementIndex);
     const titlePage: FountainElement = new FountainTitlePage(titlePageTokens);
     const scriptElements: FountainElement[] = _parse(tokens.slice(firstNonTitlePageElementIndex));
-    return new FountainScript([titlePage].concat(scriptElements));
+    const elements: FElement[] = [titlePage].concat(scriptElements).map(element => opts?.elementTransform?.(element) || element as FElement);
+    const fscript: FountainScript = new FountainScript(elements);
+    return opts?.scriptTransform?.(fscript) || fscript as FScript;
 }
 
 function _parse(tokens: FountainToken[], parent: null | FountainToken = null): FountainElement[] {

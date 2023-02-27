@@ -1,6 +1,7 @@
 
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
-import { FountainTitlePage, FountainScript } from "fountain-parser";
+import { FountainTitlePage } from "fountain-parser";
+import { IFountainScript } from 'fountain-parser/src/types';
 
 const revisionDocumentation = `New revisions are generally printed on different-colored paper, and named accordingly. The WGA order for revisions is:
 * White Draft (original)
@@ -21,7 +22,7 @@ const revisionDocumentation = `New revisions are generally printed on different-
 * Second Salmon Revision
 * Second Cherry Revision`;
 
-type CompletionHandler = (currentLine: string, parsedDocument: FountainScript) => CompletionItem[];
+type CompletionHandler = (currentLine: string, parsedDocument: IFountainScript) => CompletionItem[];
 
 export const closingCompletions: CompletionHandler = () => {
     return [
@@ -82,7 +83,7 @@ export const transitionCompletions: CompletionHandler = () => {
 export const titlePageCompletions: CompletionHandler = (_currentLine, parsedDocument) => {
     const completions: CompletionItem[] = [];
     const titlePage = parsedDocument.children[0];
-    const attributes = (titlePage as FountainTitlePage)?.attributes || {};
+    const attributes = (titlePage as FountainTitlePage)?.elementAttributes || {};
     // if (currentLine.indexOf(":") == -1) return [];
 
     if (!attributes["title"])

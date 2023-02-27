@@ -10,7 +10,7 @@
 		"outDir": "out",
 		"rootDir": "src"
 	},
-	"include": ["src"],
+	"include": ["src", "../server/src/PostProcessedScript.ts"],
 	"exclude": ["node_modules", ".vscode-test"]
 	
 }

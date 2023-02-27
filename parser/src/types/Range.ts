@@ -13,7 +13,7 @@ import { Position } from './Position';
  * }
  * ```
  */
- export interface Range {
+export interface Range {
     /**
      * The range's start position
      */
@@ -23,3 +23,9 @@ import { Position } from './Position';
      */
     end: Position;
 }
+
+export const ZERO_RANGE: Range =
+{
+    start: { line: 0, character: 0 },
+    end: { line: 0, character: 0 }
+};

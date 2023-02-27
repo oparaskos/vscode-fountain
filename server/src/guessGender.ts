@@ -1,4 +1,6 @@
+import { CharacterStats } from 'fountain-parser/src/types';
 import { getGender } from "gender-detection-from-name";
+import { PostProcessProvider, ProviderOptions } from './TextBlockStatProvider';
 
 const WORDS_INDICATING_FEMALE_CHARACTER = [
 	"female",
@@ -82,3 +84,14 @@ function fixupMaleManSuffix(name: string, maleness: number) {
 	return maleness;
 }
 
+export class CharacterGenderIdentityProvider extends PostProcessProvider {
+	constructor(opts: ProviderOptions) { super(opts, "GENDER_IDENTITY"); }
+	
+	public override statsPerCharacter(stats: CharacterStats[]): CharacterStats[] {
+		const fountainrc = this.opts.fountainrc;
+		return stats.map((it) => ({
+			...it,
+			Gender: guessGender(it.Name, fountainrc)
+		}));
+	}
+}
