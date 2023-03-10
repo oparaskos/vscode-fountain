@@ -20,9 +20,6 @@
   "engines": {
     "vscode": "^1.63.0"
   },
-  "activationEvents": [
-    "onLanguage:fountain"
-  ],
   "scripts": {
     "vscode:prepublish": "npm run build",
     "build": "concurrently 'cd webviews && npm run build' 'cd server && npm run build' 'cd client && npm run build'",

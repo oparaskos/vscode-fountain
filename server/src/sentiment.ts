@@ -31,7 +31,8 @@ const ZERO_SENTIMENT = {
 };
 
 function simplify_sentiment(sent: Sentiment): number {
-	return -sent.anger + -sent.disgust + -sent.sadness + -sent.fear + sent.joy + sent.trust;
+	const base = (-sent.anger + -sent.disgust + -sent.sadness + -sent.fear + sent.joy + sent.trust);
+	return base + sent.anticipation * base;
 }
 
 export abstract class SentimentProvider extends PostProcessProvider {
