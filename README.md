@@ -1,4 +1,4 @@
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/oparaskos/vscode-fountain/Build)](https://github.com/oparaskos/vscode-fountain/actions)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/oparaskos/vscode-fountain/build.yml?branch=main)](https://github.com/oparaskos/vscode-fountain/actions)
 [![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/OliverParaskos.fountain-lsp)](https://marketplace.visualstudio.com/items?itemName=OliverParaskos.fountain-lsp)
 [![CodeFactor](https://www.codefactor.io/repository/github/oparaskos/vscode-fountain/badge)](https://www.codefactor.io/repository/github/oparaskos/vscode-fountain)
 
