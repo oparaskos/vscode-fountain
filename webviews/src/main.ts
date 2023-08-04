@@ -105,7 +105,7 @@ function updateCharacterTable(stats: CharacterStats[]) {
 }
 
 function onMessage(ev: MessageEvent) {
-	console.log("onMessage")
+	console.log("onMessage");
 	// eslint-disable-next-line no-debugger
 	if (ev.data.command == "fountain.statistics.characters") {
 		state.statistics.characters = ev.data.stats;
@@ -135,7 +135,7 @@ function onMessage(ev: MessageEvent) {
 	}
 
 	if(ev.data.command == "opened") {
-		vscode.setState({ ...state, uri: ev.data.uri })
+		vscode.setState({ ...state, uri: ev.data.uri });
 	}
 }
 

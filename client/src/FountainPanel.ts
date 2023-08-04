@@ -98,7 +98,7 @@ export class FountainPanel {
 			);
 
 			this.setUri(uri);
-		})
+		});
 	}
 
 	public updateSceneStats(uri: string, stats: unknown) {
@@ -128,11 +128,11 @@ export class FountainPanel {
 	private async handleOpenLink(message: any, uri: string) {
 		const link = URI.parse(message.link);
 
-		console.log("Open file `" + message.link + "` relative to `" + uri + '`')
+		console.log("Open file `" + message.link + "` relative to `" + uri + '`');
 		
-		let base = URI.parse(uri);
+		const base = URI.parse(uri);
 		const fileToOpen = Utils.joinPath(Utils.dirname(base), link.path);
-		console.log(fileToOpen)
+		console.log(fileToOpen);
 
 		const line = (+link.fragment.substring(1)) - 1;
 		

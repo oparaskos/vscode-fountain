@@ -28,7 +28,7 @@ export class FileLink extends HTMLElement {
 	}
 
 	onClick() {
-		console.log("open file in vscode " + this.href)
+		console.log("open file in vscode " + this.href);
 		vscode.postMessage({
 			command: "open",
 			link: this.href
