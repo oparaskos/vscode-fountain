@@ -23,7 +23,8 @@
 		"yaml": "^2.1.2"
 	},
 	"scripts": {
-		"build": "esbuild ./src/server.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap"
+		"build": "esbuild ./src/server.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap",
+		"watch": "npm run build -- --watch"
 	},
 	"devDependencies": {
 		"@types/sentiment": "^5.0.1",

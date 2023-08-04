@@ -4,12 +4,14 @@
 <head>
 	<base href="${baseUri}">
 	<meta charset="utf-8">
+	
+
 	<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 	<meta name="theme-color" content="#000000">
 
-	<script type="module" src="node_modules/@vscode/webview-ui-toolkit/dist/toolkit.js"></script>
-	<script type="module" src="dist/main.bundle.js"></script>
-	<script type="module" src="dist/charts.bundle.js"></script>
+	<script nonce="${nonce}" type="module" src="node_modules/@vscode/webview-ui-toolkit/dist/toolkit.js"></script>
+	<script nonce="${nonce}" type="module" src="dist/main.bundle.js"></script>
+	<script nonce="${nonce}" type="module" src="dist/charts.bundle.js"></script>
 
 	<link rel="stylesheet" href="node_modules/@vscode/codicons/dist/codicon.css">
 	<link rel="stylesheet" href="styles/style.css">
@@ -19,6 +21,7 @@
 
 <body>
 	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<code id="test-data-out"></code>
 	<vscode-panels aria-label="Default" id="root-panel">
 		<vscode-panel-tab id="tab-characters">
 			CHARACTERS
@@ -51,7 +54,10 @@
 							title="Reading Age"></bar-chart>
 					</div>
 					<aside id="characters-racial-identity-fountainrc">
-						You can set the Racial Identiy of characters in the .fountainrc file.
+						<p>
+							You can set the Racial Identiy of characters in the .fountainrc file.
+						</p>
+						<vscode-button>Open .fountainrc</vscode-button>
 					</aside>
 				</section>
 				<section>
@@ -69,7 +75,10 @@
 							title="Reading Age"></bar-chart>
 					</div>
 					<aside>
-						Please note: Gender is a guess based on character name. For more accurate gender representation statistics, set characters' genders explicitly. (TODO: link to .fountainrc)
+						<p>
+							Please note: Gender is a guess based on character name. For more accurate gender representation statistics, set characters' genders explicitly.
+						</p>
+						<vscode-button>Open .fountainrc</vscode-button>
 					</aside>
 				</section>
 				<section>

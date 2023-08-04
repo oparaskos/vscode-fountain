@@ -21,13 +21,20 @@
     "vscode": "^1.63.0"
   },
   "activationEvents": [
-    "onLanguage:fountain"
+    "onLanguage:fountain",
+    "onWebviewPanel:vscode-fountain.fountainStats"
   ],
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "build": "concurrently 'cd webviews && npm run build' 'cd server && npm run build' 'cd client && npm run build'",
-    "compile": "concurrently 'tsc -b' 'cd webviews && npm run compile'",
-    "watch": "tsc -b -w",
+    "build": "concurrently 'npm run build:webview' 'npm run build:client' 'npm run build:server'",
+    "build:webview": "cd webviews && npm run build",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+
+    "watch:client": "cd client && npm run watch",
+    "watch:server": "cd server && npm run watch",
+    "watch:webview": "cd webviews && npm run watch",
+
     "lint": "eslint ./client/src ./server/src ./webviews/src --ext .ts,.tsx",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd ../webviews && npm install && cd ..",
     "test": "sh ./scripts/e2e.sh"

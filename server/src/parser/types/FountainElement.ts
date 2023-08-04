@@ -11,9 +11,7 @@ export abstract class FountainElement<T extends string = string> {
     }
 
     public get range() {
-        const range = tokensToRange(this.tokens);
-        logger.log(`FountainElement: ${JSON.stringify(range)}`);
-        return range;
+        return tokensToRange(this.tokens);
     }
 
     public getElementsByType<V extends FountainElement>(type: string): V[] {

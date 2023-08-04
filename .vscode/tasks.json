@@ -3,7 +3,8 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "compile",
+			"script": "build:server",
+			"label": "build:server",
 			"group": "build",
 			"presentation": {
 				"panel": "dedicated",
@@ -15,7 +16,34 @@
 		},
 		{
 			"type": "npm",
-			"script": "watch",
+			"script": "build:client",
+			"label": "build:client",
+			"group": "build",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"type": "npm",
+			"script": "build:webview",
+			"label": "build:webview",
+			"group": "build",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"label": "watch:client",
+			"type": "npm",
+			"script": "watch:client",
 			"isBackground": true,
 			"group": {
 				"kind": "build",
@@ -27,6 +55,58 @@
 			},
 			"problemMatcher": [
 				"$tsc-watch"
+			]
+		},
+		{
+			"label": "watch:server",
+			"type": "npm",
+			"script": "watch:server",
+			"isBackground": true,
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": [
+				"$tsc-watch"
+			]
+		},
+		{
+			"label": "watch:webview",
+			"type": "npm",
+			"script": "watch:webview",
+			"isBackground": true,
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": [
+				"$tsc-watch"
+			]
+		},
+		{
+			"label": "watch:all",
+			"dependsOrder": "parallel",
+			"dependsOn": [
+				// "watch:client",
+				// "watch:server",
+				"watch:webview"
+			]
+		},
+		{
+			"label": "build:all",
+			"dependsOrder": "parallel",
+			"dependsOn": [
+				"build:client",
+				"build:server",
+				"build:webview"
 			]
 		}
 	]

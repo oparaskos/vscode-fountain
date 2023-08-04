@@ -5,18 +5,18 @@ import { showGenderRepresentationStatistics } from './genderRepresentation';
 import { LocationsStats } from './LocationsStats';
 import { showRacialIdentityRepresentationStatistics } from './racialIdentityRepresentation';
 import { ScenesStats } from './ScenesStats';
+import { vscode } from './vscode';
 
-const fountain = {
-	statistics: {
+let state = vscode.getState();
+
+if(!state) state = {};
+if(!state.statistics) {
+	state.statistics= {
 		characters: [],
 		locations: [],
 		scenes: []
-	}
-};
-
-
-window.addEventListener("load", main);
-window.addEventListener("message", onMessage);
+	};
+}
 
 function getPanels(id = "root-panel") {
 	return document.getElementById(id) as unknown as { activeid: string };
@@ -105,20 +105,24 @@ function updateCharacterTable(stats: CharacterStats[]) {
 }
 
 function onMessage(ev: MessageEvent) {
+	console.log("onMessage")
 	// eslint-disable-next-line no-debugger
 	if (ev.data.command == "fountain.statistics.characters") {
-		fountain.statistics.characters = ev.data.stats;
-		updateCharacterTable(fountain.statistics.characters);
+		state.statistics.characters = ev.data.stats;
+		updateCharacterTable(state.statistics.characters);
+		vscode.setState(state);
 	}
 	if (ev.data.command == "fountain.statistics.locations") {
-		fountain.statistics.locations = ev.data.stats;
-		updateLocationsTable(fountain.statistics.locations);
+		state.statistics.locations = ev.data.stats;
+		updateLocationsTable(state.statistics.locations);
+		vscode.setState(state);
 	}
 	if (ev.data.command == "fountain.statistics.scenes") {
-		fountain.statistics.scenes = ev.data.stats;
-		updateScenesTable(fountain.statistics.scenes);
+		state.statistics.scenes = ev.data.stats;
+		updateScenesTable(state.statistics.scenes);
+		vscode.setState(state);
 	}
-	console.log({scriptStats: fountain.statistics});
+	console.log({scriptStats: state.statistics});
 
 	if (ev.data.command == "fountain.analyseLocation") {
 		getPanels().activeid = "tab-locations";
@@ -129,8 +133,24 @@ function onMessage(ev: MessageEvent) {
 	if (ev.data.command == "fountain.analyseScene") {
 		getPanels().activeid = "tab-scenes";
 	}
+
+	if(ev.data.command == "opened") {
+		vscode.setState({ ...state, uri: ev.data.uri })
+	}
 }
 
 function main() {
-	return;
+	console.log("main");
+
+	if (state.statistics) {
+		updateCharacterTable(state.statistics.characters);
+		updateLocationsTable(state.statistics.locations);
+		updateScenesTable(state.statistics.scenes);
+	}
+
+	vscode.postMessage({ type: 'ready' });
 }
+
+window.addEventListener('DOMContentLoaded', main);
+window.addEventListener("load", main);
+window.addEventListener("message", onMessage);

@@ -6,7 +6,8 @@
 		"outDir": "out",
 		"lib": [
 			"es6",
-			"dom"
+			"dom",
+			"dom.iterable"
 		],
 		"sourceMap": true,
 		"rootDir": "src",
