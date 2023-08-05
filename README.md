@@ -22,3 +22,4 @@ This is a Language Server extension for [fountain](https://fountain.io/) files.
 * The statistics panel uses [d3](https://d3js.org/), covered by the [BSD-3-Clause License](https://github.com/d3/d3/blob/master/LICENSE).
 
 * The project was built using Microsoft's language server example extension as a boilerplate.
+
