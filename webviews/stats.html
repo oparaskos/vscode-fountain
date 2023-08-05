@@ -4,7 +4,7 @@
 <head>
 	<base href="${baseUri}">
 	<meta charset="utf-8">
-	
+
 
 	<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 	<meta name="theme-color" content="#000000">
@@ -41,44 +41,64 @@
 				<h4>Characters</h4>
 				<section>
 					<h5>Representation by Racial Identity</h5>
-					<div style="display: flex; flex-direction: row; justify-content: space-evenly;" class="hide-if-no-racial-identity">
+					<div style="display: flex; flex-direction: row; justify-content: space-evenly;"
+						class="hide-if-no-racial-identity">
 						<bar-chart id="characters-speaking-roles-by-racial-identity" width="200" height="100"
 							style="overflow: visible;" title="Speaking Roles"></bar-chart>
 						<bar-chart id="characters-sentiment-by-racial-identity" width="200" height="100"
 							style="overflow: visible;" title="Sentiment"></bar-chart>
 					</div>
-					<div style="display: flex; flex-direction: row; justify-content: space-evenly;" class="hide-if-no-racial-identity">
-						<donut-chart id="characters-racial-identity-dialogue" width="100" height="100" style="overflow: visible;"
-							title="Dialogue&#10;Duration"></donut-chart>
-						<bar-chart id="characters-racial-identity-readingAge" width="200" height="100" style="overflow: visible;"
-							title="Reading Age"></bar-chart>
+					<div style="display: flex; flex-direction: row; justify-content: space-evenly;"
+						class="hide-if-no-racial-identity">
+						<donut-chart id="characters-racial-identity-dialogue" width="100" height="100"
+							style="overflow: visible;" title="Dialogue&#10;Duration"></donut-chart>
+						<bar-chart id="characters-racial-identity-readingAge" width="200" height="100"
+							style="overflow: visible;" title="Reading Age"></bar-chart>
 					</div>
 					<aside id="characters-racial-identity-fountainrc">
 						<p>
+							There's no data to display here because the Racial Identity of your characters havent been
+							specified.
 							You can set the Racial Identiy of characters in the .fountainrc file.
 						</p>
-						<vscode-button>Open .fountainrc</vscode-button>
+						<vscode-button data-href=".fountainrc?create" style="float:right; clear:right;">Open
+							.fountainrc</vscode-button>
 					</aside>
 				</section>
 				<section>
 					<h5>Gender Representation</h5>
 					<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-						<bar-chart id="characters-speaking-roles-by-gender" width="200" height="100"
-							style="overflow: visible;" title="Speaking Roles"></bar-chart>
-						<bar-chart id="characters-sentiment-by-gender" width="200" height="100"
-							style="overflow: visible;" title="Sentiment"></bar-chart>
+						<div style="max-width: 45%;">
+							<span style="display: block; text-align: center; font-weight: bold;">Speaking Roles</span>
+							<bar-chart id="characters-speaking-roles-by-gender" width="400" height="200"
+								style="overflow: visible;"></bar-chart>
+						</div>
+						<div style="max-width: 45%;">
+							<span style="display: block; text-align: center; font-weight: bold;">Sentiment</span>
+							<bar-chart id="characters-sentiment-by-gender" width="400" height="200"
+								style="overflow: visible;"></bar-chart>
+						</div>
+
 					</div>
+					<br />
 					<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-						<donut-chart id="characters-gender-dialogue" width="100" height="100" style="overflow: visible;"
-							title="Dialogue&#10;Duration"></donut-chart>
-						<bar-chart id="characters-gender-readingAge" width="200" height="100" style="overflow: visible;"
-							title="Reading Age"></bar-chart>
+						<div style="max-width: 45%;">
+							<donut-chart id="characters-gender-dialogue" width="200" height="200" style="overflow: visible;"
+								title="Dialogue&#10;Duration"></donut-chart>
+						</div>
+						<div style="max-width: 45%;">
+							<span style="display: block; text-align: center; font-weight: bold;">Reading Age</span>
+							<bar-chart id="characters-gender-readingAge" width="400" height="200"
+								style="overflow: visible;"></bar-chart>
+						</div>
 					</div>
-					<aside>
+					<aside id="characters-gender-identity-fountainrc">
 						<p>
-							Please note: Gender is a guess based on character name. For more accurate gender representation statistics, set characters' genders explicitly.
+							Please note: Gender is a guess based on character name. For more accurate gender
+							representation statistics, set characters' genders explicitly.
 						</p>
-						<vscode-button>Open .fountainrc</vscode-button>
+						<vscode-button data-href=".fountainrc?create" style="float:right; clear:right;">Open
+							.fountainrc</vscode-button>
 					</aside>
 				</section>
 				<section>

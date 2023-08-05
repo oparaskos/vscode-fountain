@@ -50,12 +50,11 @@ export class DonutChart extends HTMLElement {
 				.attr("viewBox", [-this.width / 2, -this.height / 2, this.width, this.height])
 				.attr("style", this.style.cssText + "; max-width: 100%; height: auto; height: intrinsic;");
 
-			applySeriesBaackgrounds(svg);
+			applySeriesBaackgrounds(svg, this.visualImpaired);
 
 			if(this.title) {
 				svg.append("g")
-					.attr("font-family", "sans-serif")
-					.attr("font-size", 10)
+					.attr("style", "font-size: var(--type-ramp-base-font-size); font-family: sans-serif;")
 					.attr("text-anchor", "middle")
 					.append("text")
 					.selectAll("tspan")
@@ -82,14 +81,13 @@ export class DonutChart extends HTMLElement {
 
 
 			svg.append("g")
-				.attr("font-family", "sans-serif")
-				.attr("font-size", 10)
+				.attr("style", "font-size: var(--type-ramp-minus1-font-size); font-family: sans-serif;")
 				.attr("text-anchor", "middle")
 				.selectAll("text")
 				.data(arcs)
 				.join("text")
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				.attr("transform", d => `translate(${labelArc.centroid(d as any)})`)
+				.attr("transform", d => `translate(${labelArc.centroid(d as any).map(it => it * 1.6)})`)
 				.selectAll("tspan")
 				.data(d => {
 					const lines = `${titleFn(d.index)}`.split(/\n/);
@@ -118,7 +116,9 @@ export class DonutChart extends HTMLElement {
 		// this.handleRemoveItemListeners(removeElementButtons);
 		// addElementButton.addEventListener('click', this.addListItem, false);
 	}
-
+	get visualImpaired() {
+		return this.getAttribute('visualImpaired') === 'true' || false;
+	}
 
 	get entries(): { [key: string]: number } {
 		return JSON.parse(this.getAttribute('entries') || '{}') || {};

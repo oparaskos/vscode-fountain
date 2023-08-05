@@ -87,7 +87,7 @@ function updateCharacterTable(stats: CharacterStats[]) {
 	updateTable('grid-characters', stats.map((row) => ({
 		"Name": row.Name,
 		"Gender": row.Gender?.toUpperCase(),
-		"Length & Duration": [
+		"Duration": [
 			`${row?.Duration ? formatTime(row.Duration) : ''}`,
 			`${row.Lines}\u00a0lines`,
 			`${row.Words}\u00a0words`,
@@ -139,9 +139,21 @@ function onMessage(ev: MessageEvent) {
 	}
 }
 
+function handleHrefButton(e: Event) {
+	const href = (e.target as HTMLElement).getAttribute('data-href')
+	console.log("open file in vscode " + href)
+	vscode.postMessage({
+		command: "open",
+		link: href
+	});
+}
+
+
 function main() {
 	console.log("main");
-
+	
+	document.querySelectorAll('vscode-button[data-href]').forEach((it) => it.addEventListener('click', handleHrefButton))
+	
 	if (state.statistics) {
 		updateCharacterTable(state.statistics.characters);
 		updateLocationsTable(state.statistics.locations);
@@ -150,6 +162,7 @@ function main() {
 
 	vscode.postMessage({ type: 'ready' });
 }
+
 
 window.addEventListener('DOMContentLoaded', main);
 window.addEventListener("load", main);

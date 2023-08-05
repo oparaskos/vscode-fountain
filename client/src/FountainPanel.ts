@@ -90,7 +90,7 @@ export class FountainPanel {
 						case 'alert':
 							return vscode.window.showErrorMessage(message.text);
 						case 'open':
-							return this.handleOpenLink(message, uri);
+							return this.handleOpenLink(message);
 					}
 				},
 				null,
@@ -120,24 +120,36 @@ export class FountainPanel {
 		this._panel.webview.postMessage({ command: "fountain.analyseCharacter", uri, name });
 	}
 	public setUri(uri) {
-		// Send a message to the webview webview.
-		// You can send any JSON serializable data.
 		this._panel.webview.postMessage({ command: 'opened', uri });
 	}
 
-	private async handleOpenLink(message: any, uri: string) {
+	private async handleOpenLink(message: any) {
+		console.log("handleOpenLink")
 		const link = URI.parse(message.link);
-
-		console.log("Open file `" + message.link + "` relative to `" + uri + '`')
-		
-		let base = URI.parse(uri);
-		const fileToOpen = Utils.joinPath(Utils.dirname(base), link.path);
-		console.log(fileToOpen)
-
-		const line = (+link.fragment.substring(1)) - 1;
-		
-		const editor = await vscode.window.showTextDocument(fileToOpen, {});
-		editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
+		const line = link.fragment ? (+link.fragment.substring(1)) - 1 : 0;
+		const candidates = await vscode.workspace.findFiles(link.path);
+		const absolutePath = Utils.joinPath(vscode.workspace.workspaceFolders[0].uri, link.path);
+		if(candidates.length > 0) {
+			const doc = await vscode.workspace.openTextDocument(candidates[0])
+			const editor = await vscode.window.showTextDocument(doc, {});
+			editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
+		} else {
+			if (link.query.includes('create')) {
+				console.log("create")
+				try {
+					await vscode.workspace.fs.writeFile(absolutePath, new Uint8Array([20,20,20]))
+					const doc = await vscode.workspace.openTextDocument(absolutePath)
+					const editor = await vscode.window.showTextDocument(doc, {});
+					editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
+				} catch (e) {
+					console.log(`create failed	${e}`)
+					await vscode.window.showErrorMessage(`Could not create ${absolutePath}, ${e}`);
+				}
+			} else {
+				console.log("nocreate")
+				await vscode.window.showErrorMessage(`Could not find ${link}`);
+			}
+		}
 	}
 
 	public dispose() {

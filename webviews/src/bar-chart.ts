@@ -43,7 +43,7 @@ export class BarChart extends HTMLElement {
 				.attr("viewBox", [0, 0, this.width, this.height])
 				.attr("style", this.style.cssText + "; max-width: 100%; height: auto; height: intrinsic;");
 
-			applySeriesBaackgrounds(svg);
+			applySeriesBaackgrounds(svg, this.visualImpaired);
 
 
 			svg.append("g")
@@ -126,6 +126,11 @@ export class BarChart extends HTMLElement {
 	// gathering data from element attributes
 	get title() {
 		return this.getAttribute('title') || '';
+	}
+
+
+	get visualImpaired() {
+		return this.getAttribute('visualImpaired') === 'true' || false;
 	}
 
 	get width() {
@@ -221,7 +226,7 @@ export class BarChart extends HTMLElement {
 		return [this.marginTop, this.height - this.marginBottom];
 	}
 
-	get yPadding() { return 0; }
+	get yPadding() { return 0.1; }
 	// array of colors for names
 	get colors() {
 		return scaleOrdinal()
