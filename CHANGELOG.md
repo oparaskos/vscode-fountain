@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/oparaskos/vscode-fountain/compare/v1.7.0...v1.7.1) (2023-08-05)
+
+
+### Bug Fixes
+
+* bump ([87ee2e6](https://github.com/oparaskos/vscode-fountain/commit/87ee2e68ea5eeb09edcffd16d98bf4067f67a9ca))
+
 # [1.7.0](https://github.com/oparaskos/vscode-fountain/compare/v1.6.0...v1.7.0) (2023-08-05)
 
 
