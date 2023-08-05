@@ -105,7 +105,7 @@ function updateCharacterTable(stats: CharacterStats[]) {
 }
 
 function onMessage(ev: MessageEvent) {
-	console.log("onMessage")
+	console.log("onMessage");
 	// eslint-disable-next-line no-debugger
 	if (ev.data.command == "fountain.statistics.characters") {
 		state.statistics.characters = ev.data.stats;
@@ -135,13 +135,13 @@ function onMessage(ev: MessageEvent) {
 	}
 
 	if(ev.data.command == "opened") {
-		vscode.setState({ ...state, uri: ev.data.uri })
+		vscode.setState({ ...state, uri: ev.data.uri });
 	}
 }
 
 function handleHrefButton(e: Event) {
-	const href = (e.target as HTMLElement).getAttribute('data-href')
-	console.log("open file in vscode " + href)
+	const href = (e.target as HTMLElement).getAttribute('data-href');
+	console.log("open file in vscode " + href);
 	vscode.postMessage({
 		command: "open",
 		link: href
@@ -152,7 +152,7 @@ function handleHrefButton(e: Event) {
 function main() {
 	console.log("main");
 	
-	document.querySelectorAll('vscode-button[data-href]').forEach((it) => it.addEventListener('click', handleHrefButton))
+	document.querySelectorAll('vscode-button[data-href]').forEach((it) => it.addEventListener('click', handleHrefButton));
 	
 	if (state.statistics) {
 		updateCharacterTable(state.statistics.characters);
