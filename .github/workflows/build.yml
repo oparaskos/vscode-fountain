@@ -22,7 +22,7 @@ jobs:
       env:
         CI: true
     - name: Automatic Semantic Release
-      uses: cycjimmy/semantic-release-action@v2
+      uses: cycjimmy/semantic-release-action@v3
       id: semantic
       with:
         extra_plugins: |
