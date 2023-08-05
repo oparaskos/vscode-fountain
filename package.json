@@ -6,7 +6,7 @@
   "icon": "assets/fountain-logo-monochrome@1x.png",
   "main": "./client/dist/main",
   "license": "MIT",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/oparaskos/vscode-fountain"
@@ -30,11 +30,9 @@
     "build:webview": "cd webviews && npm run build",
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
-
     "watch:client": "cd client && npm run watch",
     "watch:server": "cd server && npm run watch",
     "watch:webview": "cd webviews && npm run watch",
-
     "lint": "eslint ./client/src ./server/src ./webviews/src --ext .ts,.tsx",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd ../webviews && npm install && cd ..",
     "test": "sh ./scripts/e2e.sh"

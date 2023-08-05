@@ -1,3 +1,15 @@
+# [1.7.0](https://github.com/oparaskos/vscode-fountain/compare/v1.6.0...v1.7.0) (2023-08-05)
+
+
+### Bug Fixes
+
+* bump semantic release ([3b63c7d](https://github.com/oparaskos/vscode-fountain/commit/3b63c7dc269028e2acf15c62f16008dd91b6e321))
+
+
+### Features
+
+* make the webview prettier ([b65cf5e](https://github.com/oparaskos/vscode-fountain/commit/b65cf5e25c0ea6ace4192bce959e7614a75887c4))
+
 # [1.6.0](https://github.com/oparaskos/vscode-fountain/compare/v1.5.2...v1.6.0) (2022-10-13)
 
 
