@@ -37,3 +37,9 @@ jobs:
         npx vsce publish
       env:
         VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    - name: Publish to OpenVSX
+      if: steps.semantic.outputs.new_release_published == 'true'
+      run: |
+        npx ovsx publish
+      env:
+        OVSX_PAT: ${{ secrets.OVSX_PAT }}
