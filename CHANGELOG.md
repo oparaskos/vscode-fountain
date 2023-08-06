@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/oparaskos/vscode-fountain/compare/v1.8.0...v1.8.1) (2023-08-06)
+
+
+### Bug Fixes
+
+* **codefactor:** resolve codefactor issues ([5972275](https://github.com/oparaskos/vscode-fountain/commit/5972275a2c2f5007a5faf66cd0177c1dc91fb0d7))
+
 # [1.8.0](https://github.com/oparaskos/vscode-fountain/compare/v1.7.1...v1.8.0) (2023-08-06)
 
 
