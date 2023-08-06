@@ -15,7 +15,7 @@ function pathPattern(defs: Selection<SVGDefsElement, undefined, null, undefined>
 		.attr('style', 'fill:#fff;fill-opacity:0.25;');
 	return pattern;
 }
-export function applySeriesBaackgrounds(svg: Selection<SVGSVGElement, undefined, null, undefined>, visualImpaired: boolean = false) {
+export function applySeriesBaackgrounds(svg: Selection<SVGSVGElement, undefined, null, undefined>, visualImpaired = false) {
 	const size = 10;
 	const halfSize = 0.5 * size;
 	const defs = svg.append("defs");
@@ -30,7 +30,7 @@ export function applySeriesBaackgrounds(svg: Selection<SVGSVGElement, undefined,
 		light_cyan,
 		thulian_pink,
 		sandy_brown,
-		apple_green]
+		apple_green];
 
 	pathPattern(defs, [
 		`M${halfSize},0l${halfSize},${halfSize}l-${halfSize},${halfSize}l-${halfSize},-${halfSize}l${halfSize},-${halfSize}Z`,

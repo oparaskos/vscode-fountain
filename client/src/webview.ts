@@ -1,8 +1,5 @@
 import * as vscode from 'vscode';
-import { readFile } from 'fs/promises';
-import { join, basename } from 'path';
 import { LanguageClient, RequestType } from 'vscode-languageclient/node';
-import { URI, Utils } from 'vscode-uri';
 import { FountainPanel } from './FountainPanel';
 
 export async function updateLocationStats(panel: FountainPanel, client: LanguageClient, uri: string) {

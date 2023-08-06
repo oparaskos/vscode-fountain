@@ -74,7 +74,7 @@ export class FountainPanel {
 
 			// Update the content based on view changes
 			this._panel.onDidChangeViewState(
-				e => {
+				() => {
 					if (this._panel.visible) {
 						return this._update();
 					}
@@ -98,7 +98,7 @@ export class FountainPanel {
 			);
 
 			this.setUri(uri);
-		})
+		});
 	}
 
 	public updateSceneStats(uri: string, stats: unknown) {
@@ -123,30 +123,30 @@ export class FountainPanel {
 		this._panel.webview.postMessage({ command: 'opened', uri });
 	}
 
-	private async handleOpenLink(message: any) {
-		console.log("handleOpenLink")
+	private async handleOpenLink(message: {link: string}) {
+		console.log("handleOpenLink");
 		const link = URI.parse(message.link);
 		const line = link.fragment ? (+link.fragment.substring(1)) - 1 : 0;
 		const candidates = await vscode.workspace.findFiles(link.path);
 		const absolutePath = Utils.joinPath(vscode.workspace.workspaceFolders[0].uri, link.path);
 		if(candidates.length > 0) {
-			const doc = await vscode.workspace.openTextDocument(candidates[0])
+			const doc = await vscode.workspace.openTextDocument(candidates[0]);
 			const editor = await vscode.window.showTextDocument(doc, {});
 			editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
 		} else {
 			if (link.query.includes('create')) {
-				console.log("create")
+				console.log("create");
 				try {
-					await vscode.workspace.fs.writeFile(absolutePath, new Uint8Array([20,20,20]))
-					const doc = await vscode.workspace.openTextDocument(absolutePath)
+					await vscode.workspace.fs.writeFile(absolutePath, new Uint8Array([20,20,20]));
+					const doc = await vscode.workspace.openTextDocument(absolutePath);
 					const editor = await vscode.window.showTextDocument(doc, {});
 					editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
 				} catch (e) {
-					console.log(`create failed	${e}`)
+					console.log(`create failed	${e}`);
 					await vscode.window.showErrorMessage(`Could not create ${absolutePath}, ${e}`);
 				}
 			} else {
-				console.log("nocreate")
+				console.log("nocreate");
 				await vscode.window.showErrorMessage(`Could not find ${link}`);
 			}
 		}

@@ -1,5 +1,4 @@
 import { Position } from 'vscode-languageserver';
-import { logger } from '../../logger';
 import { positionInRange, tokensToRange } from '../../util/range';
 import { FountainToken } from "./FountainTokenType";
 
