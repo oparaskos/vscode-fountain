@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/oparaskos/vscode-fountain/compare/v1.7.1...v1.8.0) (2023-08-06)
+
+
+### Features
+
+* publish to openvsx ([2c75b59](https://github.com/oparaskos/vscode-fountain/commit/2c75b5929383066592a9e519717c30ceaa69e63f))
+
 ## [1.7.1](https://github.com/oparaskos/vscode-fountain/compare/v1.7.0...v1.7.1) (2023-08-05)
 
 
