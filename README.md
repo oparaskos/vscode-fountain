@@ -5,16 +5,34 @@
 
 # <img src="https://raw.githubusercontent.com/oparaskos/vscode-fountain/main/assets/fountain-logo-monochrome%401x.png" alt="icon" width="36" style="display: inline; margin-bottom: -10px"/> Fountain Language Server and Client
 
-This is a Language Server extension for [fountain](https://fountain.io/) files.
-
-**Fountain** is a simple markup syntax for writing, editing and sharing screenplays in plain, human-readable text. Fountain allows you to work on your screenplay anywhere, on any computer or tablet, using any software that edits text files.
+This extension provides Language Server support for [fountain](https://fountain.io/) files, a simple markup syntax for writing, editing, and sharing screenplays in plain, human-readable text.
 
 ## Features
 
-* Full Syntax highlighting
-* Smart Auto-Completions
-* Fountain Syntax help on Hover
-* Screenplay Statistics Webview
+- [x] Full Syntax highlighting.
+- [x] Smart Auto-Completions.
+- [x] Fountain Syntax help on Hover.
+- [x] Screenplay Statistics Webview.
+
+![Code Lenses and Syntax Highlighting](./docs/highlighting_lenses.png)
+
+![Gender Representation Graphs](./docs/graphs.png)
+
+![Scenes Table](./docs/scenes_tab.png)
+
+### Roadmap
+
+The long-term goal of this project is to enable interactive and serialized productions, with worldbuilding elements, by helping to navigate and explore characters, locations, etc as well as interrelationships between elements in the narrative with minimal additional overhead.
+
+- [ ] Semantic Analysis:
+  - [ ] Summary page per character (Age, Racial Identity, Gender Identity, Profile Picture, Relationships).
+  - [ ] Summary page per location (Location Details, Valence by Character, Concept Picture, Scene Frequency, Generate Shot list).
+  - [ ] Graph valence over the duration of the screenplay, and over episodes.
+- [ ] Serialised & Interactive Workflows:
+  - [ ] Screenplay stats over the whole folder, and whole workspace.
+  - [ ] Support for Interactive elements and branching stories.
+- [ ] Storyboarding workflow.
+- [ ] Show relationship between locations and characters, distance between locations.
 
 ## Thanks / Third-party licenses
 
