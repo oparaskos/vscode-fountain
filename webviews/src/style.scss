@@ -54,9 +54,23 @@ vscode-panel-view {
     .graph-container {
         display: flex;
         flex-direction: column;
+
+        .graph-title {
+            display: block;
+            text-align: center;
+            font-weight: bold;
+        }
     }
 
     donut-chart {
         overflow: visible;
     }
+    bar-chart {
+        overflow: visible;
+    }
+}
+
+aside vscode-button {
+    float: right;
+    clear: right;
 }
