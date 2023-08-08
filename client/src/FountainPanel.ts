@@ -177,7 +177,7 @@ export class FountainPanel {
 	}
 
 	private async _getHtmlForWebview(webview: vscode.Webview) {
-		const relativePath = join("webviews", "stats.html");
+		const relativePath = join("webviews", "index.html");
 		const baseUri = vscode.Uri.joinPath(this._extensionUri, relativePath);
 
 		return this._loadHtmlFromDisk(this._extensionUri.fsPath, relativePath)

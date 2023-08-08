@@ -6,8 +6,15 @@ import { LocationsStats } from './LocationsStats';
 import { showRacialIdentityRepresentationStatistics } from './racialIdentityRepresentation';
 import { ScenesStats } from './ScenesStats';
 import { vscode } from './vscode';
+import './style.scss';
 
 let state = vscode.getState();
+
+function patchState(ob: object) {
+    state = {...state, ...ob};
+    vscode.setState(state);
+    console.log({state});
+}
 
 if(!state) state = {};
 if(!state.statistics) {
@@ -109,17 +116,17 @@ function onMessage(ev: MessageEvent) {
 	if (ev.data.command == "fountain.statistics.characters") {
 		state.statistics.characters = ev.data.stats;
 		updateCharacterTable(state.statistics.characters);
-		vscode.setState(state);
+		patchState(state);
 	}
 	if (ev.data.command == "fountain.statistics.locations") {
 		state.statistics.locations = ev.data.stats;
 		updateLocationsTable(state.statistics.locations);
-		vscode.setState(state);
+		patchState(state);
 	}
 	if (ev.data.command == "fountain.statistics.scenes") {
 		state.statistics.scenes = ev.data.stats;
 		updateScenesTable(state.statistics.scenes);
-		vscode.setState(state);
+		patchState(state);
 	}
 	console.log({scriptStats: state.statistics});
 
@@ -134,7 +141,7 @@ function onMessage(ev: MessageEvent) {
 	}
 
 	if(ev.data.command == "opened") {
-		vscode.setState({ ...state, uri: ev.data.uri });
+		patchState({ ...state, uri: ev.data.uri });
 	}
 }
 

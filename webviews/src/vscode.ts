@@ -1,9 +1,11 @@
 
+const wnd = window as any;
+let acquire: () => { getState: () => any, setState: (x: any) => void, postMessage: (x: any) => void };
 
 /** @ts-ignore @type {{ getState: function():any, setState: function(any):void, postMessage: function(any):void }} */
-if (!window._vscode) 
-	/** @ts-ignore @type {{ getState: function():any, setState: function(any):void, postMessage: function(any):void }} */
-	window._vscode = acquireVsCodeApi();
-	
-/** @ts-ignore @type {{ getState: function():any, setState: function(any):void, postMessage: function(any):void }} */
-export const vscode = window._vscode;
+acquire = acquireVsCodeApi
+
+if (!wnd._vscode)
+    wnd._vscode = acquire();
+
+export const vscode = wnd._vscode;
