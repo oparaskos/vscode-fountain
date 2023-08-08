@@ -4,6 +4,9 @@
 
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+		"github.vscode-github-actions",
+		"codefactor.repo-status",
+		"redhat.vscode-yaml"
 	]
 }

@@ -1,0 +1,76 @@
+vscode-data-grid {
+    min-height: 3rem;
+    margin-top: 1rem;
+
+    vscode-data-grid-row {
+        min-height: 3rem;
+
+        &.header {
+            background: #47B6FF;
+            color: white;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+
+            &:hover {
+                background: #47B6FF;
+                color: white;
+                border-top-left-radius: 0.5rem;
+                border-top-right-radius: 0.5rem;
+            }
+        }
+
+        &:nth-child(even) {
+            background: var(--vscode-list-dropBackground);
+        }
+
+        &:hover {
+            background: var(--vscode-list-hoverBackground);
+        }
+
+        vscode-data-grid-cell.column-header {
+            line-height: 3rem;
+            color: white;
+            font-size: calc(var(--type-ramp-base-font-size) + 2px);
+        }
+    }
+}
+
+vscode-button {
+    border-radius: 2px;
+}
+
+vscode-panel-view {
+    article {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+.graph-grid {
+    display: grid;
+    grid-template: "1fr 1fr";
+
+    .graph-container {
+        display: flex;
+        flex-direction: column;
+
+        .graph-title {
+            display: block;
+            text-align: center;
+            font-weight: bold;
+        }
+    }
+
+    donut-chart {
+        overflow: visible;
+    }
+    bar-chart {
+        overflow: visible;
+    }
+}
+
+aside vscode-button {
+    float: right;
+    clear: right;
+}
