@@ -162,7 +162,7 @@ function handleHrefButton(e: Event) {
 function main() {
     logger.trace("main");
     const state = initState();
-    document.querySelectorAll('vscode-button[data-href]').forEach((it) => it.addEventListener('click', handleHrefButton))
+    document.querySelectorAll('vscode-button[data-href]').forEach((it) => it.addEventListener('click', handleHrefButton));
 
     if (state.statistics) {
         updateCharacterTable(state.statistics.characters);
