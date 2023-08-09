@@ -124,7 +124,7 @@ export class FountainPanel {
 	}
 
 	private async handleOpenLink(message: {link: string}) {
-		console.log("handleOpenLink");
+		console.trace("handleOpenLink", { message });
 		const link = URI.parse(message.link);
 		const line = link.fragment ? (+link.fragment.substring(1)) - 1 : 0;
 		const candidates = await vscode.workspace.findFiles(link.path);
@@ -135,18 +135,16 @@ export class FountainPanel {
 			editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
 		} else {
 			if (link.query.includes('create')) {
-				console.log("create");
 				try {
 					await vscode.workspace.fs.writeFile(absolutePath, new Uint8Array([20,20,20]));
 					const doc = await vscode.workspace.openTextDocument(absolutePath);
 					const editor = await vscode.window.showTextDocument(doc, {});
 					editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
 				} catch (e) {
-					console.log(`create failed	${e}`);
+                    console.log(`[handleOpenLink file create failed	${e}`);
 					await vscode.window.showErrorMessage(`Could not create ${absolutePath}, ${e}`);
 				}
 			} else {
-				console.log("nocreate");
 				await vscode.window.showErrorMessage(`Could not find ${link}`);
 			}
 		}

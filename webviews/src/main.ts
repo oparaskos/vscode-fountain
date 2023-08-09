@@ -5,24 +5,28 @@ import { showGenderRepresentationStatistics } from './genderRepresentation';
 import { LocationsStats } from './LocationsStats';
 import { showRacialIdentityRepresentationStatistics } from './racialIdentityRepresentation';
 import { ScenesStats } from './ScenesStats';
-import { vscode } from './vscode';
+import { getState, patchState, postMessage } from './vscode';
 import './style.scss';
 
-let state = vscode.getState();
-
-function patchState(ob: object) {
-    state = {...state, ...ob};
-    vscode.setState(state);
-    console.log({state});
+export type TState = {
+    statistics: {
+        characters: CharacterStats[],
+        locations: LocationsStats[],
+        scenes: ScenesStats[]
+    },
+    uri: string
 }
 
-if(!state) state = {};
-if(!state.statistics) {
-	state.statistics= {
-		characters: [],
-		locations: [],
-		scenes: []
-	};
+function initState() {
+    const state = getState<TState>() || {};
+    if (!state.statistics) {
+        patchState<TState>({statistics: {
+            characters: [],
+            locations: [],
+            scenes: []
+        }});
+    }
+    return state;
 }
 
 function getPanels(id = "root-panel") {
@@ -53,6 +57,7 @@ function describeDuration(dialogueActionRatio: number, duration : number) {
 }
 
 function updateScenesTable(stats: ScenesStats[]) {
+    console.trace("updateScenesTable", stats);
 	updateTable('grid-scenes', stats.map((row) => {
 		const dialogueRatio = row.DialogueDuration / row.Duration;
 		return {
@@ -64,7 +69,6 @@ function updateScenesTable(stats: ScenesStats[]) {
 		};
 	}));
 
-	console.log("updateScenesTable");
 	(document.getElementById("scenes-timeline") as any).setEntries(stats);
 
 	const badge = document.querySelector("vscode-panel-tab#tab-scenes > vscode-badge");
@@ -112,23 +116,23 @@ function updateCharacterTable(stats: CharacterStats[]) {
 }
 
 function onMessage(ev: MessageEvent) {
+    const state = getState<TState>();
 	// eslint-disable-next-line no-debugger
 	if (ev.data.command == "fountain.statistics.characters") {
 		state.statistics.characters = ev.data.stats;
 		updateCharacterTable(state.statistics.characters);
-		patchState(state);
+		patchState<TState>({statistics: state.statistics});
 	}
 	if (ev.data.command == "fountain.statistics.locations") {
 		state.statistics.locations = ev.data.stats;
 		updateLocationsTable(state.statistics.locations);
-		patchState(state);
+		patchState<TState>({statistics: state.statistics});
 	}
 	if (ev.data.command == "fountain.statistics.scenes") {
 		state.statistics.scenes = ev.data.stats;
 		updateScenesTable(state.statistics.scenes);
-		patchState(state);
+		patchState<TState>({statistics: state.statistics});
 	}
-	console.log({scriptStats: state.statistics});
 
 	if (ev.data.command == "fountain.analyseLocation") {
 		getPanels().activeid = "tab-locations";
@@ -141,13 +145,13 @@ function onMessage(ev: MessageEvent) {
 	}
 
 	if(ev.data.command == "opened") {
-		patchState({ ...state, uri: ev.data.uri });
+		patchState<TState>({ uri: ev.data.uri });
 	}
 }
 
 function handleHrefButton(e: Event) {
 	const href = (e.target as HTMLElement).getAttribute('data-href');
-	vscode.postMessage({
+	postMessage({
 		command: "open",
 		link: href
 	});
@@ -155,8 +159,8 @@ function handleHrefButton(e: Event) {
 
 
 function main() {
-	console.log("main");
-	
+    const state = initState();
+	console.trace("main", { state });
 	document.querySelectorAll('vscode-button[data-href]').forEach((it) => it.addEventListener('click', handleHrefButton))
 	
 	if (state.statistics) {
@@ -165,7 +169,7 @@ function main() {
 		updateScenesTable(state.statistics.scenes);
 	}
 
-	vscode.postMessage({ type: 'ready' });
+	postMessage({ type: 'ready' });
 }
 
 

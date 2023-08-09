@@ -64,7 +64,7 @@ export class ScriptTimeline extends HTMLElement {
 	}
 
 	public setEntries(newValue: { Duration: number; Name: string; Characters: string[]}[] ) {
-		console.log("setEntries");
+		console.trace("setEntries", newValue);
 		this.setAttribute('scenes', JSON.stringify(newValue));
 		this.render();
 	}
