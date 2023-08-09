@@ -54,7 +54,6 @@ function generateRacialIdentityStats(stats: CharacterStats[]): StatsResult {
 		const sentiment = char.Sentiment as number;
 		let racialIdentity = char.RacialIdentity as string;
 		if(racialIdentity && racialIdentity !== "unknown") {
-			console.log({racialIdentity});
 			hasRacialIdentity = true;
 		}
 

@@ -2,190 +2,189 @@ import { readFile } from 'fs/promises';
 import { basename, join } from 'path';
 import * as vscode from 'vscode';
 import { URI, Utils } from 'vscode-uri';
+import { logger } from './logger';
 
 export function getNonce() {
-	let text = '';
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	for (let i = 0; i < 32; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-	return text;
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 32; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
 }
 
 export class FountainPanel {
-	/**
-	 * Track the currently panel. Only allow a single panel to exist at a time.
-	 */
-	public static currentPanel: FountainPanel | undefined;
+    /**
+     * Track the currently panel. Only allow a single panel to exist at a time.
+     */
+    public static currentPanel: FountainPanel | undefined;
 
-	public static readonly viewType = 'vscode-fountain.fountainStats';
+    public static readonly viewType = 'vscode-fountain.fountainStats';
 
-	private readonly _panel: vscode.WebviewPanel;
-	private readonly _extensionUri: vscode.Uri;
-	private _disposables: vscode.Disposable[] = [];
+    private readonly _panel: vscode.WebviewPanel;
+    private readonly _extensionUri: vscode.Uri;
+    private _disposables: vscode.Disposable[] = [];
 
-	public static getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
-		return {
-			// Enable javascript in the webview
-			enableScripts: true,
-	
-			// And restrict the webview to only loading content from our extension's `media` directory.
-			localResourceRoots: [vscode.Uri.joinPath(extensionUri)]
-		};
-	}
+    public static getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
+        return {
+            // Enable javascript in the webview
+            enableScripts: true,
 
-	public static createOrShow(extensionUri: vscode.Uri, uri: string) {
-		const column = vscode.window.activeTextEditor
-			? vscode.window.activeTextEditor.viewColumn
-			: undefined;
+            // And restrict the webview to only loading content from our extension's `media` directory.
+            localResourceRoots: [vscode.Uri.joinPath(extensionUri)]
+        };
+    }
 
-		// If we already have a panel, show it.
-		if (FountainPanel.currentPanel) {
-			FountainPanel.currentPanel._panel.reveal(column);
-			FountainPanel.currentPanel.setUri(uri);
-			return FountainPanel.currentPanel;
-		}
+    public static createOrShow(extensionUri: vscode.Uri, uri: string) {
+        const column = vscode.window.activeTextEditor
+            ? vscode.window.activeTextEditor.viewColumn
+            : undefined;
 
-		// Otherwise, create a new panel.
-		const panel = vscode.window.createWebviewPanel(
-			FountainPanel.viewType,
-			basename(uri),
-			column || vscode.ViewColumn.One,
-			this.getWebviewOptions(extensionUri),
-		);
+        // If we already have a panel, show it.
+        if (FountainPanel.currentPanel) {
+            FountainPanel.currentPanel._panel.reveal(column);
+            FountainPanel.currentPanel.setUri(uri);
+            return FountainPanel.currentPanel;
+        }
 
-		FountainPanel.currentPanel = new FountainPanel(panel, extensionUri, uri);
-		return FountainPanel.currentPanel;
-	}
+        // Otherwise, create a new panel.
+        const panel = vscode.window.createWebviewPanel(
+            FountainPanel.viewType,
+            basename(uri),
+            column || vscode.ViewColumn.One,
+            this.getWebviewOptions(extensionUri),
+        );
 
-	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, uri: string) {
-		FountainPanel.currentPanel = new FountainPanel(panel, extensionUri, uri);
-	}
+        FountainPanel.currentPanel = new FountainPanel(panel, extensionUri, uri);
+        return FountainPanel.currentPanel;
+    }
 
-	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, uri: string) {
-		this._panel = panel;
-		this._extensionUri = extensionUri;
+    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, uri: string) {
+        FountainPanel.currentPanel = new FountainPanel(panel, extensionUri, uri);
+    }
 
-		// Set the webview's initial html content
-		this._update().then(() => {
-			// Listen for when the panel is disposed
-			// This happens when the user closes the panel or when the panel is closed programmatically
-			this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
+    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, uri: string) {
+        this._panel = panel;
+        this._extensionUri = extensionUri;
 
-			// Update the content based on view changes
-			this._panel.onDidChangeViewState(
-				() => {
-					if (this._panel.visible) {
-						return this._update();
-					}
-				},
-				null,
-				this._disposables
-			);
+        // Set the webview's initial html content
+        this._update().then(() => {
+            // Listen for when the panel is disposed
+            // This happens when the user closes the panel or when the panel is closed programmatically
+            this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
-			// Handle messages from the webview
-			this._panel.webview.onDidReceiveMessage(
-				message => {
-					switch (message.command) {
-						case 'alert':
-							return vscode.window.showErrorMessage(message.text);
-						case 'open':
-							return this.handleOpenLink(message);
-					}
-				},
-				null,
-				this._disposables
-			);
+            // Update the content based on view changes
+            this._panel.onDidChangeViewState(
+                () => {
+                    if (this._panel.visible) {
+                        return this._update();
+                    }
+                },
+                null,
+                this._disposables
+            );
 
-			this.setUri(uri);
-		});
-	}
+            // Handle messages from the webview
+            this._panel.webview.onDidReceiveMessage(
+                message => {
+                    switch (message.command) {
+                        case 'alert':
+                            return vscode.window.showErrorMessage(message.text);
+                        case 'open':
+                            return this.handleOpenLink(message);
+                    }
+                },
+                null,
+                this._disposables
+            );
 
-	public updateSceneStats(uri: string, stats: unknown) {
-		this._panel.webview.postMessage({ command: "fountain.statistics.scenes", uri, stats });
-	}
-	public updateCharacterStats(uri: string, stats: unknown) {
-		this._panel.webview.postMessage({ command: "fountain.statistics.characters", uri, stats });
-	}
-	public updateLocationStats(uri: string, stats: unknown) {
-		this._panel.webview.postMessage({ command: "fountain.statistics.locations", uri, stats });
-	}
-	public analyseScene(uri: string, name: string) {
-		this._panel.webview.postMessage({ command: "fountain.analyseScene", uri, name });
-	}
-	public analyseLocation(uri: string, name: string) {
-		this._panel.webview.postMessage({ command: "fountain.analyseLocation", uri, name });
-	}
-	public analyseCharacter(uri: string, name: string) {
-		this._panel.webview.postMessage({ command: "fountain.analyseCharacter", uri, name });
-	}
-	public setUri(uri) {
-		this._panel.webview.postMessage({ command: 'opened', uri });
-	}
+            this.setUri(uri);
+        });
+    }
 
-	private async handleOpenLink(message: {link: string}) {
-		console.log("handleOpenLink");
-		const link = URI.parse(message.link);
-		const line = link.fragment ? (+link.fragment.substring(1)) - 1 : 0;
-		const candidates = await vscode.workspace.findFiles(link.path);
-		const absolutePath = Utils.joinPath(vscode.workspace.workspaceFolders[0].uri, link.path);
-		if(candidates.length > 0) {
-			const doc = await vscode.workspace.openTextDocument(candidates[0]);
-			const editor = await vscode.window.showTextDocument(doc, {});
-			editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
-		} else {
-			if (link.query.includes('create')) {
-				console.log("create");
-				try {
-					await vscode.workspace.fs.writeFile(absolutePath, new Uint8Array([20,20,20]));
-					const doc = await vscode.workspace.openTextDocument(absolutePath);
-					const editor = await vscode.window.showTextDocument(doc, {});
-					editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
-				} catch (e) {
-					console.log(`create failed	${e}`);
-					await vscode.window.showErrorMessage(`Could not create ${absolutePath}, ${e}`);
-				}
-			} else {
-				console.log("nocreate");
-				await vscode.window.showErrorMessage(`Could not find ${link}`);
-			}
-		}
-	}
+    public updateSceneStats(uri: string, stats: unknown) {
+        this._panel.webview.postMessage({ command: "fountain.statistics.scenes", uri, stats });
+    }
+    public updateCharacterStats(uri: string, stats: unknown) {
+        this._panel.webview.postMessage({ command: "fountain.statistics.characters", uri, stats });
+    }
+    public updateLocationStats(uri: string, stats: unknown) {
+        this._panel.webview.postMessage({ command: "fountain.statistics.locations", uri, stats });
+    }
+    public analyseScene(uri: string, name: string) {
+        this._panel.webview.postMessage({ command: "fountain.analyseScene", uri, name });
+    }
+    public analyseLocation(uri: string, name: string) {
+        this._panel.webview.postMessage({ command: "fountain.analyseLocation", uri, name });
+    }
+    public analyseCharacter(uri: string, name: string) {
+        this._panel.webview.postMessage({ command: "fountain.analyseCharacter", uri, name });
+    }
+    public setUri(uri) {
+        this._panel.webview.postMessage({ command: 'opened', uri });
+    }
 
-	public dispose() {
-		FountainPanel.currentPanel = undefined;
+    private async handleOpenLink(message: { link: string }) {
+        logger.trace("handleOpenLink");
+        const link = URI.parse(message.link);
+        const line = link.fragment ? (+link.fragment.substring(1)) - 1 : 0;
+        const candidates = await vscode.workspace.findFiles(link.path);
+        const absolutePath = Utils.joinPath(vscode.workspace.workspaceFolders[0].uri, link.path);
+        if (candidates.length > 0) {
+            const doc = await vscode.workspace.openTextDocument(candidates[0]);
+            const editor = await vscode.window.showTextDocument(doc, {});
+            editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
+        } else {
+            if (link.query.includes('create')) {
+                try {
+                    await vscode.workspace.fs.writeFile(absolutePath, new Uint8Array([]));
+                    const doc = await vscode.workspace.openTextDocument(absolutePath);
+                    const editor = await vscode.window.showTextDocument(doc, {});
+                    editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
+                } catch (e) {
+                    logger.log(`Unable to create ${absolutePath}. Error: ${e}`);
+                    await vscode.window.showErrorMessage(`Could not create ${absolutePath}, ${e}`);
+                }
+            } else {
+                await vscode.window.showErrorMessage(`Could not find ${link}`);
+            }
+        }
+    }
 
-		// Clean up our resources
-		this._panel.dispose();
+    public dispose() {
+        FountainPanel.currentPanel = undefined;
 
-		while (this._disposables.length) {
-			const x = this._disposables.pop();
-			if (x) {
-				x.dispose();
-			}
-		}
-	}
+        // Clean up our resources
+        this._panel.dispose();
 
-	private async _update() {
-		const webview = this._panel.webview;
-		this._panel.webview.html = await this._getHtmlForWebview(webview);
-	}
+        while (this._disposables.length) {
+            const x = this._disposables.pop();
+            if (x) {
+                x.dispose();
+            }
+        }
+    }
 
-	private async _loadHtmlFromDisk(extensionPath: string, relativePath: string) {
-		const absolutePath = vscode.Uri.file(join(extensionPath, relativePath));
-		return (await readFile(absolutePath.fsPath)).toString('utf-8');
-	}
+    private async _update() {
+        const webview = this._panel.webview;
+        this._panel.webview.html = await this._getHtmlForWebview(webview);
+    }
 
-	private async _getHtmlForWebview(webview: vscode.Webview) {
-		const relativePath = join("webviews", "index.html");
-		const baseUri = vscode.Uri.joinPath(this._extensionUri, relativePath);
+    private async _loadHtmlFromDisk(extensionPath: string, relativePath: string) {
+        const absolutePath = vscode.Uri.file(join(extensionPath, relativePath));
+        return (await readFile(absolutePath.fsPath)).toString('utf-8');
+    }
 
-		return this._loadHtmlFromDisk(this._extensionUri.fsPath, relativePath)
-			.then((result) =>  result
-				.replace("${baseUri}", webview.asWebviewUri(baseUri).toString())
-				.replace("${webview.cspSource}", webview.cspSource)
-				.replace("${nonce}", getNonce()) // Use a nonce to only allow specific scripts to be run
-				.replace("${pageTitle}", this._panel.title)
-			);
-	}
+    private async _getHtmlForWebview(webview: vscode.Webview) {
+        const relativePath = join("webviews", "index.html");
+        const baseUri = vscode.Uri.joinPath(this._extensionUri, relativePath);
+
+        return this._loadHtmlFromDisk(this._extensionUri.fsPath, relativePath)
+            .then((result) => result
+                .replace("${baseUri}", webview.asWebviewUri(baseUri).toString())
+                .replace("${webview.cspSource}", webview.cspSource)
+                .replace("${nonce}", getNonce()) // Use a nonce to only allow specific scripts to be run
+                .replace("${pageTitle}", this._panel.title)
+            );
+    }
 }
