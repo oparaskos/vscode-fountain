@@ -7,6 +7,7 @@ import { ScenesStats } from './ScenesStats';
 import { getState, patchState, postMessage } from './vscode';
 import './style.scss';
 import { logger } from './logger';
+import { ScriptTimeline } from './script-timeline';
 
 export type TState = {
     statistics: {
@@ -71,7 +72,7 @@ function updateScenesTable(stats: ScenesStats[]) {
         };
     }));
 
-    (document.getElementById("scenes-timeline") as any).setEntries(stats);
+    (document.getElementById("scenes-timeline") as ScriptTimeline).setEntries(stats);
 
     const badge = document.querySelector("vscode-panel-tab#tab-scenes > vscode-badge");
     if (badge) { badge.innerHTML = '' + stats.length; }

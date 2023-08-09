@@ -1,6 +1,7 @@
 import { select } from 'd3-selection';
 import { wordToColor } from './word2colour';
 import { logger } from './logger';
+import html from './test.html';
 
 export class ScriptTimeline extends HTMLElement {
 
@@ -17,41 +18,7 @@ export class ScriptTimeline extends HTMLElement {
 		// https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
 		this.shadow = this.attachShadow({ mode: 'open' });
 
-		this.shadow.innerHTML = `
-			<style>
-				#container {
-					display:flex;
-					flex-direction:row;
-					overflow-y: scroll;
-				}
-				#container .scene {
-					padding: 0.1rem;
-					background: grey;
-					margin: 0.5px;
-					min-height: 2rem;
-					color: white;
-					font-size: 50%;
-					white-space: nowrap;
-					text-overflow: ellipsis;
-				  }
-				#container .scene .characters {
-				  display: flex;
-				  flex-direction: row;
-				  margin: 0.1rem;
-				  justify-content: right;
-				}
-				#container .scene .characters .character {
-				  width: 0.5rem;
-				  height: 0.5rem;
-				  border-radius: 0.5rem;
-				  margin:0  0.1rem;
-				}
-			</style>
-			<div id="layout">
-				<div id="container" ></div>
-				<input type="range" id="zoom" min="10" max="300" value="150" style="float: right;"/>
-			</div>
-		`;
+		this.shadow.innerHTML = html;
 
 		const renderFn = this.render.bind(this);
 		this.zoomSlider = this.shadow.getElementById("zoom") as HTMLInputElement;
@@ -72,7 +39,8 @@ export class ScriptTimeline extends HTMLElement {
 
 	private render() {
 		const totalDuration = this.entries.reduce((acc: number, it) => acc + it.Duration, 0);
-		const totalWidth = (totalDuration / parseFloat(this.zoomSlider.value)) * 3; // 30 minutes = 3rem
+        const zoomAmount = ((-1 * parseFloat(this.zoomSlider.value)) + 1) * 100
+		const totalWidth = (totalDuration / zoomAmount) * 3;
 		const container = this.shadow.getElementById('container') as HTMLDivElement;
 		container.innerHTML = '';
 		return select(container)
