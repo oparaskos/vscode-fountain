@@ -137,7 +137,7 @@ export class FountainPanel {
         } else {
             if (link.query.includes('create')) {
                 try {
-                    await vscode.workspace.fs.writeFile(absolutePath, new Uint8Array([20, 20, 20]));
+                    await vscode.workspace.fs.writeFile(absolutePath, new Uint8Array([]));
                     const doc = await vscode.workspace.openTextDocument(absolutePath);
                     const editor = await vscode.window.showTextDocument(doc, {});
                     editor.revealRange(new vscode.Range(line, 0, line, 0), vscode.TextEditorRevealType.InCenterIfOutsideViewport);
