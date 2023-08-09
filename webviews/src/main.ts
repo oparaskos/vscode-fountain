@@ -7,6 +7,7 @@ import { showRacialIdentityRepresentationStatistics } from './racialIdentityRepr
 import { ScenesStats } from './ScenesStats';
 import { getState, patchState, postMessage } from './vscode';
 import './style.scss';
+import { logger } from './logger';
 
 export type TState = {
     statistics: {
@@ -57,7 +58,7 @@ function describeDuration(dialogueActionRatio: number, duration : number) {
 }
 
 function updateScenesTable(stats: ScenesStats[]) {
-    console.trace("updateScenesTable", stats);
+    logger.trace("updateScenesTable");
 	updateTable('grid-scenes', stats.map((row) => {
 		const dialogueRatio = row.DialogueDuration / row.Duration;
 		return {
@@ -159,8 +160,8 @@ function handleHrefButton(e: Event) {
 
 
 function main() {
+	logger.trace("main");
     const state = initState();
-	console.trace("main", { state });
 	document.querySelectorAll('vscode-button[data-href]').forEach((it) => it.addEventListener('click', handleHrefButton))
 	
 	if (state.statistics) {

@@ -1,5 +1,6 @@
 import { select } from 'd3-selection';
 import { wordToColor } from './word2colour';
+import { logger } from './logger';
 
 export class ScriptTimeline extends HTMLElement {
 
@@ -64,7 +65,7 @@ export class ScriptTimeline extends HTMLElement {
 	}
 
 	public setEntries(newValue: { Duration: number; Name: string; Characters: string[]}[] ) {
-		console.trace("setEntries", newValue);
+		logger.trace("setEntries");
 		this.setAttribute('scenes', JSON.stringify(newValue));
 		this.render();
 	}
