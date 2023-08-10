@@ -1,17 +1,13 @@
-import { CharacterStats } from './CharacterStats';
-import { formatTime } from './formatTime';
+import type { BarChart, DonutChart } from '@/components/charts';
+import { CharacterStats } from '@/types/CharacterStats';
+import { formatTime } from '@/utils/formatTime';
 
-type StatsResult = {
+export type StatsResult = {
 	durationBy: { [racialIdentity: string]: number; };
 	readingAgeBy: { [racialIdentity: string]: number; };
 	speakingRolesBy: { [racialIdentity: string]: number; };
 	sentimentBy: { [racialIdentity: string]: number; } ;
 	hasRacialIdentity: boolean;
-}
-
-type ChartElement = {
-	setEntries: (entries: unknown) => void;
-	setFormat: (entries: unknown) => void;
 }
 
 export function showRacialIdentityRepresentationStatistics(stats: CharacterStats[]) {
@@ -21,10 +17,10 @@ export function showRacialIdentityRepresentationStatistics(stats: CharacterStats
 	const racialIdentityPrompt = (document.getElementById("characters-racial-identity-fountainrc") as HTMLElement);
 	racialIdentityPrompt.style.visibility = hasRacialIdentity ? "hidden" : "visible";
 
-	const durationDonutChart = (document.getElementById("characters-racial-identity-dialogue") as HTMLElement & ChartElement);
-	const readingAgeBarChart = (document.getElementById("characters-racial-identity-readingAge") as HTMLElement & ChartElement);
-	const speakingRolesBarChart = (document.getElementById("characters-speaking-roles-by-racial-identity") as HTMLElement & ChartElement);
-	const sentimentBarChart = (document.getElementById("characters-sentiment-by-racial-identity") as HTMLElement & ChartElement);
+	const durationDonutChart = (document.getElementById("characters-racial-identity-dialogue") as DonutChart);
+	const readingAgeBarChart = (document.getElementById("characters-racial-identity-readingAge") as BarChart);
+	const speakingRolesBarChart = (document.getElementById("characters-speaking-roles-by-racial-identity") as BarChart);
+	const sentimentBarChart = (document.getElementById("characters-sentiment-by-racial-identity") as BarChart);
 
 	document.querySelectorAll('.hide-if-no-racial-identity').forEach((element) => { (element as HTMLElement).style.display = hasRacialIdentity ? "initial" : "none"; });
 
@@ -34,7 +30,7 @@ export function showRacialIdentityRepresentationStatistics(stats: CharacterStats
 
 	if (hasRacialIdentity){
 		durationDonutChart.setEntries(durationBy);
-		durationDonutChart.setFormat((n: number) => formatTime(n.valueOf()));
+		durationDonutChart.setFormat((n) => formatTime(n.valueOf()));
 		readingAgeBarChart.setEntries(Object.keys(readingAgeBy).map(label => ({ label, value: readingAgeBy[label] })));
 		speakingRolesBarChart.setEntries(Object.keys(speakingRolesBy).map(label => ({ label, value: speakingRolesBy[label] })));
 		sentimentBarChart.setEntries(Object.keys(sentimentBy).map(label => ({ label, value: sentimentBy[label] })));

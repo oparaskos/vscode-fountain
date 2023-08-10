@@ -1,0 +1,73 @@
+@font-face {
+	font-family: "codicon";
+	font-display: block;
+	src: url("@vscode/codicons/dist/codicon.ttf") format("truetype");
+}
+
+[part='controls'] {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
+  .controls-icon {
+    font: normal normal normal 16px/1 codicon;
+    display: inline-block;
+    text-decoration: none;
+    text-rendering: auto;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    
+    &:before { content: "\ea99" }
+  }
+}
+
+[part='container'] {
+  display: flex;
+  flex-direction: row;
+  overflow-y: scroll;
+  height: 4rem;
+  align-items: center;
+
+  .scene {
+    position: relative;
+    padding: 0.1rem;
+    background: var(--vscode-button-secondaryBackground);
+    margin: 0.5px;
+    height: 2rem;
+    line-height: 2rem;
+    color: var(--vscode-button-secondaryForeground);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: default;
+    padding: 0 0.5rem;
+
+    &:hover {
+      background: var(--vscode-button-secondaryHoverBackground);
+      color: var(--vscode-button-secondaryForeground);
+    }
+
+    .characters {
+      position: absolute;
+      bottom: 0rem;
+      display: flex;
+      flex-direction: row;
+      justify-content: right;
+      left: 0.25rem;
+
+      .character {
+        width: 0.66rem;
+        height: 0.66rem;
+        margin: 0;
+      }
+
+      .person-filled {
+        -webkit-mask-image: url('./assets/person-filled.svg');
+        mask-image: url('./assets/person-filled.svg');
+      }
+    }
+  }
+}

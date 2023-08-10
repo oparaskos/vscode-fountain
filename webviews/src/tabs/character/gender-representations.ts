@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { CharacterStats } from './CharacterStats';
-import { formatTime } from './formatTime';
+import type { BarChart, DonutChart } from '@/components/charts';
+import type { CharacterStats } from '@/types/CharacterStats';
+import { formatTime } from '@/utils/formatTime';
 
-type StatsResult = {
+export type StatsResult = {
 	dialogueBalance: { [gender: string]: number; };
 	readingAgeByGender: { [gender: string]: number; };
 	numSpeakingRolesByGender: { [gender: string]: number; };
@@ -12,17 +12,17 @@ type StatsResult = {
 export function showGenderRepresentationStatistics(stats: CharacterStats[]) {
 	const { dialogueBalance, readingAgeByGender, numSpeakingRolesByGender, sentimentByGender } = generateCharacterStats(stats);
 
-	const genderDonutChart = (document.getElementById("characters-gender-dialogue") as any);
+	const genderDonutChart = (document.getElementById("characters-gender-dialogue") as DonutChart);
 	genderDonutChart.setEntries(dialogueBalance);
-	genderDonutChart.setFormat((n: number) => formatTime(n.valueOf()));
+	genderDonutChart.setFormat((n) => formatTime(n.valueOf()));
 
-	const genderBarChart = (document.getElementById("characters-gender-readingAge") as any);
+	const genderBarChart = (document.getElementById("characters-gender-readingAge") as BarChart);
 	genderBarChart.setEntries(Object.keys(readingAgeByGender).map(label => ({ label, value: readingAgeByGender[label] })));
 
-	const speakingRolesBarChart = (document.getElementById("characters-speaking-roles-by-gender") as any);
+	const speakingRolesBarChart = (document.getElementById("characters-speaking-roles-by-gender") as BarChart);
 	speakingRolesBarChart.setEntries(Object.keys(numSpeakingRolesByGender).map(label => ({ label, value: numSpeakingRolesByGender[label] })));
 
-	const sentimentByGenderBarChart = (document.getElementById("characters-sentiment-by-gender") as any);
+	const sentimentByGenderBarChart = (document.getElementById("characters-sentiment-by-gender") as BarChart);
 	sentimentByGenderBarChart.setEntries(Object.keys(sentimentByGender).map(label => ({ label, value: sentimentByGender[label] })));
 }
 

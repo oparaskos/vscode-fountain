@@ -45,9 +45,14 @@
     "concurrently": "^7.4.0",
     "eslint": "^8.13.0",
     "html-loader": "^4.2.0",
+    "mini-css-extract-plugin": "^2.7.6",
     "mocha": "^9.2.1",
     "semantic-release": "^19.0.5",
-    "typescript": "^4.7.2"
+    "svgo": "^3.0.2",
+    "svgo-loader": "^4.0.0",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "^4.7.2",
+    "url-loader": "^4.1.1"
   },
   "extensionDependencies": [
     "redhat.vscode-yaml"

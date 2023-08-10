@@ -5,7 +5,7 @@ import { format } from "d3-format";
 import { scaleOrdinal } from "d3-scale";
 import { schemeSpectral, interpolateSpectral } from "d3-scale-chromatic";
 import { quantize } from "d3-interpolate";
-import { applySeriesBaackgrounds } from './chart-series-backgrounds';
+import { applySeriesBaackgrounds } from '../../../utils/chart-series-backgrounds';
 
 export class DonutChart extends HTMLElement {
 

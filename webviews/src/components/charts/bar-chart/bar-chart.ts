@@ -5,7 +5,7 @@ import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
 import { schemeSpectral, interpolateSpectral } from 'd3-scale-chromatic';
 import { format } from 'd3-format';
 import { quantize } from 'd3-interpolate';
-import { applySeriesBaackgrounds } from './chart-series-backgrounds';
+import { applySeriesBaackgrounds } from '../../../utils/chart-series-backgrounds';
 
 export class BarChart extends HTMLElement {
 
