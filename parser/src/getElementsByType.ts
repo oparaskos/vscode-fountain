@@ -1,6 +1,5 @@
-import { FountainElement } from "./FountainElement";
-import { FountainElementWithChildren } from "./FountainElementWithChildren";
-
+import { FountainElement } from "./types/FountainElement";
+import { FountainElementWithChildren } from "./types/FountainElementWithChildren";
 
 export function getElementsByType<T extends FountainElement>(children: FountainElement[], type: string): T[] {
     const base: T[] = children.filter(child => child.type === type) as T[];

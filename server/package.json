@@ -3,16 +3,16 @@
 	"private": true,
 	"description": "Example implementation of a language server in node.",
 	"version": "1.0.0",
-	"author": "Microsoft Corporation",
 	"license": "MIT",
 	"engines": {
 		"node": "*"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
-	},
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/oparaskos/vscode-fountain"
+    },
 	"dependencies": {
+		"fountain-parser": "file:../parser",
 		"gender-detection-from-name": "^1.7.4",
 		"memoize": "^0.1.1",
 		"readability-scores": "github:oparaskos/readability-scores#patch-1",

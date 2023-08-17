@@ -26,7 +26,8 @@
   ],
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "build": "concurrently 'npm run build:webview' 'npm run build:client' 'npm run build:server'",
+    "build": "npm run build:parser && concurrently 'npm run build:webview' 'npm run build:client' 'npm run build:server'",
+    "build:parser": "cd parser && npm run build",
     "build:webview": "cd webviews && npm run build",
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",

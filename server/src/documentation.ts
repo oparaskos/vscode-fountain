@@ -3,7 +3,7 @@ import { readFile, stat } from 'fs/promises';
 import { logger } from './logger';
 import { Hover } from 'vscode-languageserver';
 
-const docsFolderPath = path.normalize(path.join(__dirname, '../../documentation'));
+const docsFolderPath = path.normalize(path.join(__dirname, '../../fountain-docs'));
 
 const EMPTY_DOCS = {
 	contents: ""

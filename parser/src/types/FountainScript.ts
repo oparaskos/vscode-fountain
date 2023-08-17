@@ -1,32 +1,23 @@
-import { Position, Range } from 'vscode-languageserver';
-import { positionInRange } from '../../util/range';
+import { positionInRange } from '@/src/range';
+import { Position } from '@/src/types/Position';
+import { Range } from '@/src/types/Range';
+import { getElementsByType } from '@/src/getElementsByType';
 import { DialogueElement } from "./DialogueElement";
 import { FountainElement } from "./FountainElement";
-import { getElementsByType } from './getElementsByType';
 import { LocationType, SceneElement } from "./SceneElement";
+import { CharacterStats } from './CharacterStats';
 
-export interface CharacterStats {
-    Name: string;
-    References: number;
-    Duration?: number;
-    Lines?: number;
-    Words?: number;
-    ReadingAge?: number;
-    Monologues?: number;
-    Sentiment?: number;
-
-}
 
 export class FountainScript {
     private _characterNames: string[] | undefined;
     private _characterStats: undefined | CharacterStats[];
-    private _dialogueByCharacters: {[k: string]: DialogueElement[]} | undefined;
-    private _scenesByLocationName: {[k: string]: SceneElement[]} | undefined;
+    private _dialogueByCharacters: { [k: string]: DialogueElement[]; } | undefined;
+    private _scenesByLocationName: { [k: string]: SceneElement[]; } | undefined;
     constructor(
-        public children: FountainElement[],
-    ) {}
+        public children: FountainElement[]
+    ) { }
 
-    public get characterNames(): string[]{
+    public get characterNames(): string[] {
         if (!this._characterNames)
             this._characterNames = this.dialogue
                 .map(element => element.character)
@@ -45,7 +36,7 @@ export class FountainScript {
         return this.children
             .filter(it => positionInRange(position, it.range))
             .flatMap(it => it.getElementsByPosition(position));
-	}
+    }
 
     public get statsPerCharacter(): CharacterStats[] {
         if (!this._characterStats) {
@@ -54,7 +45,7 @@ export class FountainScript {
                 const dialogues = dialogueByCharacters[characterName];
                 try {
                     return this.generateCharacterDialogueStats(dialogues, characterName);
-                } catch(e) {
+                } catch (e) {
                     return {
                         Name: characterName,
                         References: dialogues.length
@@ -83,16 +74,16 @@ export class FountainScript {
         };
     }
 
-    public get dialogue(): DialogueElement[]{
+    public get dialogue(): DialogueElement[] {
         return getElementsByType<DialogueElement>(this.children, "dialogue");
     }
 
     public get dialogueByCharacters() {
-        if (!this._dialogueByCharacters) 
+        if (!this._dialogueByCharacters)
             this._dialogueByCharacters = this.characterNames.reduce((acc, curr) => {
                 acc[curr] = this.dialogue.filter(it => it.character == curr);
                 return acc;
-            }, {} as {[k: string]: DialogueElement[]});
+            }, {} as { [k: string]: DialogueElement[]; });
         return this._dialogueByCharacters;
     }
     public get scenes() {
@@ -137,15 +128,13 @@ export class FountainScript {
     }
 
     public get scenesByLocationName() {
-        if(!this._scenesByLocationName) {
+        if (!this._scenesByLocationName) {
             const locationNames = this.locationNames;
             this._scenesByLocationName = locationNames.reduce((acc, curr) => {
                 acc[curr] = this.scenes.filter(it => it.location?.name === curr);
                 return acc;
-            }, {} as {[k: string]: SceneElement[]});
+            }, {} as { [k: string]: SceneElement[]; });
         }
         return this._scenesByLocationName;
     }
 }
-
-

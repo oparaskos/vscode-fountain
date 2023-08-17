@@ -18,8 +18,7 @@ import {
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
-import { parse } from './parser';
-import { FountainScript } from './parser/types';
+import { parse, FountainScript, CharacterStats } from 'fountain-parser';
 import { characterCompletions, closingCompletions, dialogueCompletions, openingCompletions, sceneCompletions, titlePageCompletions, transitionCompletions } from './completions';
 import { isTitlePage } from "./util/isTitlePage";
 import { dialogueLens, locationsLens, scenesLens } from './lenses';
@@ -94,7 +93,7 @@ connection.onRequest("fountain.statistics.characters", async (params) => {
 	try {
 		const settings = await getDocumentSettings(params.uri);
 		const parsedScript = parsedDocuments[params.uri];
-		const result = parsedScript.statsPerCharacter;
+		const result: CharacterStats[] = parsedScript.statsPerCharacter;
 		if (settings.guessCharacterGenders) {
 			const fountainrc = await getFountainrc(params.uri);
 			return result.map((it) => ({

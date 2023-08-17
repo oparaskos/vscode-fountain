@@ -2,10 +2,13 @@
 	"name": "fountain-lsp-client",
 	"private": true,
 	"description": "Fountain Language Server Client",
-	"author": "",
+	"author": "Oliver Paraskos",
 	"license": "MIT",
 	"version": "0.0.1",
-	"publisher": "vscode",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/oparaskos/vscode-fountain"
+    },
 	"scripts": {
 		"build": "esbuild ./src/extension.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap",
 		"watch": "npm run build -- --watch"
