@@ -39,7 +39,7 @@ export class ScriptTimeline extends HTMLElement {
 
 	private render() {
 		const totalDuration = this.entries.reduce((acc: number, it) => acc + it.Duration, 0);
-        const zoomAmount = ((-1 * parseFloat(this.zoomSlider.value)) + 1) * 100
+        const zoomAmount = ((-1 * parseFloat(this.zoomSlider.value)) + 1) * 100;
 		const totalWidth = (totalDuration / zoomAmount) * 3;
 		const container = this.shadow.getElementById('container') as HTMLDivElement;
 		container.innerHTML = '';
