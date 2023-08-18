@@ -25,18 +25,27 @@
     "onWebviewPanel:vscode-fountain.fountainStats"
   ],
   "scripts": {
-    "vscode:prepublish": "npm run build",
+    "--------- BUILD ----------": "",
     "build": "npm run build:parser && concurrently 'npm run build:webview' 'npm run build:client' 'npm run build:server'",
     "build:parser": "cd parser && npm run build",
     "build:webview": "cd webviews && npm run build",
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
+    "--------- WATCH ----------": "",
     "watch:client": "cd client && npm run watch",
     "watch:server": "cd server && npm run watch",
     "watch:webview": "cd webviews && npm run watch",
+    "--------- INSTALL ----------": "",
+    "postinstall": "concurrently 'npm run build:parser' 'npm run build:webview' 'npm run build:client' 'npm run build:server'",
+    "install:parser": "cd webviews && npm install",
+    "install:client": "cd client && npm install",
+    "install:server": "cd server && npm install",
+    "install:webviews": "cd webviews && npm install",
+    "--------- TEST ----------": "",
+    "test": "sh ./scripts/e2e.sh",
     "lint": "eslint ./client/src ./server/src ./webviews/src --ext .ts,.tsx",
-    "postinstall": "cd client && npm install && cd ../server && npm install && cd ../webviews && npm install && cd ..",
-    "test": "sh ./scripts/e2e.sh"
+    "--------- UTIL ----------": "",
+    "vscode:prepublish": "npm run build"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.0",
