@@ -4,21 +4,96 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
 
 jobs:
-  build:
+  checkout: 
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16.x
-        cache: npm
-    - name: Build and Package
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: npm
+      - run: npm ci
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: 
+      - checkout
+
+    steps:
+      - run: npm run lint
+
+  parser:
+    runs-on: ubuntu-latest
+    needs: 
+      - lint
+
+    steps:
+      - name: Install parser dependencies
+        working-directory: parser
+        run: npm install
+
+      - name: Build parser
+        working-directory: parser
+        run: npm run build
+
+  webview:
+    runs-on: ubuntu-latest
+    needs: 
+      - lint
+
+    steps:
+      - run: npm install
+        working-directory: webview
+
+      - run: npm run build
+        working-directory: webview
+
+  client:
+    runs-on: ubuntu-latest
+    needs: 
+      - lint
+
+    steps:
+      - run: npm install
+        working-directory: client
+
+      - run: npm run build
+        working-directory: client
+
+  server:
+    needs: 
+      - lint
+      - parser
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: npm install
+        working-directory: server
+
+      - run: npm run build
+        working-directory: server
+
+  test:
+    runs-on: ubuntu-latest
+    needs: 
+      - parser
+      - server
+      - webview
+      - client
+    steps:
+      - run: npm run test
+
+  publish:
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    steps:
+    - name: Package
       run: |
-        npm ci
-        npm run build
         npx vsce package
       env:
         CI: true
