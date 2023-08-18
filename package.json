@@ -43,9 +43,7 @@
     "install:webview": "cd webviews && npm install",
     "--------- TEST ----------": "",
     "test": "sh ./scripts/e2e.sh",
-    "lint": "eslint ./client/src ./server/src ./webviews/src ./parser/src --ext .ts,.tsx",
-    "--------- UTIL ----------": "",
-    "vscode:prepublish": "npm run build"
+    "lint": "eslint ./client/src ./server/src ./webviews/src ./parser/src --ext .ts,.tsx"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.0",
