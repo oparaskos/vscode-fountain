@@ -1,7 +1,6 @@
 
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
-import { FountainScript } from "./parser/types";
-import { FountainTitlePage } from "./parser/types/FountainTitlePage";
+import { FountainTitlePage, FountainScript } from "fountain-parser";
 
 const revisionDocumentation = `New revisions are generally printed on different-colored paper, and named accordingly. The WGA order for revisions is:
 * White Draft (original)
@@ -32,9 +31,9 @@ export const closingCompletions: CompletionHandler = () => {
     ];
 };
 
-export const characterCompletions: CompletionHandler = (_currentLine, parsedDocument) => {
+export const characterCompletions: CompletionHandler = (_currentLine: string, parsedDocument: FountainScript) => {
     return [
-        ...parsedDocument.characterNames.map(it => ({ label: it, kind: CompletionItemKind.Value })),
+        ...parsedDocument.characterNames.map((it: string) => ({ label: it, kind: CompletionItemKind.Value })),
         { label: "(O.S.)", kind: CompletionItemKind.Snippet },
         { label: "(CONT'D)", kind: CompletionItemKind.Snippet },
         { label: "(V.O.)", kind: CompletionItemKind.Snippet },

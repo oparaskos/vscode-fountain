@@ -4,10 +4,6 @@ export type VSCode = {
     setState<T extends Record<string, unknown> = Record<string, unknown>>(state: T): void;
 };
 
-declare global {
-    interface Window { __vscode__: VSCode | null; __vscode_local_state__: Record<string, unknown> }
-}
-
 declare const acquireVsCodeApi: () => VSCode;
 
 if (!window.__vscode__) {

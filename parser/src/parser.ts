@@ -1,28 +1,27 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-// FIXME: I'm lazy
 /* eslint-disable @typescript-eslint/no-extra-non-null-assertion */
 /* eslint-disable no-case-declarations */
 
 // fountain-js 0.1.10
 // http://www.opensource.org/licenses/mit-license.php
 
-import { DialogueElement } from "./types/DialogueElement";
-import { DualDialogueElement } from "./types/DualDialogueElement";
-import { FountainElement } from "./types/FountainElement";
-import { SceneElement } from "./types/SceneElement";
-import { SectionElement } from "./types/SectionElement";
+import { DialogueElement } from "@/src/types/DialogueElement";
+import { DualDialogueElement } from "@/src/types/DualDialogueElement";
+import { FountainElement } from "@/src/types/FountainElement";
+import { SceneElement } from "@/src/types/SceneElement";
+import { SectionElement } from "@/src/types/SectionElement";
 import { filterNotNull } from "./filterNotNull";
-import { SourceMapElement, FountainToken, FountainTokenType } from "./types/FountainTokenType";
-import { FountainScript } from "./types";
-import { FountainTitlePage } from "./types/FountainTitlePage";
-import { ActionElement } from "./types/ActionElement";
-import { TransitionElement } from "./types/TransitionElement";
-import { CenteredTextElement } from "./types/CenteredTextElement";
-import { PageBreakElement } from "./types/PageBreakElement";
-import { LineBreakElement } from "./types/LineBreakElement";
-import { SynopsesElement } from "./types/SynopsesElement";
-import { BoneyardElement } from "./types/BoneyardElement";
-import { NotesElement } from "./types/NotesElement";
+import { SourceMapElement, FountainToken, FountainTokenType } from "@/src/types/FountainTokenType";
+import { FountainScript } from "@/src/types/FountainScript";
+import { FountainTitlePage } from "@/src/types/FountainTitlePage";
+import { ActionElement } from "@/src/types/ActionElement";
+import { TransitionElement } from "@/src/types/TransitionElement";
+import { CenteredTextElement } from "@/src/types/CenteredTextElement";
+import { PageBreakElement } from "@/src/types/PageBreakElement";
+import { LineBreakElement } from "@/src/types/LineBreakElement";
+import { SynopsesElement } from "@/src/types/SynopsesElement";
+import { BoneyardElement } from "@/src/types/BoneyardElement";
+import { NotesElement } from "@/src/types/index";
 
 const FountainRegexSceneHeading = /^((?:\*{0,3}_?)?(?:(?:int|ext|est|i\/e)[. ]).+)|^(?:\.(?!\.+))(.+)/i;
 const FountainRegexSceneNumber = /( *#(.+)# *)/;

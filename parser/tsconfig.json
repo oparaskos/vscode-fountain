@@ -8,9 +8,18 @@
 		"sourceMap": true,
 		"strict": true,
 		"outDir": "out",
-		"rootDir": "src"
+		"rootDir": "src",
+        "baseUrl": ".",
+        "paths": {
+            "@/src/*": [
+                "./src/*"
+            ],
+            "@/types/*": [
+                "./src/types/*"
+            ]
+        }
 	},
-	"include": ["src", "../parser/src/range.ts"],
+	"include": ["src"],
 	"exclude": ["node_modules", ".vscode-test"]
 	
 }

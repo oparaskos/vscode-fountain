@@ -1,5 +1,5 @@
-import { Position } from 'vscode-languageserver';
-import { positionInRange, tokensToRange } from '../../util/range';
+import { Position } from '@/src/types/Position';
+import { positionInRange, tokensToRange } from '@/src/range';
 import { FountainToken } from "./FountainTokenType";
 
 export abstract class FountainElement<T extends string = string> {

@@ -1,9 +1,5 @@
 import { TextDocumentPositionParams } from "vscode-languageserver";
-import { FountainScript } from "../parser/types";
-import { FountainTitlePage } from "../parser/types/FountainTitlePage";
-import { tokensToRange, positionInRange } from './range';
-
-
+import { FountainScript, FountainTitlePage,  tokensToRange, positionInRange } from 'fountain-parser';
 
 export function isTitlePage(documentPosition: TextDocumentPositionParams, parsedScript: FountainScript): boolean {
     const titlePage = parsedScript.children[0];

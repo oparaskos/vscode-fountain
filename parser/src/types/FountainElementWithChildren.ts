@@ -1,9 +1,8 @@
-import { Position } from 'vscode-languageserver';
-import { logger } from '../../logger';
-import { positionInRange } from '../../util/range';
+import { Position } from '@/src/types/Position';
+import { positionInRange } from '@/src/range';
 import { FountainElement } from "./FountainElement";
 import { FountainToken } from "./FountainTokenType";
-import { getElementsByType } from './getElementsByType';
+import { getElementsByType } from '@/src/getElementsByType';
 
 
 export abstract class FountainElementWithChildren<T extends string = string, U extends FountainElement = FountainElement> extends FountainElement<T> {
@@ -16,7 +15,6 @@ export abstract class FountainElementWithChildren<T extends string = string, U e
     }
 
     public override getElementsByPosition(position: Position): FountainElement[] {
-        logger.log(`FountainElementWithChildren: getElementsByPosition`);
         const childrenInRange = this.children
             .filter(it => positionInRange(position, it.range))
             .flatMap(it => it.getElementsByPosition(position));

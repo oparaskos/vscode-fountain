@@ -2,7 +2,7 @@ import { FountainElement } from "./FountainElement";
 import { GroupingFountainElement } from "./GroupingFountainElement";
 import { FountainToken } from "./FountainTokenType";
 import { DialogueElement } from './DialogueElement';
-import { getElementsByType } from './getElementsByType';
+import { getElementsByType } from '../getElementsByType';
 import { ActionElement } from "./ActionElement";
 import { LineBreakElement } from "./LineBreakElement";
 import { SynopsesElement } from "./SynopsesElement";
