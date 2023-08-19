@@ -1,3 +1,14 @@
+## [1.8.2](https://github.com/oparaskos/vscode-fountain/compare/v1.8.1...v1.8.2) (2023-08-18)
+
+
+### Bug Fixes
+
+* dont run workflow twice on PR push ([6a15709](https://github.com/oparaskos/vscode-fountain/commit/6a15709a9f76eb9bc6944a2127c28a72293b1faa))
+* only run build on pushes to main ([c6d9e96](https://github.com/oparaskos/vscode-fountain/commit/c6d9e9621a983992322d63454674fa8f62510374))
+* postinstall script ([a441ea0](https://github.com/oparaskos/vscode-fountain/commit/a441ea0ef44df1f1bed7fb2d51694096008c044f))
+* workflow concurrency ([ce4a70d](https://github.com/oparaskos/vscode-fountain/commit/ce4a70d5a8a30c44525691d1f9b604914880c07a))
+* workflow concurrency ([df6747c](https://github.com/oparaskos/vscode-fountain/commit/df6747c592e986064d69d9f835c66a0f9108b13f))
+
 ## [1.8.1](https://github.com/oparaskos/vscode-fountain/compare/v1.8.0...v1.8.1) (2023-08-06)
 
 
