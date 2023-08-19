@@ -10,7 +10,7 @@ describe('Fountain Samples', () => {
         const fixturePath = join(samplesDir, 'Simple.fountain');
         let fountainScript: FountainScript = null as unknown as FountainScript;
         beforeEach(async () => {
-            const fixtureContent = await readFile(fixturePath, 'utf-8')
+            const fixtureContent = await readFile(fixturePath, 'utf-8');
             fountainScript = parse(fixtureContent);
         });
 
@@ -22,7 +22,7 @@ describe('Fountain Samples', () => {
             expect(fountainScript.scenes.map(it => it.location?.name)).toEqual(['OFFICE', 'house']);
         });
 
-    })
+    });
 
     for (const sample of ['Boneyard']){//, 'CenteredText', 'Indenting', 'Notes', 'Outlining', 'PageBreaks', 'MultilineAction' // 'Dialogue', 'DualDialogue', 'ForcedElements']){
         it(`${sample} should match snapshot`, async () => {

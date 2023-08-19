@@ -405,7 +405,7 @@ function extractMultilineCommentTokens(
 
     const commentTokens: FountainToken[] = [];
 
-    let lineParts = line.split(comment_start_str);
+    const lineParts = line.split(comment_start_str);
     let before_comment = null;
     let comment = lineParts[0];
     let after_comment = null;
