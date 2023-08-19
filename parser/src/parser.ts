@@ -22,6 +22,7 @@ import { LineBreakElement } from "@/src/types/LineBreakElement";
 import { SynopsesElement } from "@/src/types/SynopsesElement";
 import { BoneyardElement } from "@/src/types/BoneyardElement";
 import { NotesElement } from "@/src/types/index";
+import { Range } from './types/Range';
 
 const FountainRegexSceneHeading = /^((?:\*{0,3}_?)?(?:(?:int|ext|est|i\/e)[. ]).+)|^(?:\.(?!\.+))(.+)/i;
 const FountainRegexSceneNumber = /( *#(.+)# *)/;
@@ -109,67 +110,88 @@ function _parse(tokens: FountainToken[], parent: null | FountainToken = null): F
     for (let i = 0; i < tokens.length; ++i) {
         const token = tokens[i];
         const tokenDepth = token.depth || parent?.depth || 1;
-        switch (token.type) {
-            case 'transition': data.push(new TransitionElement([token])); break;
-            case 'synopsis': data.push (new SynopsesElement([token])); break;
-            case 'action': data.push (new ActionElement([token])); break;
-            case 'centered': data.push (new CenteredTextElement([token])); break;
-            case 'page_break': data.push(new PageBreakElement([token])); break;
-            case 'line_break': data.push(new LineBreakElement([token])); break;
-            case 'boneyard':
-                if(data[data.length - 1] instanceof BoneyardElement) {
-                    data[data.length - 1].tokens.push(token);
-                } else {
-                    data.push(new BoneyardElement([token]));
-                }
-                break;
-            case 'note':
-                if(data[data.length - 1] instanceof NotesElement) {
-                    data[data.length - 1].tokens.push(token);
-                } else {
-                    data.push(new NotesElement([token]));
-                }
-                break;
-            case 'section':
-                const [sectionTokens, sectionEnd] = tokensBetween(tokens, i, 'section', (t) => (t.depth as number) <= tokenDepth);
-                data.push(new SectionElement(
-                    tokens.slice(i, sectionEnd),
-                    token.text || 'UNTITLED',
-                    token.depth as number,
-                    _parse(sectionTokens, token)
-                ));
-                i = sectionEnd - 1;
-                break;
-            case 'scene_heading':
-                // Go to the next scene heading or section start whichever is closest.
-                const [sceneTokens, sceneEnd] = tokensBetween(tokens, i, 'scene_heading');
-                const [sceneSectionTokens, sceneSectionEnd] = tokensBetween(tokens, i, 'section', (t) => (t.depth as number) <= tokenDepth);
-                const end = sceneTokens.length < sceneSectionTokens.length ? sceneEnd : sceneSectionEnd;
-                const toks = sceneTokens.length < sceneSectionTokens.length ? sceneTokens : sceneSectionTokens;
-                data.push(new SceneElement(
-                    tokens.slice(i, end),
-                    token.text || 'UNTITLED',
-                    token.depth || (parent?.depth || 0) + 1,
-                    _parse(toks, token)
-                ));
-                i = end - 1;
-                break;
-            // // Group dialogue lines together with the character that is speaking.
-            case 'character':
-                let nextNonDialogue = tokens.findIndex((t, id) => id > i && t.type !== 'dialogue' && t.type !== 'parenthetical');
-                if(nextNonDialogue === -1) nextNonDialogue = tokens.length; // we must be at the end of the script
-                const [nextI, result] = parseDialogue(token, tokens, i, nextNonDialogue);
-                data.push(result);
-                i = nextI;
-                break;
-
-            default:
-                // data.push(token);
-        }
+        i = parseToken(token, data, i, tokens, tokenDepth, parent);
     }
     return data;
+}
 
+function parseToken(token: FountainToken, data: FountainElement<string>[], i: number, tokens: FountainToken[], tokenDepth: number, parent: FountainToken | null) {
+    switch (token.type) {
+        case 'transition': data.push(new TransitionElement([token])); break;
+        case 'synopsis': data.push(new SynopsesElement([token])); break;
+        case 'action': data.push(new ActionElement([token])); break;
+        case 'centered': data.push(new CenteredTextElement([token])); break;
+        case 'page_break': data.push(new PageBreakElement([token])); break;
+        case 'line_break': data.push(new LineBreakElement([token])); break;
+        case 'boneyard': parseBoneyard(data, token); break;
+        case 'note': parseNote(data, token); break;
+        case 'section':
+            i = parseSection(tokens, i, tokenDepth, data, token);
+            break;
+        case 'scene_heading':
+            // Go to the next scene heading or section start whichever is closest.
+            i = parseSceneHeading(tokens, i, tokenDepth, data, token, parent);
+            break;
+        // // Group dialogue lines together with the character that is speaking.
+        case 'character':
+            i = parseCharacter(tokens, i, token, data);
+            break;
+        default:
+        // data.push(token);
+    }
+    return i;
+}
 
+function parseCharacter(tokens: FountainToken[], i: number, token: FountainToken, data: FountainElement<string>[]) {
+    let nextNonDialogue = tokens.findIndex((t, id) => id > i && t.type !== 'dialogue' && t.type !== 'parenthetical');
+    if (nextNonDialogue === -1) nextNonDialogue = tokens.length; // we must be at the end of the script
+    const [nextI, result] = parseDialogue(token, tokens, i, nextNonDialogue);
+    data.push(result);
+    i = nextI;
+    return i;
+}
+
+function parseSceneHeading(tokens: FountainToken[], i: number, tokenDepth: number, data: FountainElement<string>[], token: FountainToken, parent: FountainToken | null) {
+    const [sceneTokens, sceneEnd] = tokensBetween(tokens, i, 'scene_heading');
+    const [sceneSectionTokens, sceneSectionEnd] = tokensBetween(tokens, i, 'section', (t) => (t.depth as number) <= tokenDepth);
+    const end = sceneTokens.length < sceneSectionTokens.length ? sceneEnd : sceneSectionEnd;
+    const toks = sceneTokens.length < sceneSectionTokens.length ? sceneTokens : sceneSectionTokens;
+    data.push(new SceneElement(
+        tokens.slice(i, end),
+        token.text || 'UNTITLED',
+        token.depth || (parent?.depth || 0) + 1,
+        _parse(toks, token)
+    ));
+    i = end - 1;
+    return i;
+}
+
+function parseSection(tokens: FountainToken[], i: number, tokenDepth: number, data: FountainElement<string>[], token: FountainToken) {
+    const [sectionTokens, sectionEnd] = tokensBetween(tokens, i, 'section', (t) => (t.depth as number) <= tokenDepth);
+    data.push(new SectionElement(
+        tokens.slice(i, sectionEnd),
+        token.text || 'UNTITLED',
+        token.depth as number,
+        _parse(sectionTokens, token)
+    ));
+    i = sectionEnd - 1;
+    return i;
+}
+
+function parseNote(data: FountainElement<string>[], token: FountainToken) {
+    if (data[data.length - 1] instanceof NotesElement) {
+        data[data.length - 1].tokens.push(token);
+    } else {
+        data.push(new NotesElement([token]));
+    }
+}
+
+function parseBoneyard(data: FountainElement<string>[], token: FountainToken) {
+    if (data[data.length - 1] instanceof BoneyardElement) {
+        data[data.length - 1].tokens.push(token);
+    } else {
+        data.push(new BoneyardElement([token]));
+    }
 }
 
 function parseDialogue(token: FountainToken, tokens: FountainToken[], i: number, nextNonDialogue: number): [number, DialogueElement | DualDialogueElement] {
@@ -213,133 +235,145 @@ function tokensBetween(tokens: Array<FountainToken>, index: number, end_type: st
 /**
  * Extract a list of tokens from a line.
  * 
- * @param line
+ * @param fullLine
  * @param codeLocation 
  * @param lastToken 
  * @param isFollowedByBlankLine 
  * @returns 
  */
-function extractToken(line: string, codeLocation: SourceMapElement, lastToken: FountainToken | undefined, lastNonWhitespaceToken: FountainToken | undefined, isFollowedByBlankLine: boolean): FountainToken[] {
+function extractToken(fullLine: string, codeLocation: SourceMapElement, lastToken: FountainToken | undefined, lastNonWhitespaceToken: FountainToken | undefined, isFollowedByBlankLine: boolean, rangeStart = 0, rangeEnd: number|undefined = undefined): FountainToken[] {
     let match;
 
-    if(line.startsWith('!')) {
-        return [{ type: 'action', text: line, line, codeLocation }];
-    }
+    const lineSegment = fullLine.substring(rangeStart, rangeEnd);
 
-    if (line.startsWith('=')) {
-        return [{ type: 'synopsis', line, codeLocation, text: line.substring(1).trim() }];
-    }
+    if (lineSegment.startsWith('!')) return [createToken('action', fullLine, lineSegment, codeLocation)];
+    if (lineSegment.startsWith('=')) return [createSynopsisTokenFromLine(fullLine, lineSegment, codeLocation)];
 
     // title page
     if (!lastNonWhitespaceToken || lastNonWhitespaceToken.type === 'title_page' ) {
-        const colonLocation = line.indexOf(':');
+        const colonLocation = fullLine.indexOf(':');
         if (colonLocation > -1) {
-            return [{
-                type: 'title_page',
-                line,
-                key: line.substring(0, colonLocation).trim(),
-                text: line.substring(colonLocation + 1).trim(),
-                codeLocation: codeLocation,
-            }];
+            return [createTitlePageToken(fullLine, colonLocation, codeLocation)];
         } else if (lastToken?.type === 'title_page') {
             // title page values can have newlines so this must be a continuation of a previous property
-            lastToken.text += '\n' + line;
+            lastToken.text += '\n' + fullLine;
             lastToken.codeLocation.end = codeLocation.end;
         }
     }
 
-    if (line.trim().length === 0) {
-        return [{
-            type: 'line_break',
-            line,
-            text: '\n',
-            codeLocation,
-        }];
-    }
+    if (fullLine.trim().length === 0) return [createLineBreakToken(fullLine, codeLocation)];
 
-    // boneyard
-    const boneyardTokens: FountainToken[] = extractBoneyardTokens(line, codeLocation, lastToken, lastNonWhitespaceToken, isFollowedByBlankLine);
-    if (boneyardTokens.length > 0) {
-        return boneyardTokens;
-    }
+    // Boneyard can recurse but do not start parsing comments inside comments.
+    if(rangeStart === 0 && rangeEnd === undefined) {
+        // boneyard
+        const boneyardTokens: FountainToken[] = extractBoneyardTokens(fullLine, codeLocation, lastToken, lastNonWhitespaceToken, isFollowedByBlankLine);
+        if (boneyardTokens.length > 0) return boneyardTokens;
 
-    // note
-    const noteTokens: FountainToken[] = extractNoteTokens(line, codeLocation, lastToken, lastNonWhitespaceToken, isFollowedByBlankLine);
-    if (noteTokens.length > 0) {
-        return noteTokens;
+        // note
+        const noteTokens: FountainToken[] = extractNoteTokens(fullLine, codeLocation, lastToken, lastNonWhitespaceToken, isFollowedByBlankLine);
+        if (noteTokens.length > 0) return noteTokens;
     }
 
     // section
-    match = line.match(FountainRegexSection);
-    if (match) {
-        return [{ type: 'section', line, codeLocation, text: match[2], depth: match[1].length }];
-    }
+    match = lineSegment.match(FountainRegexSection);
+    if (match) return [createSectionToken(fullLine, codeLocation, match)];
 
     // scene headings
-    match = line.match(FountainRegexSceneHeading);
-    if (match) {
-        let text = match[1] || match[2];
-
-        if (text.indexOf('  ') !== text.length - 2) {
-            let meta;
-            const metaMatch = text.match(FountainRegexSceneNumber);
-            if (metaMatch) {
-                meta = metaMatch[2];
-                text = text.replace(FountainRegexSceneNumber, '');
-            }
-            return [{ type: 'scene_heading', line, codeLocation, text: text, scene_number: meta }];
-        }
-        return [];
-    }
+    match = lineSegment.match(FountainRegexSceneHeading);
+    if (match) return extractSceneHeadingTokens(match, fullLine, codeLocation);
 
     // centered
-    match = line.match(FountainRegexCentered);
-    if (match) {
-        return [{ type: 'centered', line, codeLocation, text: match[0].replace(/>|</g, '') }];
-    }
+    match = lineSegment.match(FountainRegexCentered);
+    if (match) return [createCenteredToken(fullLine, codeLocation, match)];
 
     // transitions
-    match = line.match(FountainRegexTransition);
-    if (match) {
-        return [{ type: 'transition', line, codeLocation, text: line }];
-    }
+    match = lineSegment.match(FountainRegexTransition);
+    if (match) return [createToken('transition', fullLine, lineSegment, codeLocation)];
 
     // character
     // A Character element is any line entirely in uppercase, with one empty line before it and without an empty line after it.
     // Power User: You can force a Character element by preceding it with the "at" symbol @.
-    if (line.startsWith('@') || (!isFollowedByBlankLine && lastToken?.type === 'line_break' && line.toUpperCase() === line)) {
-        return [{ type: 'character', line, codeLocation, text: line.replace(/^@/, '') }];
+    if (lineSegment.startsWith('@') || (!isFollowedByBlankLine && lastToken?.type === 'line_break' && lineSegment.toUpperCase() === lineSegment)) {
+        return [createCharacterToken(fullLine, lineSegment, codeLocation)];
     }
 
     // Parentheticals follow a Character or Dialogue element, and are wrapped in parentheses ().
     if ((lastToken?.type === 'character' || lastToken?.type === 'dialogue')
-        && (line.trim().startsWith('(') && line.trim().endsWith(')'))) {
-        return [{ type: 'parenthetical', line, codeLocation, text: line.replace(/^\(|\)$/g, '') }];
+        && (lineSegment.trim().startsWith('(') && lineSegment.trim().endsWith(')'))) {
+        return [createParentheticalToken(fullLine, lineSegment, codeLocation)];
     }
 
     // Dialogue is any text following a Character or Parenthetical element.
     if (lastToken?.type === 'character' || lastToken?.type === 'parenthetical' || lastToken?.type === 'dialogue') {
-        return [{ type: 'dialogue', line, codeLocation, text: line }];
+        return [createToken('dialogue', fullLine, lineSegment, codeLocation)];
     }
 
 
     // synopsis
-    match = line.match(FountainRegexSynopsis);
-    if (match) {
-        return [{ type: 'synopsis', line, codeLocation, text: match[1] }];
-    }
+    match = lineSegment.match(FountainRegexSynopsis);
+    if (match) return [createSynopsisTokenFromMatch(fullLine, codeLocation, match)];
 
     // page breaks
-    if (FountainRegexPageBreak.test(line)) {
-        return [{ type: 'page_break', line, codeLocation }];
-    }
+    if (FountainRegexPageBreak.test(lineSegment))  return [createToken('page_break', fullLine, lineSegment, codeLocation)];
 
     // line breaks
-    if (FountainRegexLineBreak.test(line)) {
-        return [{ type: 'line_break', line, codeLocation }];
-    }
+    if (FountainRegexLineBreak.test(lineSegment))  return [createLineBreakToken(fullLine, codeLocation)];
 
-    return [{ type: 'action', text: line, line, codeLocation }];
+    return [createToken('action', fullLine, lineSegment, codeLocation)];
+}
+
+function createToken(type: FountainTokenType, line: string, text: string, codeLocation: SourceMapElement): FountainToken {
+    return { type, line, codeLocation, text};
+}
+
+function createSynopsisTokenFromLine(line: string, text: string, codeLocation: SourceMapElement): FountainToken {
+    return { ...createToken('synopsis', line, text.substring(1).trim(), codeLocation) };
+}
+
+function createSectionToken(line: string, codeLocation: SourceMapElement, match: RegExpMatchArray): FountainToken {
+    return {...createToken('section', line, match[2], codeLocation), depth: match[1].length };
+}
+
+function createSynopsisTokenFromMatch(line: string, codeLocation: SourceMapElement, match: RegExpMatchArray): FountainToken {
+    return createToken('synopsis', line, match[1], codeLocation);
+}
+
+function createParentheticalToken(line: string, text: string, codeLocation: SourceMapElement): FountainToken {
+    return createToken('parenthetical', line, text.replace(/^\(|\)$/g, ''), codeLocation);
+}
+
+function createCharacterToken(line: string, text: string, codeLocation: SourceMapElement): FountainToken {
+    return createToken('character', line, text.replace(/^@/, ''), codeLocation);
+}
+
+function createCenteredToken(line: string, codeLocation: SourceMapElement, match: RegExpMatchArray): FountainToken {
+    return createToken('centered', line, match[0].replace(/>|</g, ''), codeLocation);
+}
+
+function createLineBreakToken(line: string, codeLocation: SourceMapElement): FountainToken {
+    return createToken('line_break', line, '\n', codeLocation);
+}
+
+function createTitlePageToken(line: string, colonLocation: number, codeLocation: SourceMapElement): FountainToken {
+    return {...createToken('title_page', line, line, codeLocation), 
+        key: line.substring(0, colonLocation).trim(),
+        text: line.substring(colonLocation + 1).trim(),
+    };
+}
+
+function extractSceneHeadingTokens(match: RegExpMatchArray, line: string, codeLocation: SourceMapElement): FountainToken[] {
+    let text = match[1] || match[2];
+
+    if (text.indexOf('  ') !== text.length - 2) {
+        let meta;
+        const metaMatch = text.match(FountainRegexSceneNumber);
+        if (metaMatch) {
+            meta = metaMatch[2];
+            text = text.replace(FountainRegexSceneNumber, '');
+        }
+        return [{ ...createToken('scene_heading', line, text, codeLocation), scene_number: meta }];
+    }
+    return [];
 }
 
 function extractBoneyardTokens(line: string, codeLocation: SourceMapElement, lastToken: FountainToken | undefined,
@@ -364,73 +398,92 @@ function extractMultilineCommentTokens(
     comment_end_type: FountainTokenType,
     isFollowedByBlankLine: boolean
 ) {
-    const isComment = lastToken?.type === comment_type;
+    let isComment = lastToken?.type === comment_type || lastToken?.type === comment_start_type;
+
+    // bail early if theres no chance this line includes a comment.
+    if(!isComment && !line.includes(comment_start_str)) return [];
+
     const commentTokens: FountainToken[] = [];
+
+    let lineParts = line.split(comment_start_str);
+    let before_comment = null;
+    let comment = lineParts[0];
+    let after_comment = null;
+
+    if (lineParts.length > 1) {
+        before_comment = lineParts[0];
+        comment = lineParts[1];
+    }
+    const commentParts = comment.split(comment_end_str);
+    comment = commentParts[0];
+    if (commentParts.length > 1) {
+        after_comment = commentParts[1];
+    }
+
+    const comment_start_position = before_comment != null ? {
+        column: codeLocation.start.column + lineParts[0].length,
+        index: codeLocation.start.index + lineParts[0].length,
+        line: codeLocation.start.line,
+    } : codeLocation.start;
+    const comment_end_position = after_comment != null ? {
+        column: comment_start_position.column + comment.length,
+        index: comment_start_position.index + comment.length,
+        line: comment_start_position.line,
+    } : codeLocation.end;
+
     if (!isComment && line.indexOf(comment_start_str) > -1) {
-        const lineParts = line.split(comment_start_str);
-        line = lineParts[0];
-        commentTokens.push(...extractToken(line, {
-            file: codeLocation.file,
-            start: codeLocation.start,
-            end: {
-                column: codeLocation.start.column + line.length,
-                index: codeLocation.start.index + line.length,
-                line: codeLocation.start.line,
-            },
-        }, lastToken, lastNonWhitespaceToken, false));
+        // Anything before the comment starts (inline comments)
+        if(before_comment?.trim()?.length)
+            commentTokens.push(...extractToken(line, {
+                file: codeLocation.file,
+                start: codeLocation.start,
+                end: comment_start_position,
+            }, lastToken, lastNonWhitespaceToken, false, 0, before_comment.length));
+        // Comment begin token
         commentTokens.push({
             type: comment_start_type, line, codeLocation: {
                 file: codeLocation.file,
-                start: commentTokens[commentTokens.length - 1].codeLocation.end,
+                start: comment_start_position,
                 end: {
-                    column: codeLocation.start.column + line.length + comment_start_str.length,
-                    index: codeLocation.start.index + line.length + comment_start_str.length,
-                    line: codeLocation.start.line,
+                    column: comment_start_position.column + comment_start_str.length,
+                    index: comment_start_position.index + comment_start_str.length,
+                    line: comment_start_position.line,
                 },
             }, text: ''
         });
+        isComment = true;
+    }
+    if(isComment) {
+        // Comment token
         commentTokens.push({
             type: comment_type, line, codeLocation: {
                 file: codeLocation.file,
-                start: commentTokens[commentTokens.length - 1].codeLocation.end,
+                start: comment_start_position,
+                end: comment_end_position,
+            }, text: comment
+        });
+    } // else push nothing and lat extractToken handle empty by continuing parsing
+    if (isComment && line.indexOf(comment_end_str) > -1) {
+        // Comment end token
+        commentTokens.push({
+            type: comment_start_type, line, codeLocation: {
+                file: codeLocation.file,
+                start: comment_end_position,
+                end: {
+                    column: comment_end_position.column + comment_start_str.length,
+                    index: comment_end_position.index + comment_start_str.length,
+                    line: comment_end_position.line,
+                },
+            }, text: ''
+        });
+
+        // Anything after the comment ends (inline comments)
+        if(after_comment?.trim()?.length)
+            commentTokens.push(...extractToken(line, {
+                file: codeLocation.file,
+                start: comment_end_position,
                 end: codeLocation.end,
-            }, text: lineParts[1]
-        });
-    }
-    if (line.indexOf(comment_end_str) > -1) {
-        const lineParts = line.split(comment_end_str);
-        line = lineParts[1];
-        commentTokens.push({
-            type: comment_type, line, codeLocation: {
-                file: codeLocation.file,
-                start: codeLocation.start,
-                end: {
-                    column: codeLocation.start.column + lineParts[0].length,
-                    index: codeLocation.start.index + lineParts[0].length,
-                    line: codeLocation.start.line,
-                },
-            }, text: lineParts[0]
-        });
-        const commentEndToken = {
-            type: comment_end_type, line, codeLocation: {
-                file: codeLocation.file,
-                start: commentTokens[commentTokens.length - 1].codeLocation.end,
-                end: {
-                    column: codeLocation.start.column + line.length + comment_end_str.length,
-                    index: codeLocation.start.index + line.length + comment_end_str.length,
-                    line: codeLocation.start.line,
-                },
-            }, text: ''
-        };
-        commentTokens.push(commentEndToken);
-        commentTokens.push(...extractToken(line, {
-            file: codeLocation.file,
-            start: commentEndToken.codeLocation.end,
-            end: codeLocation.end,
-        }, commentEndToken, commentEndToken, isFollowedByBlankLine));
-    }
-    if (isComment && commentTokens.length === 0) {
-        commentTokens.push({ type: comment_type, line, codeLocation, text: line });
+            }, lastToken, lastNonWhitespaceToken, false, line.indexOf(after_comment)));
     }
     return commentTokens;
 }

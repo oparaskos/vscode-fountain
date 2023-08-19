@@ -1,0 +1,287 @@
+{
+  "children": [
+    {
+      "type": "title-page",
+      "tokens": []
+    },
+    {
+      "type": "action",
+      "tokens": [
+        {
+          "type": "action",
+          "line": "A line of action.",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "line": 0,
+              "column": 0,
+              "index": 0
+            },
+            "end": {
+              "line": 0,
+              "column": 18,
+              "index": 18
+            }
+          },
+          "text": "A line of action."
+        }
+      ]
+    },
+    {
+      "type": "line-break",
+      "tokens": [
+        {
+          "type": "line_break",
+          "line": "",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "line": 1,
+              "column": 0,
+              "index": 18
+            },
+            "end": {
+              "line": 1,
+              "column": 1,
+              "index": 19
+            }
+          },
+          "text": "\n"
+        }
+      ]
+    },
+    {
+      "type": "boneyard",
+      "tokens": [
+        {
+          "type": "boneyard",
+          "line": "/* This is an inline Boneyard. */",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "column": 0,
+              "index": 19,
+              "line": 2
+            },
+            "end": {
+              "column": 29,
+              "index": 48,
+              "line": 2
+            }
+          },
+          "text": " This is an inline Boneyard. "
+        }
+      ]
+    },
+    {
+      "type": "line-break",
+      "tokens": [
+        {
+          "type": "line_break",
+          "line": "",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "line": 3,
+              "column": 0,
+              "index": 53
+            },
+            "end": {
+              "line": 3,
+              "column": 1,
+              "index": 54
+            }
+          },
+          "text": "\n"
+        }
+      ]
+    },
+    {
+      "type": "boneyard",
+      "tokens": [
+        {
+          "type": "boneyard",
+          "line": "/*",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "column": 0,
+              "index": 54,
+              "line": 4
+            },
+            "end": {
+              "line": 4,
+              "column": 3,
+              "index": 57
+            }
+          },
+          "text": ""
+        },
+        {
+          "type": "boneyard",
+          "line": "This is a",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "line": 5,
+              "column": 0,
+              "index": 57
+            },
+            "end": {
+              "line": 5,
+              "column": 10,
+              "index": 67
+            }
+          },
+          "text": "This is a"
+        },
+        {
+          "type": "boneyard",
+          "line": "multi-line",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "line": 6,
+              "column": 0,
+              "index": 67
+            },
+            "end": {
+              "line": 6,
+              "column": 11,
+              "index": 78
+            }
+          },
+          "text": "multi-line"
+        },
+        {
+          "type": "boneyard",
+          "line": "Boneyard.",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "line": 7,
+              "column": 0,
+              "index": 78
+            },
+            "end": {
+              "line": 7,
+              "column": 10,
+              "index": 88
+            }
+          },
+          "text": "Boneyard."
+        },
+        {
+          "type": "boneyard",
+          "line": "*/",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "line": 8,
+              "column": 0,
+              "index": 88
+            },
+            "end": {
+              "column": 0,
+              "index": 88,
+              "line": 8
+            }
+          },
+          "text": ""
+        }
+      ]
+    },
+    {
+      "type": "line-break",
+      "tokens": [
+        {
+          "type": "line_break",
+          "line": "",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "line": 9,
+              "column": 0,
+              "index": 91
+            },
+            "end": {
+              "line": 9,
+              "column": 1,
+              "index": 92
+            }
+          },
+          "text": "\n"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "tokens": [
+        {
+          "type": "action",
+          "line": "This is an /* internal */ boneyard.",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "line": 10,
+              "column": 0,
+              "index": 92
+            },
+            "end": {
+              "column": 11,
+              "index": 103,
+              "line": 10
+            }
+          },
+          "text": "This is an "
+        }
+      ]
+    },
+    {
+      "type": "boneyard",
+      "tokens": [
+        {
+          "type": "boneyard",
+          "line": "This is an /* internal */ boneyard.",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "column": 11,
+              "index": 103,
+              "line": 10
+            },
+            "end": {
+              "column": 21,
+              "index": 113,
+              "line": 10
+            }
+          },
+          "text": " internal "
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "tokens": [
+        {
+          "type": "action",
+          "line": "This is an /* internal */ boneyard.",
+          "codeLocation": {
+            "file": "",
+            "start": {
+              "column": 21,
+              "index": 113,
+              "line": 10
+            },
+            "end": {
+              "line": 10,
+              "column": 36,
+              "index": 128
+            }
+          },
+          "text": " boneyard."
+        }
+      ]
+    }
+  ]
+}

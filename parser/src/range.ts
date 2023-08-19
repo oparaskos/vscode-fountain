@@ -1,6 +1,6 @@
 import { FountainToken } from '@/types/FountainTokenType';
-import { Range } from './Range.1';
-import { Position } from './types/Position';
+import { Range } from '@/types/Range';
+import { Position } from '@/types/Position';
 
 export function tokensToRange(tokens: FountainToken[]): Range {
     const start = tokens[0].codeLocation.start;

@@ -4,11 +4,11 @@
 	"description": "Parser for the Fountain screenwriting language in node.",
 	"version": "1.0.0",
 	"license": "MIT",
-    "main": "src/index.ts",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/oparaskos/vscode-fountain"
-    },
+	"main": "src/index.ts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/oparaskos/vscode-fountain"
+	},
 	"scripts": {
 		"build": "esbuild ./src/index.ts --bundle --outfile=dist/index.cjs.js --external:vscode --format=cjs --platform=node --sourcemap",
 		"watch": "npm run build -- --watch"
@@ -21,8 +21,14 @@
 		"yaml": "^2.2.2"
 	},
 	"devDependencies": {
+		"@types/fs-extra": "^11.0.1",
+		"@types/jest": "^29.5.3",
 		"@types/sentiment": "^5.0.1",
-		"esbuild": "^0.15.10"
+		"esbuild": "^0.15.10",
+		"fs-extra": "^11.1.1",
+		"fs-promise": "^2.0.3",
+		"jest": "^29.6.2",
+		"ts-jest": "^29.1.1"
 	},
 	"engines": {
 		"node": "*"
