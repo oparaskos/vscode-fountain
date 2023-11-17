@@ -1,9 +1,9 @@
 import { readFile } from 'fs-extra';
 import { readJSON, writeJSON } from 'fs-promise';
 import {join, resolve} from 'path';
-import { FountainScript, parse } from '..';
+import { FountainScript, parse } from '../src';
 
-const samplesDir = resolve(join(__dirname, '../../../sample/'));
+const samplesDir = resolve(join(__dirname, '../../sample/'));
 describe('Fountain Samples', () => {
 
     describe('Simple.fountain', () => {

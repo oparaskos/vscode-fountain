@@ -5,21 +5,22 @@
 		"esModuleInterop": true,
 		"module": "commonjs",
 		"moduleResolution": "node",
+        "emitDeclarationOnly": true,
+        "declaration": true,
 		"sourceMap": true,
 		"strict": true,
-		"outDir": "out",
+		"outDir": "dist",
 		"rootDir": "src",
         "baseUrl": ".",
-        "paths": {
-            "@/src/*": [
-                "./src/*"
-            ],
-            "@/types/*": [
-                "./src/types/*"
-            ]
-        }
+        "typeRoots": [
+            "./node_modules/@types",
+            "./typings"
+        ],
+        "types": [
+           "jest"
+        ]
 	},
 	"include": ["src"],
-	"exclude": ["node_modules", ".vscode-test"]
+    "exclude": ["**/node_modules", "node_modules", ".vscode-test", "test"]
 	
 }

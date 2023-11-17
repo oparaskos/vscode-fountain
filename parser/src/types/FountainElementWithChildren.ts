@@ -1,22 +1,23 @@
-import { Position } from '@/src/types/Position';
-import { positionInRange } from '@/src/range';
-import { FountainElement } from "./FountainElement";
+import { Position } from './Position';
+import { positionInRange } from '../range';
+import { FountainElement, FountainElementType } from "./FountainElement";
 import { FountainToken } from "./FountainTokenType";
-import { getElementsByType } from '@/src/getElementsByType';
+import { getElementsByType } from '../getElementsByType';
 
 
-export abstract class FountainElementWithChildren<T extends string = string, U extends FountainElement = FountainElement> extends FountainElement<T> {
+export abstract class FountainElementWithChildren<T extends FountainElementType = FountainElementType, U extends FountainElement = FountainElement> extends FountainElement<T> {
     constructor(public type: T, public tokens: FountainToken[], public children: U[]) {
         super(type, tokens);
     }
 
-    public override getElementsByType<V extends FountainElement>(type: string): V[] {
-        return getElementsByType<V>(this.children, type);
+    public override getElementsByType<V extends FountainElement<W>, W extends FountainElementType>(type: W): V[] {
+        return getElementsByType<V, W>(this.children, type);
     }
 
     public override getElementsByPosition(position: Position): FountainElement[] {
+        console.trace("getElementsByPosition (FountainElementWithChildren)")
         const childrenInRange = this.children
-            .filter(it => positionInRange(position, it.range))
+            .filter(it => it.range != null && positionInRange(position, it.range))
             .flatMap(it => it.getElementsByPosition(position));
         return [this, ...childrenInRange];
     }

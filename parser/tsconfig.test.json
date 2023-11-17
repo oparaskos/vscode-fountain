@@ -7,11 +7,11 @@
 		"moduleResolution": "node",
 		"sourceMap": true,
 		"strict": true,
-		"outDir": "out",
+		"outDir": "dist",
 		"rootDir": "src",
-        "composite": true
+        "baseUrl": "."
 	},
-	"include": ["src", "../parser/src/range.ts"],
+	"include": ["src", "test"],
 	"exclude": ["node_modules", ".vscode-test"]
 	
 }

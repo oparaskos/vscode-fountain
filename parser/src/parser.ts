@@ -5,23 +5,23 @@
 // fountain-js 0.1.10
 // http://www.opensource.org/licenses/mit-license.php
 
-import { DialogueElement } from "@/src/types/DialogueElement";
-import { DualDialogueElement } from "@/src/types/DualDialogueElement";
-import { FountainElement } from "@/src/types/FountainElement";
-import { SceneElement } from "@/src/types/SceneElement";
-import { SectionElement } from "@/src/types/SectionElement";
+import { DialogueElement } from "./types/DialogueElement";
+import { DualDialogueElement } from "./types/DualDialogueElement";
+import { FountainElement, FountainElementType } from "./types/FountainElement";
+import { SceneElement } from "./types/SceneElement";
+import { SectionElement } from "./types/SectionElement";
 import { filterNotNull } from "./filterNotNull";
-import { SourceMapElement, FountainToken, FountainTokenType } from "@/src/types/FountainTokenType";
-import { FountainScript } from "@/src/types/FountainScript";
-import { FountainTitlePage } from "@/src/types/FountainTitlePage";
-import { ActionElement } from "@/src/types/ActionElement";
-import { TransitionElement } from "@/src/types/TransitionElement";
-import { CenteredTextElement } from "@/src/types/CenteredTextElement";
-import { PageBreakElement } from "@/src/types/PageBreakElement";
-import { LineBreakElement } from "@/src/types/LineBreakElement";
-import { SynopsesElement } from "@/src/types/SynopsesElement";
-import { BoneyardElement } from "@/src/types/BoneyardElement";
-import { NotesElement } from "@/src/types/index";
+import { SourceMapElement, FountainToken, FountainTokenType } from "./types/FountainTokenType";
+import { FountainScript } from "./types/FountainScript";
+import { FountainTitlePage } from "./types/FountainTitlePage";
+import { ActionElement } from "./types/ActionElement";
+import { TransitionElement } from "./types/TransitionElement";
+import { CenteredTextElement } from "./types/CenteredTextElement";
+import { PageBreakElement } from "./types/PageBreakElement";
+import { LineBreakElement } from "./types/LineBreakElement";
+import { SynopsesElement } from "./types/SynopsesElement";
+import { BoneyardElement } from "./types/BoneyardElement";
+import { NotesElement } from "./types/index";
 import { Range } from './types/Range';
 
 const FountainRegexSceneHeading = /^((?:\*{0,3}_?)?(?:(?:int|ext|est|i\/e)[. ]).+)|^(?:\.(?!\.+))(.+)/i;
@@ -115,7 +115,7 @@ function _parse(tokens: FountainToken[], parent: null | FountainToken = null): F
     return data;
 }
 
-function parseToken(token: FountainToken, data: FountainElement<string>[], i: number, tokens: FountainToken[], tokenDepth: number, parent: FountainToken | null) {
+function parseToken(token: FountainToken, data: FountainElement<FountainElementType>[], i: number, tokens: FountainToken[], tokenDepth: number, parent: FountainToken | null) {
     switch (token.type) {
         case 'transition': data.push(new TransitionElement([token])); break;
         case 'synopsis': data.push(new SynopsesElement([token])); break;
@@ -142,7 +142,7 @@ function parseToken(token: FountainToken, data: FountainElement<string>[], i: nu
     return i;
 }
 
-function parseCharacter(tokens: FountainToken[], i: number, token: FountainToken, data: FountainElement<string>[]) {
+function parseCharacter(tokens: FountainToken[], i: number, token: FountainToken, data: FountainElement<FountainElementType>[]) {
     let nextNonDialogue = tokens.findIndex((t, id) => id > i && t.type !== 'dialogue' && t.type !== 'parenthetical');
     if (nextNonDialogue === -1) nextNonDialogue = tokens.length; // we must be at the end of the script
     const [nextI, result] = parseDialogue(token, tokens, i, nextNonDialogue);
@@ -151,7 +151,7 @@ function parseCharacter(tokens: FountainToken[], i: number, token: FountainToken
     return i;
 }
 
-function parseSceneHeading(tokens: FountainToken[], i: number, tokenDepth: number, data: FountainElement<string>[], token: FountainToken, parent: FountainToken | null) {
+function parseSceneHeading(tokens: FountainToken[], i: number, tokenDepth: number, data: FountainElement<FountainElementType>[], token: FountainToken, parent: FountainToken | null) {
     const [sceneTokens, sceneEnd] = tokensBetween(tokens, i, 'scene_heading');
     const [sceneSectionTokens, sceneSectionEnd] = tokensBetween(tokens, i, 'section', (t) => (t.depth as number) <= tokenDepth);
     const end = sceneTokens.length < sceneSectionTokens.length ? sceneEnd : sceneSectionEnd;
@@ -166,7 +166,7 @@ function parseSceneHeading(tokens: FountainToken[], i: number, tokenDepth: numbe
     return i;
 }
 
-function parseSection(tokens: FountainToken[], i: number, tokenDepth: number, data: FountainElement<string>[], token: FountainToken) {
+function parseSection(tokens: FountainToken[], i: number, tokenDepth: number, data: FountainElement<FountainElementType>[], token: FountainToken) {
     const [sectionTokens, sectionEnd] = tokensBetween(tokens, i, 'section', (t) => (t.depth as number) <= tokenDepth);
     data.push(new SectionElement(
         tokens.slice(i, sectionEnd),
@@ -178,7 +178,7 @@ function parseSection(tokens: FountainToken[], i: number, tokenDepth: number, da
     return i;
 }
 
-function parseNote(data: FountainElement<string>[], token: FountainToken) {
+function parseNote(data: FountainElement<FountainElementType>[], token: FountainToken) {
     if (data[data.length - 1] instanceof NotesElement) {
         data[data.length - 1].tokens.push(token);
     } else {
@@ -186,7 +186,7 @@ function parseNote(data: FountainElement<string>[], token: FountainToken) {
     }
 }
 
-function parseBoneyard(data: FountainElement<string>[], token: FountainToken) {
+function parseBoneyard(data: FountainElement<FountainElementType>[], token: FountainToken) {
     if (data[data.length - 1] instanceof BoneyardElement) {
         data[data.length - 1].tokens.push(token);
     } else {
@@ -254,7 +254,7 @@ function extractToken(fullLine: string, codeLocation: SourceMapElement, lastToke
         const colonLocation = fullLine.indexOf(':');
         if (colonLocation > -1) {
             return [createTitlePageToken(fullLine, colonLocation, codeLocation)];
-        } else if (lastToken?.type === 'title_page') {
+        } else if (lastToken && lastToken?.type === 'title_page') {
             // title page values can have newlines so this must be a continuation of a previous property
             lastToken.text += '\n' + fullLine;
             lastToken.codeLocation.end = codeLocation.end;

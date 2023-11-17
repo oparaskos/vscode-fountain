@@ -21,7 +21,8 @@
             "@/*": [
                 "./src/*"
             ]
-        }
+        },
+        "composite": true
     },
     "exclude": [
         "node_modules",

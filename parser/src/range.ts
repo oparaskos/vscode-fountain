@@ -1,8 +1,11 @@
-import { FountainToken } from '@/types/FountainTokenType';
-import { Range } from '@/types/Range';
-import { Position } from '@/types/Position';
+import { FountainToken } from './types/FountainTokenType';
+import { Range } from './types/Range';
+import { Position } from './types/Position';
 
-export function tokensToRange(tokens: FountainToken[]): Range {
+export function tokensToRange(tokens: FountainToken[]): Range | null {
+    if (tokens.length == 0) {
+        return null;
+    }
     const start = tokens[0].codeLocation.start;
     const end = tokens[tokens.length - 1].codeLocation.end;
     return {

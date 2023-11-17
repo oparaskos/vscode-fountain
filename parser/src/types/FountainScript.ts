@@ -1,11 +1,12 @@
-import { positionInRange } from '@/src/range';
-import { Position } from '@/src/types/Position';
-import { Range } from '@/src/types/Range';
-import { getElementsByType } from '@/src/getElementsByType';
+import { positionInRange } from '../range';
+import { Position } from './Position';
+import { Range } from './Range';
+import { getElementsByType } from '../getElementsByType';
 import { DialogueElement } from "./DialogueElement";
 import { FountainElement } from "./FountainElement";
 import { LocationType, SceneElement } from "./SceneElement";
 import { CharacterStats } from './CharacterStats';
+import { FountainTitlePage } from './FountainTitlePage';
 
 
 export class FountainScript {
@@ -25,16 +26,19 @@ export class FountainScript {
         return this._characterNames;
     }
 
-    public get range(): Range {
-        return {
-            start: this.children[0].range.start,
-            end: this.children[this.children.length - 1].range.end
-        };
+    public get range(): Range | null {
+        if(this.children.length <= 0) return null;
+        const start = this.children[0].range?.start;
+        const end = this.children[this.children.length - 1].range?.end;
+        if(start == null) return null;
+        if(end == null) return null;
+        return { start, end };
     }
 
     public getElementsByPosition(position: Position): FountainElement[] {
+        console.trace("getElementsByPosition (FountainScript)")
         return this.children
-            .filter(it => positionInRange(position, it.range))
+            .filter(it => it.range != null && positionInRange(position, it.range))
             .flatMap(it => it.getElementsByPosition(position));
     }
 
@@ -72,6 +76,10 @@ export class FountainScript {
             ...dialogueStats,
             Sentiment: dialogueStats.Sentiment / dialogues.length,
         };
+    }
+
+    public get titlePage(): FountainTitlePage {
+        return getElementsByType<FountainTitlePage>(this.children, 'title-page')[0];
     }
 
     public get dialogue(): DialogueElement[] {

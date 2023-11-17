@@ -1,8 +1,24 @@
-import { Position } from '@/src/types/Position';
-import { positionInRange, tokensToRange } from '@/src/range';
+import { Position } from './Position';
+import { positionInRange, tokensToRange } from '../range';
 import { FountainToken } from "./FountainTokenType";
 
-export abstract class FountainElement<T extends string = string> {
+export type FountainElementType = 
+'title-page' |
+'scene' |
+'centered-text' |
+'transition' |
+'dialogue' |
+'dual-dialogue' |
+'action' |
+'boneyard' |
+'notes' |
+'lyrics' |
+'line-break' |
+'page-break' |
+'section' |
+'synopses';
+
+export abstract class FountainElement<T extends FountainElementType = FountainElementType> {
     constructor(public type: T, public tokens: FountainToken[]) { }
 
     public get textContent() {
@@ -19,7 +35,8 @@ export abstract class FountainElement<T extends string = string> {
     }
 
     public getElementsByPosition(position: Position): FountainElement[] {
-        if (positionInRange(position, this.range)) return [this];
+        console.trace("getElementsByPosition (FountainElement)")
+        if (this.range != null && positionInRange(position, this.range)) return [this];
         return [];
     }
 }
