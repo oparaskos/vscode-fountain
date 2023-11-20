@@ -1,3 +1,10 @@
+## [1.8.3](https://github.com/oparaskos/vscode-fountain/compare/v1.8.2...v1.8.3) (2023-11-20)
+
+
+### Bug Fixes
+
+* fix the grammar for the title page to support multi-line attributes and custom attributes. move parser into its own node module. ([02c0692](https://github.com/oparaskos/vscode-fountain/commit/02c0692aff7be01533cf4a48259523faa966b5a4))
+
 ## [1.8.2](https://github.com/oparaskos/vscode-fountain/compare/v1.8.1...v1.8.2) (2023-08-18)
 
 
