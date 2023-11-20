@@ -14,7 +14,9 @@ import {
 	TextDocumentSyncKind,
 	InitializeResult,
 	Command,
+    CodeLens,
 } from 'vscode-languageserver/node';
+
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
@@ -89,6 +91,19 @@ connection.onInitialized(() => {
 	}
 });
 
+export interface EnrichedCharacterStats extends CharacterStats {
+    Gender: string;
+    RacialIdentity: string;
+}
+
+function enrichCharacterStats(it: {Name: string}, fountainrc: any) {
+    return {
+        ...it,
+        Gender: guessGender(it.Name, fountainrc),
+        RacialIdentity: findRacialIdentity(it.Name, fountainrc)
+    };
+}
+
 connection.onRequest("fountain.statistics.characters", async (params) => {
 	try {
 		const settings = await getDocumentSettings(params.uri);
@@ -96,11 +111,7 @@ connection.onRequest("fountain.statistics.characters", async (params) => {
 		const result: CharacterStats[] = parsedScript.statsPerCharacter;
 		if (settings.guessCharacterGenders) {
 			const fountainrc = await getFountainrc(params.uri);
-			return result.map((it) => ({
-				...it,
-				Gender: guessGender(it.Name, fountainrc),
-				RacialIdentity: findRacialIdentity(it.Name, fountainrc)
-			}));
+			return result.map((it) => enrichCharacterStats(it, fountainrc));
 		}
 		return result;
 	} catch(e: unknown) {
@@ -203,9 +214,10 @@ connection.onDidChangeWatchedFiles(async () => {
 });
 
 connection.onHover(async (params) => {
-	const uri = params.textDocument.uri;
+    const uri = params.textDocument.uri;
 	const parsedScript = parsedDocuments[uri];
 	const hoveredElements = parsedScript.getElementsByPosition(params.position);
+    console.trace("hoveredElements", hoveredElements);
 	if(hoveredElements.length > 0) {
 		const deepestHoveredElement= hoveredElements[hoveredElements.length - 1];
 		return await getDocumentation(deepestHoveredElement.type);
@@ -223,13 +235,57 @@ connection.onCodeLens((params) => {
 	];
 });
 
+function characterName(characterStats: Partial<EnrichedCharacterStats>) {
+    const name = characterStats.Name!;
+    const sentenceCaseName = name[0] + name.slice(1).toLocaleLowerCase();
+    let genderIcon = null;
+    if(characterStats.Gender) {
+        genderIcon = {
+            male: "♂",
+            female: "♀",
+            trans: "⚧",
+            agender: "∅",
+            intersex: "⚥",
+            genderfluid: "☿",
+            neuter: '⚲'
+        }[characterStats.Gender?.toLowerCase()?.replace(/[^a-z]/,'')];
+        if (genderIcon) genderIcon = ` (${genderIcon})`;
+        else genderIcon = '';
+    }
+    
+    return `${sentenceCaseName}${genderIcon}`;
+}
 
-connection.onCodeLensResolve((codeLens) => {
+function locationName(codeLens: CodeLens) {
+    const name = codeLens.data.name;
+    return name[0] + name.slice(1).toLocaleLowerCase();
+}
+
+function getStatsForCharacter(parsedScript: FountainScript, fountainrc: any, settings: ExampleSettings, characterName: string): Partial<EnrichedCharacterStats> {
+    const result: CharacterStats[] = parsedScript.statsPerCharacter;
+    const characterStats = result.find(it => it.Name === characterName) || {
+        Name: characterName
+    };
+    if (!!characterStats && settings.guessCharacterGenders) {
+        return enrichCharacterStats(characterStats, fountainrc);
+    }
+    return characterStats;
+}
+
+connection.onCodeLensResolve(async (codeLens) => {
+    console.log("onCodeLensResolve", codeLens);
 	const args = {...codeLens.data, range: codeLens.range};
+
+    const settings = await getDocumentSettings(args.uri);
+    const parsedScript = parsedDocuments[args.uri];
+    const fountainrc = await getFountainrc(args.uri);
+
+
 	if(args.type === 'character') {
-		codeLens.command = Command.create(`Character ${args.name} (${args.lines} lines)`, 'fountain.analyseCharacter', args);
+        const characterStats = getStatsForCharacter(parsedScript, fountainrc, settings, args.name);
+		codeLens.command = Command.create(`Character ${characterName(characterStats)} (${args.lines} lines)`, 'fountain.analyseCharacter', args);
 	} else if(args.type === 'location') {
-		codeLens.command = Command.create(`Location ${args.name} (${args.references} references)`, 'fountain.analyseLocation', args);
+		codeLens.command = Command.create(`Location ${locationName(codeLens)} (${args.references} references)`, 'fountain.analyseLocation', args);
 	} else if(args.type === 'scene') {
 		codeLens.command = Command.create(`Scene Duration ${args.duration}`, 'fountain.analyseScene', args);
 	}

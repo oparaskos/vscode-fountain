@@ -7,12 +7,12 @@
 	"engines": {
 		"node": "*"
 	},
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/oparaskos/vscode-fountain"
-    },
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/oparaskos/vscode-fountain"
+	},
 	"dependencies": {
-		"fountain-parser": "file:../parser",
+		"fountain-parser": "^1.1.1",
 		"gender-detection-from-name": "^1.7.4",
 		"memoize": "^0.1.1",
 		"readability-scores": "github:oparaskos/readability-scores#patch-1",

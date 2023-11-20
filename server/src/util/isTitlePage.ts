@@ -6,7 +6,7 @@ export function isTitlePage(documentPosition: TextDocumentPositionParams, parsed
     if (!(titlePage instanceof FountainTitlePage))
         return false;
     const titlePageRange = tokensToRange(titlePage.tokens);
-    if (positionInRange(documentPosition.position, titlePageRange))
+    if (titlePageRange != null && positionInRange(documentPosition.position, titlePageRange))
         return true;
     return false;
 }

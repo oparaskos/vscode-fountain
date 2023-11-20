@@ -15,6 +15,5 @@
 		{ "path": "./client" },
 		{ "path": "./server" },
 		{ "path": "./webviews" },
-		{ "path": "./parser" }
 	]
 }

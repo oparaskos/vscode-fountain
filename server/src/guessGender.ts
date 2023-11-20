@@ -75,10 +75,12 @@ function supportedLocale(config: GenderGuesserConfig): "en" | "it" | undefined {
 
 // In cases where -male is part of fe-male then erase its impact on the maleness score.
 function fixupMaleManSuffix(name: string, maleness: number) {
-	if (name.includes("woman"))
+	if (name.includes("woman")) // man will also match
 		maleness--;
-	if (name.includes("female"))
-		maleness--;
+    if (name.includes("female")) // male will also match
+        maleness--;
+    if (name.includes("mrs")) // mr will also match
+        maleness--;
 	return maleness;
 }
 

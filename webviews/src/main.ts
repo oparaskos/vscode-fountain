@@ -1,4 +1,4 @@
-import type { TState } from '@/types/TState';
+import type { TState } from './types/TState';
 
 import { getPanels } from '@/getPanels';
 import { getState, patchState, postMessage } from '@/vscode';
