@@ -21,7 +21,7 @@ const options = program.opts();
 
 function writeScriptToFile(script: FountainScript) {
     const ws: WriteStream = createWriteStream(options.output, { flags: 'w' });
-    beginWriteScriptAsYarnspinner(script, ws)
+    beginWriteScriptAsYarnspinner(script, ws);
 }
 
 async function readScript() {

@@ -101,7 +101,7 @@ function enrichCharacterStats(it: {Name: string}, fountainrc: any) {
         ...it,
         Gender: guessGender(it.Name, fountainrc),
         RacialIdentity: findRacialIdentity(it.Name, fountainrc)
-    }
+    };
 }
 
 connection.onRequest("fountain.statistics.characters", async (params) => {
@@ -217,7 +217,7 @@ connection.onHover(async (params) => {
     const uri = params.textDocument.uri;
 	const parsedScript = parsedDocuments[uri];
 	const hoveredElements = parsedScript.getElementsByPosition(params.position);
-    console.trace("hoveredElements", hoveredElements)
+    console.trace("hoveredElements", hoveredElements);
 	if(hoveredElements.length > 0) {
 		const deepestHoveredElement= hoveredElements[hoveredElements.length - 1];
 		return await getDocumentation(deepestHoveredElement.type);
@@ -237,7 +237,7 @@ connection.onCodeLens((params) => {
 
 function characterName(characterStats: Partial<EnrichedCharacterStats>) {
     const name = characterStats.Name!;
-    const sentenceCaseName = name[0] + name.slice(1).toLocaleLowerCase()
+    const sentenceCaseName = name[0] + name.slice(1).toLocaleLowerCase();
     let genderIcon = null;
     if(characterStats.Gender) {
         genderIcon = {
@@ -248,7 +248,7 @@ function characterName(characterStats: Partial<EnrichedCharacterStats>) {
             intersex: "⚥",
             genderfluid: "☿",
             neuter: '⚲'
-        }[characterStats.Gender?.toLowerCase()?.replace(/[^a-z]/,'')]
+        }[characterStats.Gender?.toLowerCase()?.replace(/[^a-z]/,'')];
         if (genderIcon) genderIcon = ` (${genderIcon})`;
         else genderIcon = '';
     }
@@ -263,9 +263,9 @@ function locationName(codeLens: CodeLens) {
 
 function getStatsForCharacter(parsedScript: FountainScript, fountainrc: any, settings: ExampleSettings, characterName: string): Partial<EnrichedCharacterStats> {
     const result: CharacterStats[] = parsedScript.statsPerCharacter;
-    let characterStats = result.find(it => it.Name === characterName) || {
+    const characterStats = result.find(it => it.Name === characterName) || {
         Name: characterName
-    }
+    };
     if (!!characterStats && settings.guessCharacterGenders) {
         return enrichCharacterStats(characterStats, fountainrc);
     }
@@ -273,7 +273,7 @@ function getStatsForCharacter(parsedScript: FountainScript, fountainrc: any, set
 }
 
 connection.onCodeLensResolve(async (codeLens) => {
-    console.log("onCodeLensResolve", codeLens)
+    console.log("onCodeLensResolve", codeLens);
 	const args = {...codeLens.data, range: codeLens.range};
 
     const settings = await getDocumentSettings(args.uri);

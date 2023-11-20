@@ -12,11 +12,11 @@ export function beginWriteScriptAsYarnspinner(script: FountainScript, ws: WriteS
     const titlePagePreamble = Object.keys(attrs)
         .map(key => ({key, value: attrs[key]}))
         .map(it => `${it.key}: ${it.value}`)
-            .join('\n')
+            .join('\n');
     
     const c = script.scenes[0];
     ws.write(`title: RootNode\n---\n`);
-    writeComment(titlePagePreamble, ws)
+    writeComment(titlePagePreamble, ws);
     writeScriptAsYarnspinner(script, script.children, ws, {i: 0});
 }
 
@@ -111,6 +111,6 @@ function formatParenthetical(c: DialogueElement) {
 }
 
 function formatSceneName(c: SceneElement) {
-    return c.title.toLocaleLowerCase().replace(/[^A-Z0-9\s]+/ig, '').trim().replace(/\s+/ig, '_')
+    return c.title.toLocaleLowerCase().replace(/[^A-Z0-9\s]+/ig, '').trim().replace(/\s+/ig, '_');
 }
 
