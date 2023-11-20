@@ -1,9 +1,9 @@
 node_modules/**
 client/node_modules/**
-client/out/**
+client/dist/**
 server/node_modules/**
-server/out/**
+server/dist/**
 webviews/node_modules/**
-webviews/out/**
+webviews/dist/**
 
 webpack.config.js

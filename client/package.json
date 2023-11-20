@@ -10,7 +10,9 @@
 		"url": "https://github.com/oparaskos/vscode-fountain"
 	},
 	"scripts": {
-		"build": "esbuild ./src/extension.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap",
+        "build": "npm run build:extension && npm run build:e2e",
+		"build:extension": "esbuild ./src/extension.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node --sourcemap",
+		"build:e2e": "tsc --project tsconfig.test.json",
 		"watch": "npm run build -- --watch"
 	},
 	"engines": {

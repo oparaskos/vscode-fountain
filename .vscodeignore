@@ -7,12 +7,12 @@
 CONTRIBUTING.md
 
 webviews/node_modules/**
-webviews/out/**
+webviews/dist/**
 !webviews/node_modules/@vscode/webview-ui-toolkit
 !webviews/node_modules/@vscode/codicons
 
 client/node_modules/**
-client/out/**
+client/dist/**
 
 server/node_modules/**
-server/out/**
+server/dist/**

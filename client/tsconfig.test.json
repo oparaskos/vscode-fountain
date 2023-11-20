@@ -3,12 +3,12 @@
 		"module": "commonjs",
 		"target": "es2020",
 		"lib": ["es2020"],
-		"outDir": "dist",
-		"rootDir": "src",
+		"outDir": "dist/test",
+		"rootDir": "test",
 		"sourceMap": true,
         "composite": true,
         "resolveJsonModule": true
 	},
-	"include": ["src"],
+	"include": ["test"],
 	"exclude": ["node_modules", ".vscode-test"]
 }
