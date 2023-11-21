@@ -134,7 +134,7 @@ async function testCompletion(
     assert.ok(actualCompletionList.items.length >= 2);
     expectedCompletionList.items.forEach((expectedItem, i) => {
         const actualItem = actualCompletionList.items.find(it => it.label === expectedItem.label);
-        assert.ok(actualItem)
+        assert.ok(actualItem);
         assert.equal(actualItem?.sortText, expectedItem.label);
         assert.equal(actualItem?.insertText, expectedItem.label);
         assert.equal(actualItem?.kind, kind);
