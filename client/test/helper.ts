@@ -11,8 +11,8 @@ export let editor: vscode.TextEditor;
 export let documentEol: string;
 export let platformEol: string;
 
-export const EXTENSION_NAME = "fountain-lsp"
-export const EXTENSION_PUBLISHER = "oliverparaskos"
+export const EXTENSION_NAME = "fountain-lsp";
+export const EXTENSION_PUBLISHER = "oliverparaskos";
 
 
 function getExtension<T>(s: string, t?: string): vscode.Extension<T> {
@@ -21,7 +21,7 @@ function getExtension<T>(s: string, t?: string): vscode.Extension<T> {
 }
 
 function getExtensionByNameAndPublisher<T>(publisher: string, name: string): vscode.Extension<T> {
-    return getExtensionById<T>([publisher, name].join('.'))
+    return getExtensionById<T>([publisher, name].join('.'));
 }
 
 /**
@@ -37,7 +37,7 @@ function getExtensionById<T>(extensionId: string): vscode.Extension<T> {
  * Activates the vscode.lsp-sample extension
  */
 export async function activate(docUri: vscode.Uri) {
-    console.log({EXTENSION_PUBLISHER, EXTENSION_NAME})
+    console.log({EXTENSION_PUBLISHER, EXTENSION_NAME});
 	const ext = getExtension(EXTENSION_PUBLISHER, EXTENSION_NAME);
 	await ext.activate();
 	try {
