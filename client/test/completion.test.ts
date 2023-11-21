@@ -132,7 +132,7 @@ async function testCompletion(
     )) as vscode.CompletionList;
 
     assert.ok(actualCompletionList.items.length >= 2);
-    expectedCompletionList.items.forEach((expectedItem, i) => {
+    expectedCompletionList.items.forEach((expectedItem) => {
         const actualItem = actualCompletionList.items.find(it => it.label === expectedItem.label);
         assert.ok(actualItem);
         assert.equal(actualItem?.sortText, expectedItem.label);
