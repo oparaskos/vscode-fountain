@@ -1,14 +1,21 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es2020",
-		"lib": ["es2020"],
-		"outDir": "dist/test",
-		"rootDir": "test",
-		"sourceMap": true,
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2020",
+        "lib": [
+            "es2020"
+        ],
+        "outDir": "dist/test",
+        "rootDir": "test",
+        "sourceMap": true,
         "composite": true,
         "resolveJsonModule": true
-	},
-	"include": ["test"],
-	"exclude": ["node_modules", ".vscode-test"]
+    },
+    "include": [
+        "test"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
 }
