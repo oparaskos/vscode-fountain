@@ -4,11 +4,11 @@
 
 ```
 .
-├── client // Language Client
-│   ├── src
-│   │   ├── test // End to End tests for Language Client / Server
-│   │   └── extension.ts // Language Client entry point
 ├── package.json // The extension manifest.
+├── client // Language Client
+│   ├── test // End to End tests for Language Client / Server
+│   ├── src
+│   │   └── extension.ts // Language Client entry point
 ├── syntaxes // The extension manifest.
 │   └── fountain.tmLanguage.json // Grammar for syntax highlighting
 ├── server // Language Server
