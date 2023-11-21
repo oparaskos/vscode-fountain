@@ -1,17 +1,24 @@
 {
-	"compilerOptions": {
-		"target": "es2020",
-		"lib": ["es2020"],
-		"esModuleInterop": true,
-		"module": "commonjs",
-		"moduleResolution": "node",
-		"sourceMap": true,
-		"strict": true,
-		"outDir": "out",
-		"rootDir": "src",
+    "compilerOptions": {
+        "target": "es2020",
+        "lib": [
+            "es2020"
+        ],
+        "esModuleInterop": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "strict": true,
+        "outDir": "dist",
+        "rootDir": "src",
         "composite": true
-	},
-	"include": ["src", "../parser/src/range.ts"],
-	"exclude": ["node_modules", ".vscode-test"]
-	
+    },
+    "include": [
+        "src",
+        "../parser/src/range.ts"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
 }

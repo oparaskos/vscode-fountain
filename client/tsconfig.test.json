@@ -5,14 +5,14 @@
         "lib": [
             "es2020"
         ],
-        "outDir": "dist",
-        "rootDir": "src",
+        "outDir": "dist/test",
+        "rootDir": "test",
         "sourceMap": true,
         "composite": true,
         "resolveJsonModule": true
     },
     "include": [
-        "src"
+        "test"
     ],
     "exclude": [
         "dist",
