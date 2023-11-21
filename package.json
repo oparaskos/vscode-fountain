@@ -1,7 +1,7 @@
 {
   "name": "fountain-lsp",
   "displayName": "Fountain Scriptwriting",
-  "description": "Fountain Lanuage Server and Client for Visual Studio Code",
+  "description": "Fountain Language Server and Client for Visual Studio Code",
   "author": "Oliver Paraskos",
   "icon": "assets/fountain-logo-monochrome@1x.png",
   "main": "./client/dist/main",
@@ -41,7 +41,7 @@
     "install:webview": "cd webviews && npm install",
     "--------- TEST ----------": "",
     "build:e2e": "cd client/ && npm run build:e2e",
-    "test": "npm run build:e2e && sh ./scripts/e2e.sh",
+    "e2e": "npm run build:e2e && sh ./scripts/e2e.sh",
     "lint": "eslint ./client/src ./server/src ./webviews/src ./parser/src --ext .ts,.tsx"
   },
   "devDependencies": {
