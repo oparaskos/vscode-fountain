@@ -35,6 +35,7 @@
     "watch:server": "cd server && npm run watch",
     "watch:webview": "cd webviews && npm run watch",
     "--------- INSTALL ----------": "",
+    "preinstall": "git submodule update --recursive --remote",
     "postinstall": "concurrently 'npm run install:webview' 'npm run install:client' 'npm run install:server'",
     "install:client": "cd client && npm install",
     "install:server": "cd server && npm install",
