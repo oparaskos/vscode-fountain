@@ -1,3 +1,10 @@
+## [1.8.6](https://github.com/oparaskos/vscode-fountain/compare/v1.8.5...v1.8.6) (2023-11-23)
+
+
+### Bug Fixes
+
+* include wrong server bundle file path in vscodeignore ([df978dd](https://github.com/oparaskos/vscode-fountain/commit/df978ddf6162bc33509f4144e8a2879098fdc1f4))
+
 ## [1.8.5](https://github.com/oparaskos/vscode-fountain/compare/v1.8.4...v1.8.5) (2023-11-23)
 
 
