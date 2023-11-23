@@ -4,7 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 import * as path from 'path';
 
-import { runTests } from '@vscode/test-electron';
+import { downloadAndUnzipVSCode, resolveCliArgsFromVSCodeExecutablePath, runTests } from '@vscode/test-electron';
+import { spawnSync } from 'child_process';
 
 async function main() {
 	try {
@@ -16,8 +17,17 @@ async function main() {
 		// Passed to --extensionTestsPath
 		const extensionTestsPath = path.resolve(__dirname, './index');
 
-		// Download VS Code, unzip it and run the integration test
-		await runTests({ extensionDevelopmentPath, extensionTestsPath });
+		const vscodeExecutablePath = await downloadAndUnzipVSCode();
+		const [cli, ...args] = resolveCliArgsFromVSCodeExecutablePath(vscodeExecutablePath);
+		spawnSync(cli, [...args, '--install-extension', 'redhat.vscode-yaml'], {
+			encoding: 'utf-8',
+			stdio: 'inherit',
+		});
+		await runTests({
+			vscodeExecutablePath,
+			extensionDevelopmentPath,
+			extensionTestsPath,
+		});
 	} catch (err) {
 		console.error('Failed to run tests');
 		process.exit(1);
