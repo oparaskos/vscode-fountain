@@ -1,3 +1,11 @@
+## [1.8.4](https://github.com/oparaskos/vscode-fountain/compare/v1.8.3...v1.8.4) (2023-11-23)
+
+
+### Bug Fixes
+
+* update fountain-lsp-server ([ca199ea](https://github.com/oparaskos/vscode-fountain/commit/ca199ea8a7bef5811dbde3d5ac245fde24ca71e4))
+* update fountain-parser ([55c6971](https://github.com/oparaskos/vscode-fountain/commit/55c6971dd7e9a2258910f10487ad4aaa952007af))
+
 ## [1.8.3](https://github.com/oparaskos/vscode-fountain/compare/v1.8.2...v1.8.3) (2023-11-20)
 
 
