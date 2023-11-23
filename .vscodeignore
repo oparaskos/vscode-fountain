@@ -4,7 +4,7 @@
 !CHANGELOG.md
 !assets/**
 !client/dist/main.js
-!server/dist/main.js
+!server/dist/bundle.cjs.js
 !fountain-docs/**
 !language-configuration.json
 !package.json
