@@ -1,3 +1,10 @@
+## [1.8.5](https://github.com/oparaskos/vscode-fountain/compare/v1.8.4...v1.8.5) (2023-11-23)
+
+
+### Bug Fixes
+
+* server module loading broken after rename. e2e tests not installing dependencies ([233c530](https://github.com/oparaskos/vscode-fountain/commit/233c530cab7eb6e841f62c5d349b5e65cf9d0cf1))
+
 ## [1.8.4](https://github.com/oparaskos/vscode-fountain/compare/v1.8.3...v1.8.4) (2023-11-23)
 
 
