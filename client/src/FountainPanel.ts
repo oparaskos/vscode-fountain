@@ -111,6 +111,9 @@ export class FountainPanel {
     public updateLocationStats(uri: string, stats: unknown) {
         this._panel.webview.postMessage({ command: "fountain.statistics.locations", uri, stats });
     }
+    public updateSummaryStats(uri: string, stats: unknown) {
+        this._panel.webview.postMessage({ command: "fountain.statistics.document", uri, stats });
+    }
     public analyseScene(uri: string, name: string) {
         this._panel.webview.postMessage({ command: "fountain.analyseScene", uri, name });
     }
@@ -181,6 +184,7 @@ export class FountainPanel {
 
         return this._loadHtmlFromDisk(this._extensionUri.fsPath, relativePath)
             .then((result) => result
+                .replace('lang="en"', `lang="${vscode.env.language}"`)
                 .replace("${baseUri}", webview.asWebviewUri(baseUri).toString())
                 .replace("${webview.cspSource}", webview.cspSource)
                 .replace("${nonce}", getNonce()) // Use a nonce to only allow specific scripts to be run

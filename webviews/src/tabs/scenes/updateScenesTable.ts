@@ -1,5 +1,5 @@
 import type { ScenesStats } from '@/types/ScenesStats';
-import type { ScriptTimeline } from '@/components/charts/script-timeline';
+import type { ScreenplayTimeline } from '@/components/screenplay/screenplay-timeline';
 import type { Badge as VSCodeBadge } from '@vscode/webview-ui-toolkit';
 import { logger } from '@/utils/logger';
 import { sentimentToEmoji } from '@/utils/sentimentToEmoji';
@@ -12,15 +12,15 @@ export function updateScenesTable(stats: ScenesStats[]) {
         const dialogueRatio = row.DialogueDuration / row.Duration;
         return {
             Name: row.Name,
-            Characters: row.Characters,
+            Characters: row.Characters.join(', '),
             Synopsis: row.Synopsis,
             Duration: describeSceneUtilisation(dialogueRatio, row.Duration),
             Sentiment: sentimentToEmoji(row.Sentiment)
         };
     }));
 
-    (document.getElementById("scenes-timeline") as ScriptTimeline).setEntries(stats);
+    (document.getElementById("scenes-timeline") as ScreenplayTimeline).setEntries(stats);
 
     const badge = document.querySelector<VSCodeBadge>("vscode-panel-tab#tab-scenes > vscode-badge");
-    if (badge) { badge.innerHTML = '' + stats.length; }
+    if (badge) { badge.textContent = '' + stats.length; }
 }

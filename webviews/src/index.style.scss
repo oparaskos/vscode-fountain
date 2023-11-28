@@ -3,7 +3,17 @@
 	font-display: block;
 	src: url("@vscode/codicons/dist/codicon.ttf") format("truetype");
 }
-
+.TODO {
+    background-color: magenta;
+    width: 10rem;
+    height: 1.2rem;
+    &::after {
+        font-weight: bold;
+        color: white;
+        content: 'TODO:';
+        line-height: 1.2rem;
+    }
+}
 vscode-data-grid {
     min-height: 3rem;
     margin-top: 1rem;

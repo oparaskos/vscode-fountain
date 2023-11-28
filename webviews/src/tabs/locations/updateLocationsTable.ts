@@ -12,5 +12,5 @@ export function updateLocationsTable(stats: LocationsStats[]) {
     })));
 
     const badge = document.querySelector<VSCodeBadge>("vscode-panel-tab#tab-locations > vscode-badge");
-    if (badge) { badge.innerHTML = '' + stats.length; }
+    if (badge) { badge.textContent = '' + stats.length; }
 }

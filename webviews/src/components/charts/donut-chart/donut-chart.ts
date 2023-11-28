@@ -99,7 +99,7 @@ export class DonutChart extends HTMLElement {
 				.attr("font-weight", (_, i) => i ? null : "bold")
 				.text(d => d);
 			// appending the container to the shadow DOM
-			this.shadow.innerHTML = '';
+			this.shadow.replaceChildren();
 			const node = svg.node();
 			if(node)
 				this.shadow.appendChild(node);
