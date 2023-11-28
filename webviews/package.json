@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "build": "webpack",
+    "build": "webpack && cp -R assets/i18n/ dist/i18n",
     "watch": "npm run build -- --watch"
   },
   "devDependencies": {
@@ -33,6 +33,7 @@
     "@vscode/codicons": "^0.0.32",
     "@vscode/webview-ui-toolkit": "^1.0.0",
     "d3": "^7.6.1",
-    "readability-scores": "^1.0.8"
+    "readability-scores": "^1.0.8",
+    "true-case": "^1.0.16"
   }
 }

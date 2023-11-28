@@ -9,6 +9,7 @@ import { updateCharacterTable } from '@/tabs/character/updateCharacterTable';
 
 
 import '@/index.style.scss';
+import { updateSummaryStats } from './tabs/summaryStats';
 
 function initState() {
     const state = getState<TState>() || {};
@@ -17,7 +18,8 @@ function initState() {
             statistics: {
                 characters: [],
                 locations: [],
-                scenes: []
+                scenes: [],
+                document: {}
             }
         });
     }
@@ -25,21 +27,30 @@ function initState() {
 }
 
 function onMessage(ev: MessageEvent) {
+    console.log("onMessage", ev.data)
     const state = getState<TState>();
     switch (ev.data.command) {
         case "fountain.statistics.characters":
             state.statistics.characters = ev.data.stats;
             updateCharacterTable(state.statistics.characters);
+            updateSummaryStats(state.statistics);
             patchState<TState>({ statistics: state.statistics });
             return;
         case "fountain.statistics.locations":
             state.statistics.locations = ev.data.stats;
             updateLocationsTable(state.statistics.locations);
+            updateSummaryStats(state.statistics);
             patchState<TState>({ statistics: state.statistics });
             return;
         case "fountain.statistics.scenes":
             state.statistics.scenes = ev.data.stats;
             updateScenesTable(state.statistics.scenes);
+            updateSummaryStats(state.statistics);
+            patchState<TState>({ statistics: state.statistics });
+            return;
+        case "fountain.statistics.document":
+            state.statistics.document = ev.data.stats;
+            updateSummaryStats(state.statistics);
             patchState<TState>({ statistics: state.statistics });
             return;
         case "fountain.analyseLocation":
@@ -75,6 +86,7 @@ function main() {
         updateCharacterTable(state.statistics.characters);
         updateLocationsTable(state.statistics.locations);
         updateScenesTable(state.statistics.scenes);
+        updateSummaryStats(state.statistics);
     }
 
     postMessage({ type: 'ready' });

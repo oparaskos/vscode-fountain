@@ -14,7 +14,9 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: {
         main: './src/main.ts',
-        'charts': './src/components/charts/index.ts'
+        'charts': './src/components/charts/index.ts',
+        'screenplay': './src/components/screenplay/index.ts',
+        'i18n': './src/components/i18n/index.ts'
     },
     module: {
         rules: [
@@ -42,7 +44,7 @@ module.exports = {
             {
                 test: /\.html?$/,
                 use: "html-loader",
-            },
+            }
         ],
     },
     resolve: {

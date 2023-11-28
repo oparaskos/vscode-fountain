@@ -5,12 +5,12 @@
         "moduleResolution": "node",
         "outDir": "dist",
         "lib": [
-            "es6",
+            "es2021",
             "dom",
             "dom.iterable"
         ],
         "sourceMap": true,
-        "rootDir": "src",
+        "rootDir": ".",
         "baseUrl": "./",
         "strict": true, /* enable all strict type-checking options */
         /* Additional Checks */
@@ -20,9 +20,12 @@
         "paths": {
             "@/*": [
                 "./src/*"
+            ],
+            "_assets/*": [
+                "./assets/*"
             ]
         },
-        "composite": true
+        "resolveJsonModule": true
     },
     "exclude": [
         "dist",

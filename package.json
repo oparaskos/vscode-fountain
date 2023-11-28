@@ -114,5 +114,8 @@
         "path": "./syntaxes/fountain.tmLanguage.json"
       }
     ]
+  },
+  "dependencies": {
+    "d3-cloud": "^1.2.7"
   }
 }

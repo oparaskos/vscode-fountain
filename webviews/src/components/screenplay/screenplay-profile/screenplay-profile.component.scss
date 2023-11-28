@@ -1,0 +1,19 @@
+[part='container'] {
+    border-radius: 100%;
+    width: 10rem;
+    height: 10rem;
+    background: rebeccapurple;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .name {
+        font-weight: bold;
+        margin: 0.1rem 0;
+    }
+
+    .duration {
+        opacity: 0.8;
+    }
+}

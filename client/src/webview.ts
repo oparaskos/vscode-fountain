@@ -18,12 +18,17 @@ export async function updateSceneStats(panel: FountainPanel, client: LanguageCli
 	panel.updateSceneStats(uri, stats);
 	
 }
+export async function updateSummaryStats(panel: FountainPanel, client: LanguageClient, uri: string) {
+	const stats = await client.sendRequest(new RequestType("fountain.statistics.document"), { uri } );
+	panel.updateSummaryStats(uri, stats);
+}
 
 export async function updateWebviewStats(panel: FountainPanel, client: LanguageClient, uri: string) {
 	await Promise.all([
 		updateCharacterStats(panel, client, uri),
 		updateLocationStats(panel, client, uri),
-		updateSceneStats(panel, client, uri)
+		updateSceneStats(panel, client, uri),
+		updateSummaryStats(panel, client, uri)
 	]);
 }
 

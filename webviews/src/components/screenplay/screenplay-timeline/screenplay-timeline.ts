@@ -1,10 +1,10 @@
 import { select } from 'd3-selection';
 import { wordToColor } from '@/utils/word2colour';
 import { logger } from '@/utils/logger';
-import html from './script-timeline.html';
-import style from './script-timeline.component.scss';
+import html from './screenplay-timeline.html';
+import style from './screenplay-timeline.component.scss';
 
-export class ScriptTimeline extends HTMLElement {
+export class ScreenplayTimeline extends HTMLElement {
 
     private shadow: ShadowRoot;
     private zoomSlider: HTMLInputElement;
@@ -46,7 +46,7 @@ export class ScriptTimeline extends HTMLElement {
         const zoomAmount = ((-1 * parseFloat(this.zoomSlider.value)) + 1) * 100;
         const totalWidth = (totalDuration / zoomAmount) * 3;
         const container = this.shadow.getElementById("container") as HTMLDivElement;
-        container.innerHTML = '';
+        container.replaceChildren();
         return select(container)
             .selectAll('div')
             .data(this.entries)
@@ -70,4 +70,4 @@ export class ScriptTimeline extends HTMLElement {
 }
 
 // let the browser know about the custom element
-customElements.define('script-timeline', ScriptTimeline);
+customElements.define('screenplay-timeline', ScreenplayTimeline);

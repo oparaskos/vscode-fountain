@@ -5,7 +5,8 @@ import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
 import { schemeSpectral, interpolateSpectral } from 'd3-scale-chromatic';
 import { format } from 'd3-format';
 import { quantize } from 'd3-interpolate';
-import { applySeriesBaackgrounds } from '../../../utils/chart-series-backgrounds';
+import { applySeriesBaackgrounds as applySeriesBackgrounds } from '../../../utils/chart-series-backgrounds';
+import { $t, I18n, translate } from '@/components/i18n/i18n';
 
 export class BarChart extends HTMLElement {
 
@@ -26,6 +27,8 @@ export class BarChart extends HTMLElement {
 		this.setEntries = this.setEntries.bind(this);
 		this.onChange();
 
+        I18n.onTranslationsAvailable(this.onChange);
+
 	}
 
 	// add items to the list
@@ -43,7 +46,7 @@ export class BarChart extends HTMLElement {
 				.attr("viewBox", [0, 0, this.width, this.height])
 				.attr("style", this.style.cssText + "; max-width: 100%; height: auto; height: intrinsic;");
 
-			applySeriesBaackgrounds(svg, this.visualImpaired);
+			applySeriesBackgrounds(svg, this.visualImpaired);
 
 
 			svg.append("g")
@@ -94,7 +97,7 @@ export class BarChart extends HTMLElement {
 				.call(yAxis);
 
 			// appending the container to the shadow DOM
-			this.shadow.innerHTML = '';
+			this.shadow.replaceChildren();
 			const node = svg.node();
 			if(node)
 				this.shadow.appendChild(node);
@@ -125,7 +128,7 @@ export class BarChart extends HTMLElement {
 
 	// gathering data from element attributes
 	get title() {
-		return this.getAttribute('title') || '';
+		return translate(this.getAttribute('title') || "");
 	}
 
 
@@ -167,7 +170,18 @@ export class BarChart extends HTMLElement {
 
 	get ordinalFunction(): (datum: {[key: string]: number | string}, index: number) => string {
 		const attributeValue = this.getAttribute("ordinalFunction") || 'label';
-		return (d) => `${d[attributeValue]}`;
+		return (d) => {
+            const label = `${d[attributeValue]}`;
+            if(this.translateLabels) {
+                return translate(label);
+            } else {
+                return label;
+            }
+        };
+	}
+
+	get translateLabels() {
+		return (this.getAttribute("translateLabels") || 'true') === 'true';
 	}
 
 	get marginTop() {
