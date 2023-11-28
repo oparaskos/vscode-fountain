@@ -32,7 +32,7 @@ export const COLOURS = [
 ];
 
 
-export const CONTRAST_COLOURS = ['#fff', '#0f0f0f', '#fff', '#0f0f0f', '#0f0f0f']
+export const CONTRAST_COLOURS = ['#fff', '#0f0f0f', '#fff', '#0f0f0f', '#0f0f0f'];
 
 export function applySeriesBaackgrounds(svg: Selection<SVGSVGElement, undefined, null, undefined>, visualImpaired = false) {
 	const size = 10;

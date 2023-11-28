@@ -12,7 +12,7 @@ export class I18n {
 
     public static defaultLocale = new Intl.Locale(
         document.getElementsByTagName('html')[0].getAttribute('lang') ?? window.navigator.language
-    )
+    );
 
     static async messages(locale: Intl.Locale) {
         const _locale = locale.baseName;
@@ -21,9 +21,9 @@ export class I18n {
             I18n._messages[_locale]?.then((v) => {
                 I18n._offlineMessages[_locale] = v;
                 I18n._listeners.forEach(it => it());
-            })
+            });
         }
-        return await I18n._messages[_locale]
+        return await I18n._messages[_locale];
     }
 
     static async fetchMessages(locale: Intl.Locale) {
@@ -34,7 +34,7 @@ export class I18n {
             return response.json();
         } else {
             if (await I18n._messages[locale.language]) {
-                return await I18n._messages[locale.language]
+                return await I18n._messages[locale.language];
             }
             const response = await fetch(`i18n/${locale.language}.json`);
             if (response.ok) {
@@ -54,9 +54,9 @@ export class I18n {
     static async getMessageOrDefault<T>(messageKey: string, defaultValue: T, locale?: Intl.Locale) {
         const lookupLocale = locale || I18n.defaultLocale;
         const messages = await I18n.messages(lookupLocale);
-        const replacementValue = messages?.[messageKey]
+        const replacementValue = messages?.[messageKey];
         if(!replacementValue) {
-            logger.warn(`No translation string for message key ${messageKey} in ${lookupLocale}; defaulting to ${defaultValue}`)
+            logger.warn(`No translation string for message key ${messageKey} in ${lookupLocale}; defaulting to ${defaultValue}`);
         }
         return replacementValue || defaultValue;
     }
@@ -71,34 +71,34 @@ export class I18n {
         const messages: Record<string, string> = I18n._offlineMessages[lookupLocale.baseName] || defaultMessages;
         const replacementValue = messages[messageKey];
         if(!replacementValue) {
-            logger.warn(`No translation string for message key ${messageKey} in default messages; defaulting to ${defaultValue}`)
+            logger.warn(`No translation string for message key ${messageKey} in default messages; defaulting to ${defaultValue}`);
         }
         return replacementValue || defaultValue;
     }
     static onTranslationsAvailable(callback: () => void) {
-        I18n._listeners.push(callback)
+        I18n._listeners.push(callback);
     }
 }
 
 export type MessageKey = keyof typeof defaultMessages;
 
 export function $translate(messageKey: MessageKey, locale?: Intl.Locale): string {
-    return translate(messageKey, defaultMessages[messageKey], locale)
+    return translate(messageKey, defaultMessages[messageKey], locale);
 }
 
 export function $translateWithArguments(messageKey: MessageKey, replacements?: Record<string, string | {toString:()=>string}|undefined>, locale?: Intl.Locale): string {
-    let translationMessage = $translate(messageKey, locale)
+    let translationMessage = $translate(messageKey, locale);
     if (replacements && typeof translationMessage === "string") [
         Object.entries(replacements).forEach(([key, value]) => {
             translationMessage = (translationMessage as string).replaceAll(`{{${key}}}`, value?.toString() ?? '∅');
         })
-    ]
+    ];
     return translationMessage;
 }
 
 export function translate(messageKey: string, defaultValue: string = messageKey, locale?: Intl.Locale): string {
-    const realMessageKey = messageKey?.replace(/\s+/ig, '_')?.replace(/[^\w]+/ig, '')?.toUpperCase()
-    return I18n.getOfflineMessageOrDefault(realMessageKey, defaultValue ?? messageKey, locale)
+    const realMessageKey = messageKey?.replace(/\s+/ig, '_')?.replace(/[^\w]+/ig, '')?.toUpperCase();
+    return I18n.getOfflineMessageOrDefault(realMessageKey, defaultValue ?? messageKey, locale);
 }
 
 export const $t = $translateWithArguments;

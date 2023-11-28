@@ -12,8 +12,8 @@ export class WordCloudElement extends HTMLElement {
         // https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
         this.shadow = this.attachShadow({ mode: 'open' });
         const loading = document.createElement('div');
-        loading.innerText = 'loading...'
-        this.shadow.appendChild(loading)
+        loading.innerText = 'loading...';
+        this.shadow.appendChild(loading);
         // binding methods
         this.onChange = this.onChange.bind(this);
         this.setEntries = this.setEntries.bind(this);

@@ -48,20 +48,20 @@ export class ScreenplayProfilesList extends HTMLElement {
 
     private render() {
         const container = this.shadow.getElementById("container");
-        const largest = this.entries.reduce((a, b) => Math.max(a, b?.Duration || 0), 0.001)
-        const smallest = this.entries.reduce((a, b) => Math.min(a, b?.Duration || Infinity), largest)
+        const largest = this.entries.reduce((a, b) => Math.max(a, b?.Duration || 0), 0.001);
+        const smallest = this.entries.reduce((a, b) => Math.min(a, b?.Duration || Infinity), largest);
         console.log({ largest, smallest });
         container?.replaceChildren(
             ...this.entries.map((c, i) => {
-                const node = document.createElement('screenplay-profile') as ScreenplayProfile
+                const node = document.createElement('screenplay-profile') as ScreenplayProfile;
                 const duration = c.Duration || 0;
-                node.setAttribute('background-color', this.colours[i % this.colours.length])
-                node.setAttribute('foreground-color', this.contrastColours[i % this.contrastColours.length])
-                node.setAttribute('size', ((duration - smallest) / (largest - smallest) / 2 + 0.5).toFixed(2))
+                node.setAttribute('background-color', this.colours[i % this.colours.length]);
+                node.setAttribute('foreground-color', this.contrastColours[i % this.contrastColours.length]);
+                node.setAttribute('size', ((duration - smallest) / (largest - smallest) / 2 + 0.5).toFixed(2));
                 node.setProfile(c);
                 return node;
             })
-        )
+        );
     }
 }
 

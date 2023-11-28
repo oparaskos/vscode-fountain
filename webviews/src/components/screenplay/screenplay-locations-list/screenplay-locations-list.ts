@@ -52,47 +52,47 @@ export class ScreenplayLocationsList extends HTMLElement {
 
     private render() {
         const container = this.shadow.getElementById("container");
-        const largest = this.entries.reduce((a, b) => Math.max(a, b?.Duration || 0), 0.001)
-        const smallest = this.entries.reduce((a, b) => Math.min(a, b?.Duration || Infinity), largest)
+        const largest = this.entries.reduce((a, b) => Math.max(a, b?.Duration || 0), 0.001);
+        const smallest = this.entries.reduce((a, b) => Math.min(a, b?.Duration || Infinity), largest);
         container?.replaceChildren(
             ...this.entries.map((c, i) => {
                 const duration = c.Duration || 0;
-                const node = document.createElement('div')
-                node.classList.add('location')
-                node.style.backgroundColor = this.colours[i % this.colours.length]
-                node.style.color = this.contrastColours[i % this.contrastColours.length]
-                node.style.width = `${((duration - smallest) / (largest - smallest) / 2 + 0.5) * 100}%`
+                const node = document.createElement('div');
+                node.classList.add('location');
+                node.style.backgroundColor = this.colours[i % this.colours.length];
+                node.style.color = this.contrastColours[i % this.contrastColours.length];
+                node.style.width = `${((duration - smallest) / (largest - smallest) / 2 + 0.5) * 100}%`;
 
-                const nameEl = document.createElement('span')
-                nameEl.className = "name"
-                nameEl.innerText = c.Name
+                const nameEl = document.createElement('span');
+                nameEl.className = "name";
+                nameEl.innerText = c.Name;
                 node.appendChild(nameEl);
 
-                const durationEl = document.createElement('span')
-                durationEl.className = "duration"
-                durationEl.innerText = $t("SCENE_APPEARS_DURATION", { duration: formatTime(c.Duration || 0), scenes: c.Scenes })
+                const durationEl = document.createElement('span');
+                durationEl.className = "duration";
+                durationEl.innerText = $t("SCENE_APPEARS_DURATION", { duration: formatTime(c.Duration || 0), scenes: c.Scenes });
                 node.appendChild(durationEl);
 
-                const tagsEl = document.createElement("div")
-                tagsEl.classList.add("tags")
+                const tagsEl = document.createElement("div");
+                tagsEl.classList.add("tags");
 
                 if (i === 0) {
-                    const tagEl = document.createElement('vscode-tag') as VSCodeTag
-                    tagEl.className = "tag longest"
-                    tagEl.innerText = $t("LONGEST_SCENE")
+                    const tagEl = document.createElement('vscode-tag') as VSCodeTag;
+                    tagEl.className = "tag longest";
+                    tagEl.innerText = $t("LONGEST_SCENE");
                     tagsEl.appendChild(tagEl);
                 }
 
                 if (c.Type === "INTERIOR" || c.Type === "MIXED") {
-                    const tagEl = document.createElement('vscode-tag') as VSCodeTag
-                    tagEl.className = "tag interior"
+                    const tagEl = document.createElement('vscode-tag') as VSCodeTag;
+                    tagEl.className = "tag interior";
                     tagEl.innerText = $t("INT.");
                     tagsEl.appendChild(tagEl);
                 }
 
                 if (c.Type === "EXTERIOR" || c.Type === "MIXED") {
-                    const tagEl = document.createElement('vscode-tag') as VSCodeTag
-                    tagEl.className = "tag exterior"
+                    const tagEl = document.createElement('vscode-tag') as VSCodeTag;
+                    tagEl.className = "tag exterior";
                     tagEl.innerText = $t("EXT.");
                     tagsEl.appendChild(tagEl);
                 }
@@ -101,7 +101,7 @@ export class ScreenplayLocationsList extends HTMLElement {
 
                 return node;
             })
-        )
+        );
     }
 }
 

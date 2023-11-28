@@ -47,15 +47,15 @@ export class ScreenplayScenesList extends HTMLElement {
 
     private render() {
         const container = this.shadow.getElementById("container");
-        const largest = this.entries.reduce((a, b) => Math.max(a, b?.Duration || 0), 0.001)
-        const smallest = this.entries.reduce((a, b) => Math.min(a, b?.Duration || Infinity), largest)
+        const largest = this.entries.reduce((a, b) => Math.max(a, b?.Duration || 0), 0.001);
+        const smallest = this.entries.reduce((a, b) => Math.min(a, b?.Duration || Infinity), largest);
         container?.replaceChildren(
             ...this.entries.map((c, i) => {
-                const node = document.createElement('div')
-                node.innerText = c.Name
+                const node = document.createElement('div');
+                node.innerText = c.Name;
                 return node;
             })
-        )
+        );
     }
 }
 

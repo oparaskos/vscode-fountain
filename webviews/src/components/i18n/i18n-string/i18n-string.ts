@@ -52,7 +52,7 @@ export class I18nStringElement extends HTMLElement {
         const message = await I18n.getMessageOrDefault(this.messageKey, this.startingText, this.locale);
         if(message) {
             this._textElement.textContent = this.textTransform(message);
-        };
+        }
     }
 }
 

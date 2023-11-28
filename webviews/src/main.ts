@@ -27,7 +27,7 @@ function initState() {
 }
 
 function onMessage(ev: MessageEvent) {
-    console.log("onMessage", ev.data)
+    console.log("onMessage", ev.data);
     const state = getState<TState>();
     switch (ev.data.command) {
         case "fountain.statistics.characters":
