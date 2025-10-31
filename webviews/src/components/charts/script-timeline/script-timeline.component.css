@@ -36,7 +36,6 @@
 
   & .scene {
     position: relative;
-    padding: 0.1rem;
     background: var(--vscode-button-secondaryBackground);
     margin: 0.5px;
     height: 2rem;
