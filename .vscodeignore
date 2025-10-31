@@ -9,6 +9,7 @@
 !language-configuration.json
 !package.json
 !syntaxes/fountain.tmLanguage.json
+!schemas/**
 !webviews/assets/**
 !webviews/dist/**/*.svg
 !webviews/dist/**/*.ttf
