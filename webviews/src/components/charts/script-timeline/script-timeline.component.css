@@ -1,10 +1,18 @@
+:root {
+  --vscode-button-secondaryBackground: #000;
+  --vscode-button-secondaryForeground: #000;
+  --vscode-button-secondaryHoverBackground: #000;
+  --vscode-button-secondaryForeground: #000;
+}
+
+
 [part='controls'] {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
 
-  .controls-icon {
-    font: normal normal normal 16px/1 codicon;
+  & .controls-icon {
+    font: normal normal normal 16px/1 codicon, monospace;
     display: inline-block;
     text-decoration: none;
     text-rendering: auto;
@@ -26,7 +34,7 @@
   height: 4rem;
   align-items: center;
 
-  .scene {
+  & .scene {
     position: relative;
     padding: 0.1rem;
     background: var(--vscode-button-secondaryBackground);
@@ -44,7 +52,7 @@
       color: var(--vscode-button-secondaryForeground);
     }
 
-    .characters {
+    & .characters {
       position: absolute;
       bottom: 0rem;
       display: flex;
@@ -52,13 +60,13 @@
       justify-content: right;
       left: 0.25rem;
 
-      .character {
+      & .character {
         width: 0.66rem;
         height: 0.66rem;
         margin: 0;
       }
 
-      .person-filled {
+      & .person-filled {
         -webkit-mask-image: url('./assets/person-filled.svg');
         mask-image: url('./assets/person-filled.svg');
       }

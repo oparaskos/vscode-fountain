@@ -1,3 +1,9 @@
+:root {
+    --vscode-list-dropBackground: 0;
+    --vscode-list-hoverBackground: 0;
+    --type-ramp-base-font-size: 0;
+}
+
 @font-face {
 	font-family: "codicon";
 	font-display: block;
@@ -57,11 +63,11 @@ vscode-panel-view {
     display: grid;
     grid-template: "1fr 1fr";
 
-    .graph-container {
+    & .graph-container {
         display: flex;
         flex-direction: column;
 
-        .graph-title {
+        & .graph-title {
             display: block;
             text-align: center;
             font-weight: bold;
@@ -71,6 +77,7 @@ vscode-panel-view {
     donut-chart {
         overflow: visible;
     }
+
     bar-chart {
         overflow: visible;
     }

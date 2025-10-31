@@ -8,7 +8,7 @@ import { updateScenesTable } from '@/tabs/scenes/updateScenesTable';
 import { updateCharacterTable } from '@/tabs/character/updateCharacterTable';
 
 
-import '@/index.style.scss';
+import '@/index.style.css';
 
 function initState() {
     const state = getState<TState>() || {};

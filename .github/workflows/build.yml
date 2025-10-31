@@ -14,13 +14,13 @@ jobs:
         submodules: 'true'
     - uses: actions/setup-node@v3
       with:
-        node-version: 16.x
+        node-version: 24.x
         cache: npm
     - name: Build and Package
       run: |
         npm ci
         npm run build
-        npx vsce package
+        npx @vscode/vsce@3.6.2 package
       env:
         CI: true
     - name: Automatic Semantic Release
@@ -36,12 +36,12 @@ jobs:
     - name: Publish to Visual Studio Marketplace
       if: steps.semantic.outputs.new_release_published == 'true'
       run: |
-        npx vsce publish
+        npx @vscode/vsce@3.6.2 publish
       env:
         VSCE_PAT: ${{ secrets.VSCE_PAT }}
     - name: Publish to OpenVSX
       if: steps.semantic.outputs.new_release_published == 'true'
       run: |
-        npx ovsx publish
+        npx ovsx@0.10.6 publish
       env:
         OVSX_PAT: ${{ secrets.OVSX_PAT }}

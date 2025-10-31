@@ -2,7 +2,7 @@ import { select } from 'd3-selection';
 import { wordToColor } from '@/utils/word2colour';
 import { logger } from '@/utils/logger';
 import html from './script-timeline.html';
-import style from './script-timeline.component.scss';
+import style from './script-timeline.component.css';
 
 export class ScriptTimeline extends HTMLElement {
 

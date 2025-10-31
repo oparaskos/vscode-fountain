@@ -1,13 +1,5 @@
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-
 const path = require('path');
-const sassLoader = {
-    // Compiles Sass to CSS
-    loader: 'sass-loader',
-    options: {
-        sassOptions: { includePaths: ['node_modules'] }
-    }
-};
 
 module.exports = {
     mode: 'development',
@@ -22,14 +14,6 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
-            },
-            {
-                test: /\.style\.(sass|scss)$/,
-                use: ['style-loader', 'css-loader', sassLoader],
-            },
-            {
-                test: /\.component\.(sass|scss)$/,
-                use: ['css-loader', sassLoader],
             },
             {
                 test: /\.style\.css$/,

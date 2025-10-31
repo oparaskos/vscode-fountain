@@ -14,14 +14,14 @@ jobs:
             submodules: 'true'
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 24.x
           cache: npm
       - id: current_version
         run: echo "::set-output name=version::$(npm pkg get version | tr -d \")"
       - run: npm --no-git-tag-version version ${{ steps.current_version.outputs.version }}-nightly-${{ github.run_number }}
       - run: |
           npm install
-          npx vsce package --pre-release
+          npx @vscode/vsce@3.6.2 package --pre-release
       - name: Create Nightly Release
         uses: softprops/action-gh-release@v1
         env:
