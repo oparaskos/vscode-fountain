@@ -1,3 +1,12 @@
+## [1.8.7](https://github.com/oparaskos/vscode-fountain/compare/v1.8.6...v1.8.7) (2025-10-31)
+
+
+### Bug Fixes
+
+* bump fountain-lsp-server ([ce85242](https://github.com/oparaskos/vscode-fountain/commit/ce85242e01edb8d06c454736f8e0b948e775e7d3))
+* issues after some version bumpsg ([e23165a](https://github.com/oparaskos/vscode-fountain/commit/e23165a6839e523c6829290bc5ae43b211f48f61))
+* tweak build settings and pipeline ([00b51cb](https://github.com/oparaskos/vscode-fountain/commit/00b51cbe3d39fe2aef433aed3ea92fe65dd17170))
+
 ## [1.8.6](https://github.com/oparaskos/vscode-fountain/compare/v1.8.5...v1.8.6) (2023-11-23)
 
 
